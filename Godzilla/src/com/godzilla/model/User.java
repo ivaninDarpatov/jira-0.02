@@ -4,21 +4,38 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.godzilla.model.enums.Permissions;
+import com.godzilla.model.exceptions.*;
 
 public class User {
-	int id;
-	String email;
-	String password;
-	Permissions permissions;
-	String company;
-	Set<Issue> issuesAssignedTo;
-	Set<Issue> issuesReportedBy;
+	private int id;
+	private String email;
+	private String password;
+	private Permissions permissions;
+	private String company;
+	private Set<Issue> issuesAssignedTo;
+	private Set<Issue> issuesReportedBy;
 	
-	public User(String email, String password, String company) {
-		this.setEmail(email);
-		this.setPassword(password);
-		this.setPermissions(Permissions.USER);
-		this.setCompany(company);
+	public User(String email, String password, String company) throws UserException {
+		try {
+			this.setEmail(email);
+		} catch (EmailException e) {
+			throw new UserException("Invalid email",e);
+		}
+		try {
+			this.setPassword(password);
+		} catch (PasswordException e) {
+			throw new UserException("Invalid password",e);
+		}
+		try {
+			this.setPermissions(Permissions.USER);
+		} catch (PermissionException e) {
+			throw new UserException("Invalid permission",e);
+		}
+		try {
+			this.setCompany(company);
+		} catch (CompanyException e) {
+			throw new UserException("Invalid Company",e);
+		}
 		
 		issuesAssignedTo = new HashSet<Issue>();
 		issuesReportedBy = new HashSet<Issue>();
@@ -84,31 +101,43 @@ public class User {
 		return true;
 	}
 	
-	private void setEmail(String email) {
+	private void setEmail(String email) throws EmailException {
 		if (email != null && email.length() > 0) {
 			if (User.validateEmail(email)) {
 				this.email = email;
+			}else{
+				throw new EmailException("wrong email format");
 			}
+		}else{
+			throw new EmailException("email = null value");
 		}
 	}
 	
-	private void setPassword(String password) {
+	private void setPassword(String password) throws PasswordException {
 		if (password != null && password.length() > 0) {
 			if (User.validatePassword(password)) {
 				this.password = password;
+			}else{
+				throw new PasswordException("Wrong password format");
 			}
+		}else{
+			throw new PasswordException("Password value null");
 		}
 	}
 	
-	public void setPermissions(Permissions permissions) {
+	public void setPermissions(Permissions permissions) throws PermissionException {
 		if (permissions != null) {
 			this.permissions = permissions;
+		}else{
+			throw new PermissionException("permision value null");
 		}
 	}
 	
-	private void setCompany(String company) {
+	private void setCompany(String company) throws CompanyException {
 		if (company != null && company.length() > 0) {
 			this.company = company;
+		}else{
+			throw new CompanyException("Company value null");
 		}
 	}
 	

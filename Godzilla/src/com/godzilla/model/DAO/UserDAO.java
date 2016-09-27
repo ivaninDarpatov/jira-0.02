@@ -10,6 +10,11 @@ import com.godzilla.DBConnection.DBConnection;
 import com.godzilla.model.Company;
 import com.godzilla.model.User;
 import com.godzilla.model.enums.Permissions;
+import com.godzilla.model.exceptions.CompanyDAOException;
+import com.godzilla.model.exceptions.CompanyException;
+import com.godzilla.model.exceptions.PermissionException;
+import com.godzilla.model.exceptions.UserDAOException;
+import com.godzilla.model.exceptions.UserException;
 
 public class UserDAO {
 	private static final int USER_PERMISSIONS = Permissions.USER.ordinal() + 1;
@@ -30,7 +35,7 @@ public class UserDAO {
 	private static final String REMOVE_USER_SQL = "Delete from users"
 												+ "where email = ?;";
 	
-	public static void registerUser(User toRegister) {
+	public static void registerUser(User toRegister) throws UserException, UserDAOException {
 		if (toRegister != null) {
 			Connection connection = DBConnection.getInstance().getConnection();
 			String email = toRegister.getEmail();
@@ -50,12 +55,25 @@ public class UserDAO {
 					companyId = rs.getInt("id");
 					permisstionsId = USER_PERMISSIONS;
 				} else {
-					Company newCompany = new Company(company);
-					CompanyDAO.createNewCompany(newCompany);
+					Company newCompany;
+					try {
+						newCompany = new Company(company);
+					} catch (CompanyException e1) {
+						throw new UserDAOException("invalid company", e1);
+					}
+					try {
+						CompanyDAO.createNewCompany(newCompany);
+					} catch (CompanyDAOException e1) {
+						throw new UserDAOException("Company not created",e1);
+					}
 					
 					companyId = newCompany.getId();
 					permisstionsId = ADMIN_PERMISSIONS;
-					toRegister.setPermissions(Permissions.ADMINISTRATOR);
+					try {
+						toRegister.setPermissions(Permissions.ADMINISTRATOR);
+					} catch (PermissionException e) {
+						throw new UserException("invalid permission", e);
+					}
 				}
 				
 				ps = connection.prepareStatement(REGISTER_USER_SQL, Statement.RETURN_GENERATED_KEYS);
@@ -72,30 +90,29 @@ public class UserDAO {
 					userId = generatedKeys.getInt(1);
 					toRegister.setId(userId);
 				}else{
-					//TODO: throw exception
-					System.err.println("User was not register");
+					throw new UserDAOException("Failed to register");
 				}
 				
 				connection.commit();
 				
-			} catch (SQLException e) {
+			} catch (SQLException e ) {
 				try {
 					connection.rollback();
 				} catch (SQLException e1) {
-					e1.printStackTrace();
+					throw new UserDAOException(e1.getMessage());
 				}
-				e.printStackTrace();
+				throw new UserDAOException(e.getMessage());
 			}finally {
 				try {
 					connection.setAutoCommit(true);
 				} catch (SQLException e) {
-					e.printStackTrace();
+					throw new UserDAOException(e.getMessage());
 				}
 			}
 		}
 	}
 	
-	public boolean validateLogin(User user) {
+	public static boolean validateLogin(User user) throws UserDAOException {
 		Connection connection = DBConnection.getInstance().getConnection();
 		
 		try {
@@ -109,17 +126,16 @@ public class UserDAO {
 				if (rs.next()) {
 					return false;
 				}
-				
 				return true;
 			}		
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new UserDAOException(e.getMessage());
 		}
 		
 		return false;
 	}
 	
-	public static void remmoveUser(User userToRemove){
+	public static void remmoveUser(User userToRemove) throws UserDAOException{
 		Connection connection = DBConnection.getInstance().getConnection();
 		
 		try {
@@ -128,8 +144,7 @@ public class UserDAO {
 			ps.setString(1, userToRemove.getEmail());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			// TODO Exception
-			e.printStackTrace();
+			throw new UserDAOException(e.getMessage());
 		}
 	}
 }

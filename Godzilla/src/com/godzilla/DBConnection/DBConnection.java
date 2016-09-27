@@ -16,17 +16,18 @@ private static DBConnection instance;
 
 	private static final String DB_PORT = "3306";
 	private static final String DB_HOST = "localhost";
+
 	
 	
 	private DBConnection() throws Exception {
-		Scanner sc = new Scanner(System.in);
-		System.out.print("Data Base Username: ");
-		String userName = sc.nextLine();
-		System.out.print("Data Base password: ");
-		String password = sc.nextLine();
-		System.out.print("Data Base schema: ");
-		String schema = sc.nextLine();
-		sc.close();
+//		Scanner sc = new Scanner(System.in);
+//		System.out.print("Data Base Username: ");
+		String userName = "root";
+//		System.out.print("Data Base password: ");
+		String password = "";
+//		System.out.print("Data Base schema: ");
+		String schema = "jira";
+//		sc.close();
 		
 		Class.forName("com.mysql.jdbc.Driver");
 		this.connection = DriverManager.getConnection(

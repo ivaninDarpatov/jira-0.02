@@ -3,22 +3,30 @@ package com.godzilla.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.godzilla.model.exceptions.CompanyException;
+
 public class Company {
 	private  int id;
 	private String name;
 	private Set<Project> projects;
 	private Set<User> users;
 	
-	public Company(String name){
+	public Company(String name) throws CompanyException{
 		this.projects = new HashSet<>();
 		this.users = new HashSet<>();
-		this.setName(name);
+		try {
+			this.setName(name);
+		} catch (CompanyException e) {
+			throw new CompanyException("Invalid company name ",e);
+		}
 	}
 	
-	private void setName(String name){
+	private void setName(String name) throws CompanyException{
 		if(name != null && !name.trim().equals("")){
 			this.name = name;
-		}//TODO: exception
+		}else{
+			throw new CompanyException("name value = null");
+		}
 	}
 	
 	public void addNewProject(Project newProject){
