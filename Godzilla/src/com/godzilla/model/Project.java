@@ -1,8 +1,5 @@
 package com.godzilla.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.godzilla.model.exceptions.ProjectException;
 
 public class Project {

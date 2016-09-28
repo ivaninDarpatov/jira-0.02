@@ -1,7 +1,5 @@
 package com.godzilla.UnitTests;
 
-import static org.junit.Assert.*;
-
 import java.util.Random;
 
 import org.junit.Assert;
@@ -9,11 +7,13 @@ import org.junit.Test;
 
 import com.godzilla.model.User;
 import com.godzilla.model.DAO.UserDAO;
+import com.godzilla.model.exceptions.UserDAOException;
+import com.godzilla.model.exceptions.UserException;
 
 public class UserDAOTest {
 
 	@Test
-	public void registerNewUserTest() {
+	public void registerNewUserTest() throws UserException, UserDAOException {
 		int randomNumber = new Random().nextInt(100000);
 		String email = "someEmail" + randomNumber + "@abv.bg";
 		String password = "somePassword1";

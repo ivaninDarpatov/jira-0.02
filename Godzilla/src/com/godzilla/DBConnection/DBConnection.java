@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Scanner;
 
 
 public class DBConnection {
@@ -24,9 +23,9 @@ private static DBConnection instance;
 //		System.out.print("Data Base Username: ");
 		String userName = "root";
 //		System.out.print("Data Base password: ");
-		String password = "";
+		String password = "ittstudents";
 //		System.out.print("Data Base schema: ");
-		String schema = "jira";
+		String schema = "Godzilla";
 //		sc.close();
 		
 		Class.forName("com.mysql.jdbc.Driver");

@@ -1,7 +1,5 @@
 package com.godzilla.UnitTests;
 
-import static org.junit.Assert.*;
-
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.omg.Messaging.SyncScopeHelper;
 
 import com.godzilla.model.User;
 import com.godzilla.model.DAO.UserDAO;
