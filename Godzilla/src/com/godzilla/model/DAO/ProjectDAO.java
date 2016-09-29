@@ -5,9 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.godzilla.DBConnection.DBConnection;
+import com.godzilla.model.Issue;
 import com.godzilla.model.Project;
+import com.godzilla.model.Sprint;
 import com.godzilla.model.exceptions.CompanyDAOException;
 import com.godzilla.model.exceptions.ProjectDAOException;
 
@@ -15,6 +19,7 @@ public class ProjectDAO {
 	
 	public static final String SELECT_NAME_FROM_PROJECTS = "SELECT name from projects";
 	public static final String INSERT_INTO_PROJECTS = "Insert into projects VALUES(? , ? , ?);";
+	public static final String SELECT_ALL_PROJECTS_WITH_COMPANY_ID_SQL = "Select * from projects where Companies_id = ? ";
 
 	public static void addProject(Project newProject,String companyName) throws ProjectDAOException{
 		Connection connection = DBConnection.getInstance().getConnection();
@@ -89,5 +94,41 @@ public class ProjectDAO {
 			throw new ProjectDAOException(e.getMessage());
 		}
 		return false;
+	}
+
+	public static Set<Project> getAllProjectsByCompanyId(int companyId) throws ProjectDAOException {
+		Set<Project> result = new HashSet<Project>(); 
+		
+		Connection connection = DBConnection.getInstance().getConnection();
+		try {
+			PreparedStatement selectProjectsByComapnyId = connection.prepareStatement(SELECT_ALL_PROJECTS_WITH_COMPANY_ID_SQL);
+			selectProjectsByComapnyId.setInt(1, companyId);
+			
+			ResultSet rs = selectProjectsByComapnyId.executeQuery();
+			
+			while(rs.next()){
+				int projectId = rs.getInt(1);
+				
+				Set<Issue> issues = IssueDAO.getAllIssuesByProjectId(projectId);
+				Set<Sprint> sprints = SprintDAO.getAllSprintsByProjectId(projectId);
+				
+				Project project = new Project(rs.getString(2));
+				project.setId(projectId);
+				
+				for (Issue issue : issues) {
+					project.addIssue(issue);
+				}
+				
+				for (Sprint sprint : sprints) {
+					project.addSprint(sprint);
+				}
+				
+				result.add(project);
+			}
+		} catch (SQLException e) {
+			throw new ProjectDAOException(e.getMessage());
+
+		}
+		return null;
 	}
 }

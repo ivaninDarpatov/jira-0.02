@@ -23,9 +23,9 @@ private static DBConnection instance;
 //		System.out.print("Data Base Username: ");
 		String userName = "root";
 //		System.out.print("Data Base password: ");
-		String password = "ittstudents";
+		String password = "";
 //		System.out.print("Data Base schema: ");
-		String schema = "Godzilla";
+		String schema = "jira";
 //		sc.close();
 		
 		Class.forName("com.mysql.jdbc.Driver");

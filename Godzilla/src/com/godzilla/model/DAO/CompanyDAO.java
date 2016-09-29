@@ -5,14 +5,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Set;
 
 import com.godzilla.DBConnection.DBConnection;
 import com.godzilla.model.Company;
+import com.godzilla.model.Project;
+import com.godzilla.model.User;
 import com.godzilla.model.exceptions.CompanyDAOException;
+import com.godzilla.model.exceptions.CompanyException;
 
 public class CompanyDAO {
 
 	
+	private static final String SELECT_COMPANY_BY_ID_SQL = "Select * from companies where id = ?";
 	private static final String FIND_COMPANY_ID_BY_NAME = "SELECT id from companies where name =  ?;";
 	private static final String SELECT_NAME_FROM_COMPANIES = "SELECT name from companies";
 	private static final String INSERT_INTO_COMPANIES = "INSERT INTO companies VALUES(? , ? );";
@@ -79,5 +84,35 @@ public class CompanyDAO {
 			throw new CompanyDAOException(e.getMessage());
 		}
 		return id;
+	}
+	
+	public static Company getCompanyById(int companyId) throws CompanyDAOException{
+		Connection connection = DBConnection.getInstance().getConnection();
+		Company company = null;
+		
+		PreparedStatement selectCompanyById;
+		try {
+			selectCompanyById = connection.prepareStatement(SELECT_COMPANY_BY_ID_SQL);
+			selectCompanyById.setInt(1, companyId);
+			ResultSet rs = selectCompanyById.executeQuery();
+			if(rs.next()){
+				company = new Company(rs.getString(2));
+				company.setId(companyId);
+				
+				Set<Project> projects = ProjectDAO.getAllProjectsByCompanyId(companyId);
+				Set<User> users = UserDAO.getAllUsersByCompanyID(companyId);
+				
+			}else{
+				throw new CompanyDAOException("There is no company with that Id");
+			}
+		} catch (SQLException e) {
+			throw new CompanyDAOException(e.getMessage());
+		} catch (CompanyException e1){
+			throw new CompanyDAOException(e1.getMessage());
+		}
+		
+		
+		
+		return company;
 	}
 }

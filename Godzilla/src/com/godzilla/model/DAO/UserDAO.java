@@ -151,4 +151,11 @@ public class UserDAO {
 			throw new UserDAOException(e.getMessage());
 		}
 	}
+	
+	public static User getUserById(int id){
+		User user = null;
+		Connection connection = DBConnection.getInstance().getConnection();
+		
+		PreparedStatement select
+	}
 }

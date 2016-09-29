@@ -1,17 +1,20 @@
 package com.godzilla.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.godzilla.model.exceptions.ProjectException;
 
 public class Project {
 	private int id;
 	private String name;
-//	private Set<Issue> issues;
-//	private Set<Sprint> sprints;
+	private Set<Issue> issues;
+	private Set<Sprint> sprints;
 	
 	
 	public Project(String name) throws ProjectException{
-//		this.issues = new HashSet<>();
-//		this.sprints = new HashSet<>();
+		this.issues = new HashSet<>();
+		this.sprints = new HashSet<>();
 		
 		try {
 			this.setName(name);
