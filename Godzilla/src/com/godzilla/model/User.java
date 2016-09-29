@@ -15,7 +15,7 @@ public class User {
 	private Set<Issue> issuesAssignedTo;
 	private Set<Issue> issuesReportedBy;
 	
-	public User(String email, String password, String company) throws UserException {
+	public User(String email,String password) throws UserException{
 		try {
 			this.setEmail(email);
 		} catch (EmailException e) {
@@ -31,14 +31,19 @@ public class User {
 		} catch (PermissionException e) {
 			throw new UserException("Invalid permission",e);
 		}
+		
+		issuesAssignedTo = new HashSet<Issue>();
+		issuesReportedBy = new HashSet<Issue>();
+	}
+	
+	public User(String email, String password, String company) throws UserException {
+		this(email,password);
 		try {
 			this.setCompany(company);
 		} catch (CompanyException e) {
 			throw new UserException("Invalid Company",e);
 		}
 		
-		issuesAssignedTo = new HashSet<Issue>();
-		issuesReportedBy = new HashSet<Issue>();
 	}
 	
 	private static boolean validateEmail(String email) {		 
@@ -161,5 +166,13 @@ public class User {
 	
 	public String getCompany() {
 		return this.company;
+	}
+	
+	public void addIssuesReportedByMe(Issue issueToAdd) throws UserException{
+		if(issueToAdd != null){
+			issuesReportedBy.add(issueToAdd);
+		}else{
+			throw new UserException("Cannot add that issue to the list");
+		}
 	}
 }

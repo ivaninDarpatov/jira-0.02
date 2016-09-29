@@ -5,10 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.godzilla.DBConnection.DBConnection;
 import com.godzilla.model.Company;
+import com.godzilla.model.Issue;
 import com.godzilla.model.User;
+import com.godzilla.model.enums.IssueState;
 import com.godzilla.model.enums.Permissions;
 import com.godzilla.model.exceptions.CompanyDAOException;
 import com.godzilla.model.exceptions.CompanyException;
@@ -34,6 +38,8 @@ public class UserDAO {
 												+ "VALUES (null, ?, ?, ? , ?);";
 	private static final String REMOVE_USER_SQL = "Delete from users"
 												+ "where email = ?;";
+	private static final String SELECT_ID_EMAIL_PASSWORD_PERMISSION_SQL = "Select id, email.password,Permission_id from users where id = ?;";
+	
 	
 	public static void registerUser(User toRegister) throws UserException, UserDAOException {
 		if (toRegister != null) {
@@ -135,10 +141,6 @@ public class UserDAO {
 		return false;
 	}
 	
-//	public static User getUserById(int id){
-//		User user = null;
-//	}
-	
 	public static void remmoveUser(User userToRemove) throws UserDAOException{
 		Connection connection = DBConnection.getInstance().getConnection();
 		
@@ -152,10 +154,49 @@ public class UserDAO {
 		}
 	}
 	
-	public static User getUserById(int id){
+	public static User getUserById(int id) throws UserDAOException{
 		User user = null;
 		Connection connection = DBConnection.getInstance().getConnection();
-		
-		PreparedStatement select
+
+		try {
+			connection.setAutoCommit(false);
+			PreparedStatement selectIdNamePasswordPermission = connection.prepareStatement(SELECT_ID_EMAIL_PASSWORD_PERMISSION_SQL);
+			selectIdNamePasswordPermission.setInt(1, id);
+			
+			ResultSet rs = selectIdNamePasswordPermission.executeQuery();
+			
+			if(rs.next()){
+				int userId = rs.getInt(1);
+				String email = rs.getString(2);
+				String password = rs.getString(3);
+				int permission = rs.getInt(4);
+				Permissions userPermission = permission == 1 ? Permissions.ADMINISTRATOR : Permissions.USER;
+				
+				user = new User(email, password);
+				user.setPermissions(userPermission);
+				
+				for(Issue issue : IssueDAO.getAllReportedIssuesByUser(user)){
+					user.addIssuesReportedByMe(issue);
+				}
+				
+			}else{
+				throw new UserDAOException("there is no such user");
+			}
+		} catch (SQLException e) {
+			throw new UserDAOException(e.getMessage());
+		} catch (UserException e) {
+			throw new UserDAOException("user not created", e);
+		} catch (PermissionException e) {
+			throw new UserDAOException("permission problem", e);
+		}finally{
+			try {
+				connection.setAutoCommit(true);
+			} catch (SQLException e) {
+				
+				e.printStackTrace();
+			}
+		}
 	}
+	
+	
 }

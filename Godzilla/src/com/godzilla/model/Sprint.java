@@ -6,6 +6,8 @@ import java.util.Set;
 
 import com.godzilla.model.exceptions.SprintException;
 
+
+
 public class Sprint {
 	private int id;
 //	private int projectId;
@@ -20,7 +22,7 @@ public class Sprint {
 		try {
 			setName(name);
 		} catch (SprintException e) {
-			throw new SprintException(e.getMessage());
+			throw new SprintException("failed to change Namge",e);
 		}
 		
 		issues = new HashSet<Issue>(); 

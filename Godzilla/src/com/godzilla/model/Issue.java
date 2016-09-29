@@ -35,25 +35,25 @@ public abstract class Issue {
 		this.dateLastModified = this.dateCreated;
 	}
 	
-	private void setSummary(String summary) {
+	public void setSummary(String summary) {
 		if (summary != null && summary.length() > 0) {
 			this.summary = summary;
 		}
 	}
 	
-	private void setDescription(String description) {
+	public void setDescription(String description) {
 		if (description != null && description.length() > 0) {
 			this.description = description;
 		}
 	}
 	
-	private void setPriority(IssuePriority priority) {
+	public void setPriority(IssuePriority priority) {
 		if (priority != null) {
 			this.priority = priority;
 		}
 	}
 	
-	private void setState(IssueState state) {
+	public void setState(IssueState state) {
 		if (state != null) {
 			this.state = state;
 		}
