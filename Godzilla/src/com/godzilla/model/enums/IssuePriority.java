@@ -10,4 +10,15 @@ public enum IssuePriority {
 	private final int id;
     IssuePriority(int id) { this.id = id; }
     public int getValue() { return id; }
+    
+    
+	public static IssuePriority getTypeById(int priorityId) {
+		for (IssuePriority type : IssuePriority.values()) {
+			if (type.getValue() == priorityId) {
+				return type;
+			}
+		}
+		
+		return null;
+	}
 }

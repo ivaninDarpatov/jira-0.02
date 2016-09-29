@@ -9,4 +9,16 @@ public class Epic extends Issue {
 	public Epic(String summary){
 		super(summary);
 	}
+	
+	public void setName(String name) {
+		if (name != null && name.length() > 0) {
+			this.name = name;
+		}
+	}
+	
+	public void addIssue(Issue toAdd) {
+		if (toAdd != null) {
+			this.issues.add(toAdd);
+		}
+	}
 }

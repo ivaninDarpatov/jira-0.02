@@ -8,4 +8,14 @@ public enum IssueState {
 	private final int id;
     IssueState(int id) { this.id = id; }
     public int getValue() { return id; }
+    
+	public static IssueState getTypeById(int stateId) {
+		for (IssueState type : IssueState.values()) {
+			if (type.getValue() == stateId) {
+				return type;
+			}
+		}
+		
+		return null;
+	}
 }

@@ -24,11 +24,6 @@ public abstract class Issue {
 		this.setState(IssueState.TO_DO);
 		this.initializeDates();
 	}
-
-	public Issue(String summary, String description) {
-		this(summary);
-		this.setDescription(description);
-	}
 	
 	private void initializeDates() {
 		this.dateCreated = LocalDateTime.now();
