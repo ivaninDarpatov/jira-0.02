@@ -135,6 +135,10 @@ public class UserDAO {
 		return false;
 	}
 	
+//	public static User getUserById(int id){
+//		User user = null;
+//	}
+	
 	public static void remmoveUser(User userToRemove) throws UserDAOException{
 		Connection connection = DBConnection.getInstance().getConnection();
 		

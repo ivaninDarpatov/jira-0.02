@@ -48,9 +48,12 @@ public class LoginServlet extends HttpServlet {
 			builder.append(e.getMessage());
 		}
 		
+		request.setAttribute("User", userToLogIn);
+//		response.sendRedirect("../HomePage");
+		request.getRequestDispatcher("/HomePage").forward(request, response);
+//		response.sendRedirect(request.getContextPath() + "/HomePage");
 		
-		
-		response.getWriter().println("<html> <body> <h1>" + builder.toString() + "</h1> </body> </html>");
+//		response.getWriter().println("<html> <body> <h1>" + builder.toString() + "</h1> </body> </html>");
 		
 		
 	}
