@@ -42,4 +42,20 @@ public class Project {
 	public String getName(){
 		return this.name;
 	}
+	
+	public void addIssue(Issue issueToAdd) throws ProjectException{
+		if(issueToAdd != null){
+			issues.add(issueToAdd);
+		}else{
+			throw new ProjectException("issue value = null");
+		}
+	}
+	
+	public void addSprint(Sprint sprintToAdd) throws ProjectException{
+		if(sprintToAdd != null){
+			sprints.add(sprintToAdd);
+		}else{
+			throw new ProjectException("Sprint value == null");
+		}
+	}
 }
