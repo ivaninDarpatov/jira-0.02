@@ -24,11 +24,6 @@ public abstract class Issue {
 		this.setState(IssueState.TO_DO);
 		this.initializeDates();
 	}
-
-	public Issue(String summary, String description) {
-		this(summary);
-		this.setDescription(description);
-	}
 	
 	private void initializeDates() {
 		this.dateCreated = LocalDateTime.now();
@@ -41,19 +36,19 @@ public abstract class Issue {
 		}
 	}
 	
-	private void setDescription(String description) {
+	public void setDescription(String description) {
 		if (description != null && description.length() > 0) {
 			this.description = description;
 		}
 	}
 	
-	private void setPriority(IssuePriority priority) {
+	public void setPriority(IssuePriority priority) {
 		if (priority != null) {
 			this.priority = priority;
 		}
 	}
 	
-	private void setState(IssueState state) {
+	public void setState(IssueState state) {
 		if (state != null) {
 			this.state = state;
 		}
