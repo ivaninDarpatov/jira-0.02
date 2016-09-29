@@ -23,16 +23,16 @@ private static DBConnection instance;
 //		System.out.print("Data Base Username: ");
 		String userName = "root";
 //		System.out.print("Data Base password: ");
-		String password = "";
+		String password = "aichetolub6747";
 //		System.out.print("Data Base schema: ");
-		String schema = "jira";
+		String schema = "godziila";
 //		sc.close();
 		
 		Class.forName("com.mysql.jdbc.Driver");
 		this.connection = DriverManager.getConnection(
 				"jdbc:mysql://" + DB_HOST + ":" + 
 				DB_PORT + "/" + 
-				schema, 
+				schema + "?autoReconnect=true&useSSL=false", 
 				userName, password);
 	}
 	
