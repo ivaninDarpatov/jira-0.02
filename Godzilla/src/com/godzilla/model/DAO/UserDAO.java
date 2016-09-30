@@ -16,11 +16,15 @@ import com.godzilla.model.enums.IssueState;
 import com.godzilla.model.enums.Permissions;
 import com.godzilla.model.exceptions.CompanyDAOException;
 import com.godzilla.model.exceptions.CompanyException;
+import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.PermissionException;
 import com.godzilla.model.exceptions.UserDAOException;
 import com.godzilla.model.exceptions.UserException;
 
 public class UserDAO {
+	private static final String FIND_USERS_BY_COMPANY_ID_SQL = "SELECT * "
+															+ "FROM users "
+															+ "WHERE Companies_id = ?;";
 	private static final int USER_PERMISSIONS = Permissions.USER.ordinal() + 1;
 	private static final int ADMIN_PERMISSIONS = Permissions.ADMINISTRATOR.ordinal() + 1;
 	
@@ -179,6 +183,8 @@ public class UserDAO {
 					user.addIssuesReportedByMe(issue);
 				}
 				
+				//TODO assigned issues
+				
 			}else{
 				throw new UserDAOException("there is no such user");
 			}
@@ -188,6 +194,8 @@ public class UserDAO {
 			throw new UserDAOException("user not created", e);
 		} catch (PermissionException e) {
 			throw new UserDAOException("permission problem", e);
+		} catch (IssueDAOException e) {
+			throw new UserDAOException("couldnt get issues", e);
 		}finally{
 			try {
 				connection.setAutoCommit(true);
@@ -196,6 +204,37 @@ public class UserDAO {
 				e.printStackTrace();
 			}
 		}
+		
+		return user;
+	}
+
+	public static Set<User> getAllUsersByCompany(Company company) throws UserDAOException {
+		if (company == null) {
+			throw new UserDAOException("cant find company");
+		}
+		
+		Connection connection = DBConnection.getInstance().getConnection();
+		Set<User> result = new HashSet<User>();
+		int companyId = company.getId();
+		
+		try {
+			PreparedStatement ps = connection.prepareStatement(FIND_USERS_BY_COMPANY_ID_SQL);
+			ps.setInt(1, companyId);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				int userId = rs.getInt("id");
+				User toAdd = UserDAO.getUserById(userId);
+				
+				result.add(toAdd);
+			}
+			
+		} catch (SQLException e) {
+			throw new UserDAOException(e.getMessage());
+		}
+		
+		return result;
 	}
 	
 	

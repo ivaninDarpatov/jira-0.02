@@ -9,14 +9,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.godzilla.DBConnection.DBConnection;
+import com.godzilla.model.Company;
 import com.godzilla.model.Issue;
 import com.godzilla.model.Project;
 import com.godzilla.model.Sprint;
 import com.godzilla.model.exceptions.CompanyDAOException;
+import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.ProjectDAOException;
+import com.godzilla.model.exceptions.ProjectException;
+import com.godzilla.model.exceptions.SprintDAOException;
 
 public class ProjectDAO {
 	
+	private static final String FIND_PROJECT_BY_ID_SQL = "SELECT * FROM projects WHERE id = ?;";
 	public static final String SELECT_NAME_FROM_PROJECTS = "SELECT name from projects";
 	public static final String INSERT_INTO_PROJECTS = "Insert into projects VALUES(? , ? , ?);";
 	public static final String SELECT_ALL_PROJECTS_WITH_COMPANY_ID_SQL = "Select * from projects where Companies_id = ? ";
@@ -96,7 +101,13 @@ public class ProjectDAO {
 		return false;
 	}
 
-	public static Set<Project> getAllProjectsByCompanyId(int companyId) throws ProjectDAOException {
+	public static Set<Project> getAllProjectsByCompany(Company company) throws ProjectDAOException {
+		if (company == null) {
+			throw new ProjectDAOException("cant find company");
+		}
+		
+		int companyId = company.getId();
+		
 		Set<Project> result = new HashSet<Project>(); 
 		
 		Connection connection = DBConnection.getInstance().getConnection();
@@ -109,19 +120,7 @@ public class ProjectDAO {
 			while(rs.next()){
 				int projectId = rs.getInt(1);
 				
-				Set<Issue> issues = IssueDAO.getAllIssuesByProjectId(projectId);
-				Set<Sprint> sprints = SprintDAO.getAllSprintsByProjectId(projectId);
-				
-				Project project = new Project(rs.getString(2));
-				project.setId(projectId);
-				
-				for (Issue issue : issues) {
-					project.addIssue(issue);
-				}
-				
-				for (Sprint sprint : sprints) {
-					project.addSprint(sprint);
-				}
+				Project project = ProjectDAO.getProjectById(projectId);
 				
 				result.add(project);
 			}
@@ -130,5 +129,48 @@ public class ProjectDAO {
 
 		}
 		return null;
+	}
+
+	private static Project getProjectById(int projectId) throws ProjectDAOException {
+		if (projectId == 0) {
+			throw new ProjectDAOException("invalid project id");
+		}
+		
+		Project toReturn = null;
+		Connection connection = DBConnection.getInstance().getConnection();
+		
+		try {
+			PreparedStatement ps = connection.prepareStatement(FIND_PROJECT_BY_ID_SQL);
+			
+			ps.setInt(1, projectId);
+			ResultSet rs = ps.executeQuery();
+			
+			if (rs.next()) {
+				toReturn = new Project(rs.getString("name"));
+				toReturn.setId(projectId);
+				Set<Sprint> sprints = SprintDAO.getAllSprintsByProject(toReturn);
+				Set<Issue> issues = IssueDAO.getAllIssuesByProject(toReturn);
+				
+				for (Sprint toAdd : sprints) {
+					toReturn.addSprint(toAdd);
+				}
+				
+				for (Issue toAdd : issues) {
+					toReturn.addIssue(toAdd);
+				}
+				
+			}
+			
+		} catch (SQLException e) {
+			throw new ProjectDAOException(e.getMessage());
+		} catch (ProjectException e) {
+			throw new ProjectDAOException("failed to create project", e);
+		} catch (SprintDAOException e) {
+			throw new ProjectDAOException("failed to get sprints", e);
+		} catch (IssueDAOException e) {
+			throw new ProjectDAOException("failed to get issues", e);
+		}
+		
+		return toReturn;
 	}
 }

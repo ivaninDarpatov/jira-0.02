@@ -40,16 +40,13 @@ public class IssueDAO {
 												+ "WHERE id = ?;";
 	private static final String CREATE_ISSUE_SQL = "INSERT INTO issues "
 												+ "VALUES (null, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), null);";
-<<<<<<< HEAD
 	private static final String SELECT_ISSUE_BY_REPORTER_SQL = "Select id,Summary,Description,"
 			+ "workflow_state_id,Priorities_id,"
 			+ "Date_created,Date_last_modified"
 			+ " from issues where Reported_by_id = ?;";
-=======
 	private static final String FIND_ISSUE_BY_ID_SQL = "SELECT * "
 													+ "FROM issues "
 													+ "WHERE id = ?;";
->>>>>>> 54009994490954a637b06f8696ce4071341e21b7
 	
 	public static void createIssue(Issue toCreate, Project project, User reporter) throws IssueDAOException {
 		Connection connection = DBConnection.getInstance().getConnection();
@@ -227,8 +224,7 @@ public class IssueDAO {
 		}
 	}
 	
-<<<<<<< HEAD
-	public Set<Issue> getAllReportedIssuesByUser(User user) throws UserDAOException{
+	public static Set<Issue> getAllReportedIssuesByUser(User user) throws IssueDAOException{
 		Set<Issue> reportedByThatUser = new HashSet<Issue>();
 		Connection connection = DBConnection.getInstance().getConnection();
 		
@@ -241,41 +237,19 @@ public class IssueDAO {
 			
 			while(rs.next()){
 				int issueId = rs.getInt(1);
-				String summary = rs.getString(2);
-				String description = rs.getString(3);
-				IssueState issueState = null;
-				
-				int issueStateInteger = rs.getInt(5);
-				if(issueStateInteger == 1){
-					issueState = IssueState.TO_DO;
-				}else{
-					if(issueStateInteger == 2){
-						issueState = IssueState.IN_PROGRESS;
-					}else{
-						issueState = IssueState.DONE;
-					}
-				}
-				
 				Issue issueToAdd = IssueDAO.getIssueById(issueId);
-				issueToAdd.setSummary(summary);
-				issueToAdd.setId(issueId);
-				issueToAdd.setDescription(description);
-				issueToAdd.setState(issueState);
-				
-				reportedByThatUser.add(issueToAdd);
-				
-				
-				
-				//TODO: da vidq kakvo shte pravq s Priority na Issueto
-				//TODO: da populna v bazata priorities
-				//TODO: Kakto DateCreated i DateLastModified
-				
+				reportedByThatUser.add(issueToAdd);		
 			}
+		
 		} catch (SQLException e) {
-			throw new UserDAOException(e.getMessage());
+			throw new IssueDAOException(e.getMessage());
+		} catch (IssueDAOException e) {
+			throw e;
 		}
 		
-=======
+		return reportedByThatUser;
+	}
+		
 	private static String getIssueType(int issueId) throws IssueDAOException {
 		if (IssueDAO.isBug(issueId)) {
 			return "bug";
@@ -374,6 +348,5 @@ public class IssueDAO {
 		}
 		
 		return false;
->>>>>>> 54009994490954a637b06f8696ce4071341e21b7
 	}
 }

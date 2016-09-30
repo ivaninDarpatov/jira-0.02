@@ -13,6 +13,8 @@ import com.godzilla.model.Project;
 import com.godzilla.model.User;
 import com.godzilla.model.exceptions.CompanyDAOException;
 import com.godzilla.model.exceptions.CompanyException;
+import com.godzilla.model.exceptions.ProjectDAOException;
+import com.godzilla.model.exceptions.UserDAOException;
 
 public class CompanyDAO {
 
@@ -99,8 +101,8 @@ public class CompanyDAO {
 				company = new Company(rs.getString(2));
 				company.setId(companyId);
 				
-				Set<Project> projects = ProjectDAO.getAllProjectsByCompanyId(companyId);
-				Set<User> users = UserDAO.getAllUsersByCompanyID(companyId);
+				Set<Project> projects = ProjectDAO.getAllProjectsByCompany(company);
+				Set<User> users = UserDAO.getAllUsersByCompany(company);
 				
 			}else{
 				throw new CompanyDAOException("There is no company with that Id");
@@ -109,6 +111,10 @@ public class CompanyDAO {
 			throw new CompanyDAOException(e.getMessage());
 		} catch (CompanyException e1){
 			throw new CompanyDAOException(e1.getMessage());
+		} catch (ProjectDAOException e) {
+			throw new CompanyDAOException("failed to get companys projects", e);
+		} catch (UserDAOException e) {
+			throw new CompanyDAOException("failed to get companys users", e);
 		}
 		
 		

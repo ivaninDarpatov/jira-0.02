@@ -21,8 +21,14 @@ public class SprintDAO {
 	
 	
 	
-	public static Set<Sprint> getAllSprintsByProjectId(int projectId) throws SprintDAOException {
+	public static Set<Sprint> getAllSprintsByProject(Project project) throws SprintDAOException {
+		if (project == null) {
+			throw new SprintDAOException("couldnt find project");
+		}
+		
 		Connection connection = DBConnection.getInstance().getConnection();
+		int projectId = project.getId();
+		
 		Set<Sprint> result = new HashSet<Sprint>();
 		
 		try {
