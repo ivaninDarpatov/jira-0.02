@@ -21,10 +21,10 @@ import com.godzilla.model.exceptions.SprintDAOException;
 
 public class ProjectDAO {
 	
-	private static final String FIND_PROJECT_BY_ID_SQL = "SELECT * FROM projects WHERE id = ?;";
-	public static final String SELECT_NAME_FROM_PROJECTS = "SELECT name from projects";
-	public static final String INSERT_INTO_PROJECTS = "Insert into projects VALUES(? , ? , ?);";
-	public static final String SELECT_ALL_PROJECTS_WITH_COMPANY_ID_SQL = "Select * from projects where Companies_id = ? ";
+	private static final String FIND_PROJECT_BY_ID_SQL = "SELECT * FROM projects WHERE project_id = ?;";
+	public static final String SELECT_NAME_FROM_PROJECTS = "SELECT project_name FROM projects";
+	public static final String INSERT_INTO_PROJECTS = "INSERT INTO projects VALUES(? , ? , ?);";
+	public static final String SELECT_ALL_PROJECTS_WITH_COMPANY_ID_SQL = "SELECT * FROM projects WHERE company_id = ? ";
 
 	public static void addProject(Project newProject,String companyName) throws ProjectDAOException{
 		Connection connection = DBConnection.getInstance().getConnection();

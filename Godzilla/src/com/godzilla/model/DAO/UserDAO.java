@@ -24,24 +24,24 @@ import com.godzilla.model.exceptions.UserException;
 public class UserDAO {
 	private static final String FIND_USERS_BY_COMPANY_ID_SQL = "SELECT * "
 															+ "FROM users "
-															+ "WHERE Companies_id = ?;";
+															+ "WHERE company_id = ?;";
 	private static final int USER_PERMISSIONS = Permissions.USER.ordinal() + 1;
 	private static final int ADMIN_PERMISSIONS = Permissions.ADMINISTRATOR.ordinal() + 1;
 	
-	private static final String FIND_USER_SQL = "SELECT u.id "
+	private static final String FIND_USER_SQL = "SELECT u.user_id "
 												+ "FROM users u "
 												+ "JOIN companies c "
-												+ "ON (c.id = u.Companies_id) "
+												+ "ON (c.company_id = u.company_id) "
 												+ "WHERE u.email = ? "
 												+ "AND u.password = ? "
-												+ "AND c.name = ?;";
+												+ "AND c.company_name = ?;";
 	private static final String FIND_COMPANY_SQL = "SELECT id "
 												+ "FROM companies "
-												+ "WHERE name = ?;";
+												+ "WHERE company_name = ?;";
 	private static final String REGISTER_USER_SQL = "INSERT INTO users "
 												+ "VALUES (null, ?, ?, ? , ?);";
-	private static final String REMOVE_USER_SQL = "Delete from users"
-												+ "where email = ?;";
+	private static final String REMOVE_USER_SQL = "DELETE FROM users"
+												+ "WHERE email = ?;";
 	private static final String SELECT_ID_EMAIL_PASSWORD_PERMISSION_SQL = "Select id, email.password,Permission_id from users where id = ?;";
 	
 	

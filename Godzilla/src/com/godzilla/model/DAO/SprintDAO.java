@@ -16,8 +16,10 @@ import com.godzilla.model.exceptions.SprintDAOException;
 import com.godzilla.model.exceptions.SprintException;
 
 public class SprintDAO {
-	private static final String SELECT_ALL_SPRINTS_BY_PROJECT_ID = "Select * from sprints where project_id = ? ";
-	private static final String INSERT_SPRINT_SQL = "Insert into sprints VALUES(null, ? , ? , now() , now() , ?);";
+	private static final String SELECT_ALL_SPRINTS_BY_PROJECT_ID = "SELECT * FROM sprints "
+																+ "WHERE project_id = ? ";
+	private static final String INSERT_SPRINT_SQL = "INSERT INTO sprints "
+													+ "VALUES(null, ? , ? , now() , now() , ?);";
 	
 	
 	
