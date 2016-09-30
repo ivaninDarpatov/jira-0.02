@@ -18,35 +18,35 @@ import com.godzilla.model.exceptions.UserDAOException;
 
 public class IssueDAO {
 	// da dobavim epics_id v issues v bazata
-	private static final String FIND_ISSUES_BY_EPIC_ID_SQL = "SELECT id "
+	private static final String FIND_ISSUES_BY_EPIC_ID_SQL = "SELECT issue_id "
 															+ "FROM issues "
-															+ "WHERE epics_id = ?;";
-	private static final String FIND_ISSUES_BY_PROJECT_ID_SQL = "SELECT id "
+															+ "WHERE epic_id = ?;";
+	private static final String FIND_ISSUES_BY_PROJECT_ID_SQL = "SELECT issue_id "
 															+ "FROM issues "
-															+ "WHERE projects_id = ?;";
-	private static final String IS_BUG_SQL = "SELECT id "
+															+ "WHERE project_id = ?;";
+	private static final String IS_BUG_SQL = "SELECT bug_id "
 			+ "FROM bugs "
-			+ "WHERE id = ?;";
-	private static final String IS_TASK_SQL = "SELECT id "
+			+ "WHERE bug_id = ?;";
+	private static final String IS_TASK_SQL = "SELECT task_id "
 			+ "FROM tasks "
-			+ "WHERE id = ?;";
-	private static final String IS_STORY_SQL = "SELECT id "
+			+ "WHERE task_id = ?;";
+	private static final String IS_STORY_SQL = "SELECT story_id "
 			+ "FROM stories "
-			+ "WHERE id = ?;";
-	private static final String IS_EPIC_SQL = "SELECT id "
+			+ "WHERE story_id = ?;";
+	private static final String IS_EPIC_SQL = "SELECT epic_id "
 			+ "FROM epics "
-			+ "WHERE id = ?;";
+			+ "WHERE epic_id = ?;";
 	private static final String REMOVE_ISSUE_SQL = "DELETE FROM issues "
-												+ "WHERE id = ?;";
+												+ "WHERE issue_id = ?;";
 	private static final String CREATE_ISSUE_SQL = "INSERT INTO issues "
 												+ "VALUES (null, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), null);";
-	private static final String SELECT_ISSUE_BY_REPORTER_SQL = "Select id,Summary,Description,"
-			+ "workflow_state_id,Priorities_id,"
-			+ "Date_created,Date_last_modified"
-			+ " from issues where Reported_by_id = ?;";
+	private static final String SELECT_ISSUE_BY_REPORTER_SQL = "Select issue_id,summary,description,"
+			+ "state_id,priority,"
+			+ "date_created,date_last_modified"
+			+ " from issues where reporter_id = ?;";
 	private static final String FIND_ISSUE_BY_ID_SQL = "SELECT * "
 													+ "FROM issues "
-													+ "WHERE id = ?;";
+													+ "WHERE issue_id = ?;";
 	
 	public static void createIssue(Issue toCreate, Project project, User reporter) throws IssueDAOException {
 		Connection connection = DBConnection.getInstance().getConnection();

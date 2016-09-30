@@ -19,9 +19,9 @@ import com.godzilla.model.exceptions.UserDAOException;
 public class CompanyDAO {
 
 	
-	private static final String SELECT_COMPANY_BY_ID_SQL = "Select * from companies where id = ?";
-	private static final String FIND_COMPANY_ID_BY_NAME = "SELECT id from companies where name =  ?;";
-	private static final String SELECT_NAME_FROM_COMPANIES = "SELECT name from companies";
+	private static final String SELECT_COMPANY_BY_ID_SQL = "Select * from companies where company_id = ?";
+	private static final String FIND_COMPANY_ID_BY_NAME = "SELECT company_id from companies where company_name =  ?;";
+	private static final String SELECT_NAME_FROM_COMPANIES = "SELECT company_name from companies";
 	private static final String INSERT_INTO_COMPANIES = "INSERT INTO companies VALUES(? , ? );";
 
 	public static void createNewCompany(Company newCompany) throws CompanyDAOException{
