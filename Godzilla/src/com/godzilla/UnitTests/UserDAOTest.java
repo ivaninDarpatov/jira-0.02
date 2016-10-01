@@ -13,19 +13,17 @@ import com.godzilla.model.exceptions.UserException;
 public class UserDAOTest {
 
 	@Test
-	public void registerNewUserTest() {
-		try {
-			User testUser = new User("ivan1@abv.bg", "123456abc", "company1");
-			UserDAO.registerUser(testUser);
-			
-			System.out.println(testUser.getId());
-		} catch (Exception e) {
-			StringBuilder sb = new StringBuilder();
-			DAOTest.appendExceptions(sb, e);
-			
-			System.out.println(sb.toString());
-			e.printStackTrace();
-		}
+	public void registerNewUserTest() throws UserException, UserDAOException {
+		int randomNumber = new Random().nextInt(100000);
+		String email = "someEmail" + randomNumber + "@abv.bg";
+		String password = "somePassword1";
+		String company = "someCompany" + randomNumber;
+		
+		
+		User userToReg = new User(email,password,company);
+		UserDAO.registerUser(userToReg);
+		
+		Assert.assertTrue(userToReg.getId() > 0);
 	}
 	
 //	@Test

@@ -21,23 +21,16 @@ import com.godzilla.model.exceptions.SprintDAOException;
 
 public class ProjectDAO {
 	
-	private static final String REMOVE_PROJECT_SQL = "";
 	private static final String FIND_PROJECT_BY_ID_SQL = "SELECT * FROM projects WHERE project_id = ?;";
 	public static final String SELECT_NAME_FROM_PROJECTS = "SELECT project_name FROM projects";
 	public static final String INSERT_INTO_PROJECTS = "INSERT INTO projects VALUES(? , ? , ?);";
 	public static final String SELECT_ALL_PROJECTS_WITH_COMPANY_ID_SQL = "SELECT * FROM projects WHERE company_id = ? ";
 
 	public static void addProject(Project newProject,Company company) throws ProjectDAOException{
-		if (company == null) {
-			throw new ProjectDAOException("couldnt find company");
-		}
-		
-		String companyName = company.getName();
-		
 		Connection connection = DBConnection.getInstance().getConnection();
 		
 		try {
-			if(!CompanyDAO.isThereCompanyWithTheSameName(companyName)){
+			if(!CompanyDAO.isThereCompanyWithTheSameName(company.getName())){
 				throw new ProjectDAOException("unknow company to add project to");
 			}
 		} catch (CompanyDAOException e1) {
@@ -50,7 +43,7 @@ public class ProjectDAO {
 		
 		int companyId;
 		try {
-			companyId = CompanyDAO.getIdOfCompanyWithName(companyName);
+			companyId = CompanyDAO.getIdOfCompanyWithName(company.getName());
 		} catch (CompanyDAOException e1) {
 			throw new ProjectDAOException(e1.getMessage());
 		}
@@ -108,14 +101,14 @@ public class ProjectDAO {
 		return false;
 	}
 
-	public static Set<Project> getAllProjectsByCompany(Company company) throws ProjectDAOException {
+	public static HashSet<Project> getAllProjectsByCompany(Company company) throws ProjectDAOException {
 		if (company == null) {
 			throw new ProjectDAOException("cant find company");
 		}
 		
 		int companyId = company.getId();
 		
-		Set<Project> result = new HashSet<Project>(); 
+		HashSet<Project> result = new HashSet<Project>(); 
 		
 		Connection connection = DBConnection.getInstance().getConnection();
 		try {
@@ -129,13 +122,14 @@ public class ProjectDAO {
 				
 				Project project = ProjectDAO.getProjectById(projectId);
 				
+				
 				result.add(project);
 			}
 		} catch (SQLException e) {
 			throw new ProjectDAOException(e.getMessage());
 
 		}
-		return null;
+		return result;
 	}
 
 	public static Project getProjectById(int projectId) throws ProjectDAOException {
@@ -175,45 +169,10 @@ public class ProjectDAO {
 		} catch (SprintDAOException e) {
 			throw new ProjectDAOException("failed to get sprints", e);
 		} catch (IssueDAOException e) {
+			System.out.println(e.getMessage());
 			throw new ProjectDAOException("failed to get issues", e);
 		}
 		
 		return toReturn;
-	}
-
-	public static void removeProject(Project projectToRemove) throws ProjectDAOException {
-		if (projectToRemove == null) {
-			throw new ProjectDAOException("cant find project to remove");
-		}
-		
-		Connection connection = DBConnection.getInstance().getConnection();
-		int projectId = projectToRemove.getId();
-		
-		try {
-			Set<Issue> issuesToRemove = IssueDAO.getAllIssuesByProject(projectToRemove);
-			Set<Sprint> sprintsToRemove = SprintDAO.getAllSprintsByProject(projectToRemove);
-			
-			for (Sprint sprintToRemove : sprintsToRemove) {
-				SprintDAO.removeSprint(sprintToRemove);
-			}
-			
-			for (Issue issueToRemove : issuesToRemove) {
-				IssueDAO.removeIssue(issueToRemove);
-			}
-			
-			PreparedStatement removeProjectPS = connection.prepareStatement(REMOVE_PROJECT_SQL);
-			removeProjectPS.setInt(1, projectId);
-			
-			if (removeProjectPS.executeUpdate() < 1) {
-				throw new ProjectDAOException("failed to remove project");
-			}
-		} catch (SQLException e) {
-			throw new ProjectDAOException(e.getMessage());
-		} catch (IssueDAOException e) {
-			throw new ProjectDAOException("failed to get projects issues", e);
-		} catch (SprintDAOException e) {
-			throw new ProjectDAOException("failed to get projects sprints", e);
-		}
-		
 	}
 }

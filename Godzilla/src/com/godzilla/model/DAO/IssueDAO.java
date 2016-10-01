@@ -17,9 +17,8 @@ import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.UserDAOException;
 
 public class IssueDAO {
-	private static final String REMOVE_ISSUE_FROM_SPRINT_SQL = "UPDATE issues "
-																+ "SET sprint_id = null "
-																+ "WHERE issue_id = ?;";
+	// da dobavim epics_id v issues v bazata
+	private static final String FIND_EPIC_BY_ID_SQL = "SELECT epic_name from epics where epic_id = ?";
 	private static final String ADD_BUG_SQL = "Insert into bugs VALUES(? , null );";
 	private static final String ADD_TASK_SQL = "Insert into tasks VALUES( ?, null);";
 	private static final String ADD_EPIC_SQL = "Insert into epics VALUES( ? , ? );";
@@ -53,9 +52,6 @@ public class IssueDAO {
 	private static final String FIND_ISSUE_BY_ID_SQL = "SELECT * "
 													+ "FROM issues "
 													+ "WHERE issue_id = ?;";
-	private static final String FIND_ISSUES_BY_SPRINT_SQL = "SELECT * "
-															+ "FROM issues "
-															+ "WHERE sprint_id = ?;";
 	
 	public static void createIssue(Issue toCreate, Project project, User reporter) throws IssueDAOException {
 		if (toCreate == null ||project == null || reporter == null) {
@@ -129,13 +125,14 @@ public class IssueDAO {
 				throw new IssueDAOException("Ne bqha napraveni promeni");
 			}
 			
+			connection.commit();
+			
 		} catch (SQLException e) {
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
 				throw new IssueDAOException(e1.getMessage());
 			}
-			e.printStackTrace();
 			throw new IssueDAOException(e.getMessage());
 		} finally {
 			try {
@@ -161,17 +158,11 @@ public class IssueDAO {
 			PreparedStatement ps = connection.prepareStatement(FIND_ISSUES_BY_PROJECT_ID_SQL);
 			ps.setInt(1, projectId);
 
-			
-			System.out.println("Predi execute");
 			ResultSet rs = ps.executeQuery();
-			System.out.println("sled execute");
-			System.out.println();
 			
 			while (rs.next()) {
 				int issueId = rs.getInt(1);
-				System.out.println("Predi getIssue");
 				result.add(getIssueById(issueId));
-				System.out.println("Sled getIssue");
 			}
 			
 		} catch (SQLException e) {
@@ -218,7 +209,16 @@ public class IssueDAO {
 				case "epic":
 					issue = new Epic(summary);
 					issue.setId(issueId);
-					((Epic)issue).setName("epic");
+					
+					ps = connection.prepareStatement(FIND_EPIC_BY_ID_SQL);
+					ps.setInt(1, issueId);
+					rs = ps.executeQuery();
+					
+					String epicName = null;
+					if(rs.next()){
+						epicName = rs.getString(1);
+					}
+					((Epic)issue).setName(epicName);
 					Set<Issue> issues = IssueDAO.getAllIssuesByEpic((Epic)issue);
 					
 					for (Issue entry : issues) {
@@ -287,14 +287,33 @@ public class IssueDAO {
 		int issueId = toRemove.getId();
 		
 		try {
-			PreparedStatement ps = connection.prepareStatement(REMOVE_ISSUE_SQL);
+			connection.setAutoCommit(false);
+			String issueType = IssueDAO.getIssueType(toRemove.getId());
+			String table =IssueDAO.getIssueType(toRemove.getId()).equals("story") ? "storie" : IssueDAO.getIssueType(toRemove.getId());
+			
+			final String DELETE_BUG_TASK_STORY_SQL =  "DELETE FROM " + table + "s" + " WHERE " + issueType + "_id = ?;";
+			PreparedStatement ps = connection.prepareStatement(DELETE_BUG_TASK_STORY_SQL);
+			ps.setInt(1, toRemove.getId());
+			
+			if(ps.executeUpdate() < 1){
+				throw new IssueDAOException("failed to remove " + issueType);
+			}
+			
+			
+			ps = connection.prepareStatement(REMOVE_ISSUE_SQL);
 			ps.setInt(1, issueId);
 			
 			if (ps.executeUpdate() < 1) {
 				throw new IssueDAOException("failed to remove issue");
 			}
 			
+			connection.commit();
 		} catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				throw new IssueDAOException(e1.getMessage());
+			}
 			throw new IssueDAOException(e.getMessage());
 		}
 	}
@@ -423,55 +442,5 @@ public class IssueDAO {
 		}
 		
 		return false;
-	}
-
-
-	public static void removeFromSprint(Issue issueToSetFree) throws IssueDAOException {
-		if (issueToSetFree == null) {
-			throw new IssueDAOException("cant fint issue to set free");
-		}
-		
-		Connection connection = DBConnection.getInstance().getConnection();
-		int issueId = issueToSetFree.getId();
-		
-		try {
-			PreparedStatement removeIssueFromSprintPS = connection.prepareStatement(REMOVE_ISSUE_FROM_SPRINT_SQL);
-			removeIssueFromSprintPS.setInt(1, issueId);
-			
-			if (removeIssueFromSprintPS.executeUpdate() < 1) {
-				throw new IssueDAOException("failed to rmeove issue from sprint");
-			}
-		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
-		}
-	}
-
-
-	public static Set<Issue> getAllIssuesBySprint(Sprint sprint) throws IssueDAOException {
-		if (sprint == null) {
-			throw new IssueDAOException("couldnt find sprint");
-		}
-		
-		int sprintId = sprint.getId();
-		Set<Issue> result = new HashSet<Issue>();
-		
-		Connection connection = DBConnection.getInstance().getConnection();
-		
-		try {
-			PreparedStatement ps = connection.prepareStatement(FIND_ISSUES_BY_SPRINT_SQL);
-			ps.setInt(1, sprintId);
-			
-			ResultSet rs = ps.executeQuery();
-			
-			while (rs.next()) {
-				int issueId = rs.getInt(1);
-				result.add(IssueDAO.getIssueById(issueId));
-			}
-			
-		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
-		} 
-		
-		return result;
 	}
 }
