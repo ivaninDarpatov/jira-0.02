@@ -112,6 +112,7 @@ public class CompanyDAO {
 		} catch (CompanyException e1){
 			throw new CompanyDAOException(e1.getMessage());
 		} catch (ProjectDAOException e) {
+			System.out.println(e.getMessage());
 			throw new CompanyDAOException("failed to get companys projects", e);
 		} catch (UserDAOException e) {
 			throw new CompanyDAOException("failed to get companys users", e);

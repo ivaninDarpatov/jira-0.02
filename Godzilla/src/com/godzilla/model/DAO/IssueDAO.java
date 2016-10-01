@@ -18,6 +18,11 @@ import com.godzilla.model.exceptions.UserDAOException;
 
 public class IssueDAO {
 	// da dobavim epics_id v issues v bazata
+	private static final String FIND_EPIC_BY_ID_SQL = "SELECT epic_name from epics where epic_id = ?";
+	private static final String ADD_BUG_SQL = "Insert into bugs VALUES(? , null );";
+	private static final String ADD_TASK_SQL = "Insert into tasks VALUES( ?, null);";
+	private static final String ADD_EPIC_SQL = "Insert into epics VALUES( ? , ? );";
+	private static final String ADD_STORY_SQL = "Insert into stories VALUES( ? , null);";
 	private static final String FIND_ISSUES_BY_EPIC_ID_SQL = "SELECT issue_id "
 															+ "FROM issues "
 															+ "WHERE epic_id = ?;";
@@ -39,7 +44,7 @@ public class IssueDAO {
 	private static final String REMOVE_ISSUE_SQL = "DELETE FROM issues "
 												+ "WHERE issue_id = ?;";
 	private static final String CREATE_ISSUE_SQL = "INSERT INTO issues "
-												+ "VALUES (null, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), null);";
+												+ "VALUES (null, ?, ?, ?, ?, ?, ?, ?, now(), now(), null,null);";
 	private static final String SELECT_ISSUE_BY_REPORTER_SQL = "Select issue_id,summary,description,"
 			+ "state_id,priority,"
 			+ "date_created,date_last_modified"
@@ -49,7 +54,15 @@ public class IssueDAO {
 													+ "WHERE issue_id = ?;";
 	
 	public static void createIssue(Issue toCreate, Project project, User reporter) throws IssueDAOException {
+		if (toCreate == null ||project == null || reporter == null) {
+			throw new IssueDAOException("null value");
+		}
+		
+		String issueType = Issue.getIssueType(toCreate);
+		System.out.println(issueType);
+		
 		Connection connection = DBConnection.getInstance().getConnection();
+		int issueId;
 		
 		String summary = toCreate.getSummary();
 		String description = toCreate.getDescription();
@@ -60,28 +73,77 @@ public class IssueDAO {
 		int assigneeId = reporterId;
 		
 		try {
-			PreparedStatement ps = connection.prepareStatement(CREATE_ISSUE_SQL, Statement.RETURN_GENERATED_KEYS);
-			ps.setString(1, summary);
-			ps.setString(2, description);
-			ps.setInt(3, projectId);
-			ps.setInt(4, stateId);
-			ps.setInt(5, priorityId);
-			ps.setInt(6, reporterId);
-			ps.setInt(7, assigneeId);
-
-			if (ps.executeUpdate() > 0) {
-				ResultSet rs = ps.getGeneratedKeys();
-
-				rs.next();
-				toCreate.setId(rs.getInt(1));
+			connection.setAutoCommit(false);
+			PreparedStatement insertIntoIssues = connection.prepareStatement(CREATE_ISSUE_SQL, Statement.RETURN_GENERATED_KEYS);
+			insertIntoIssues.setString(1, summary);
+			insertIntoIssues.setString(2, description);
+			insertIntoIssues.setInt(3, projectId);
+			insertIntoIssues.setInt(4, stateId);
+			insertIntoIssues.setInt(5, priorityId);
+			insertIntoIssues.setInt(6, reporterId);
+			insertIntoIssues.setInt(7, assigneeId);
+			
+			if (insertIntoIssues.executeUpdate() > 0) {
+				ResultSet rs = insertIntoIssues.getGeneratedKeys();
+				
+				if(rs.next()){
+					issueId = rs.getInt(1);
+					toCreate.setId(issueId);
+				}else{
+					throw new IssueDAOException("Could not set id of an issue");
+				}
+				
 			} else {
 				throw new IssueDAOException("failed to create issue");
 			}
+			
+			PreparedStatement insertIntoBugTaskEpicOrStory = null;
+			
+			switch (issueType) {
+			case "bug":
+				insertIntoBugTaskEpicOrStory = connection.prepareStatement(ADD_BUG_SQL);
+				insertIntoBugTaskEpicOrStory.setInt(1, issueId);
+				break;
+			case "task":
+				insertIntoBugTaskEpicOrStory = connection.prepareStatement(ADD_TASK_SQL);
+				insertIntoBugTaskEpicOrStory.setInt(1, issueId);
+				break;
+			case "epic":
+				insertIntoBugTaskEpicOrStory = connection.prepareStatement(ADD_EPIC_SQL);
+				insertIntoBugTaskEpicOrStory.setInt(1, issueId);
+				insertIntoBugTaskEpicOrStory.setString(2, ((Epic)toCreate).getName());
+				break;
+			case "story":
+				insertIntoBugTaskEpicOrStory = connection.prepareStatement(ADD_STORY_SQL);
+				insertIntoBugTaskEpicOrStory.setInt(1, issueId);
+				break;
+			default:
+				break;
+			}
+			
+			if(insertIntoBugTaskEpicOrStory.executeUpdate() < 1){
+				throw new IssueDAOException("Ne bqha napraveni promeni");
+			}
+			
+			connection.commit();
+			
 		} catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				throw new IssueDAOException(e1.getMessage());
+			}
 			throw new IssueDAOException(e.getMessage());
+		} finally {
+			try {
+				connection.setAutoCommit(true);
+			} catch (SQLException e) {
+				throw new IssueDAOException(e.getMessage());
+			}
 		}
 	}
 	
+
 	public static Set<Issue> getAllIssuesByProject(Project project) throws IssueDAOException {
 		if (project == null) {
 			throw new IssueDAOException("couldnt find project");
@@ -95,7 +157,7 @@ public class IssueDAO {
 		try {
 			PreparedStatement ps = connection.prepareStatement(FIND_ISSUES_BY_PROJECT_ID_SQL);
 			ps.setInt(1, projectId);
-			
+
 			ResultSet rs = ps.executeQuery();
 			
 			while (rs.next()) {
@@ -104,6 +166,7 @@ public class IssueDAO {
 			}
 			
 		} catch (SQLException e) {
+			e.printStackTrace();
 			throw new IssueDAOException(e.getMessage());
 		}
 		
@@ -116,13 +179,15 @@ public class IssueDAO {
 		
 		try {			
 			PreparedStatement ps = connection.prepareStatement(FIND_ISSUE_BY_ID_SQL);
+			ps.setInt(1, issueId);
 			ResultSet rs = ps.executeQuery();
+			
 			
 			if (rs.next()) {
 				String summary = rs.getString("summary");
 				String description = rs.getString("description");
-				int priorityId = rs.getInt("priorities_id");
-				int stateId = rs.getInt("workflow_states_id");
+				int priorityId = rs.getInt("priority");
+				int stateId = rs.getInt("state_id");
 				//get date created
 				//get date last modified
 				
@@ -130,6 +195,7 @@ public class IssueDAO {
 				IssueState state = IssueState.getTypeById(stateId);
 						
 				String type = IssueDAO.getIssueType(issueId);
+				System.out.println(type);
 				switch (type) {
 				case "bug": 
 					issue = new Bug(summary);
@@ -143,7 +209,16 @@ public class IssueDAO {
 				case "epic":
 					issue = new Epic(summary);
 					issue.setId(issueId);
-					((Epic)issue).setName(rs.getString("name"));
+					
+					ps = connection.prepareStatement(FIND_EPIC_BY_ID_SQL);
+					ps.setInt(1, issueId);
+					rs = ps.executeQuery();
+					
+					String epicName = null;
+					if(rs.next()){
+						epicName = rs.getString(1);
+					}
+					((Epic)issue).setName(epicName);
 					Set<Issue> issues = IssueDAO.getAllIssuesByEpic((Epic)issue);
 					
 					for (Issue entry : issues) {
@@ -212,14 +287,33 @@ public class IssueDAO {
 		int issueId = toRemove.getId();
 		
 		try {
-			PreparedStatement ps = connection.prepareStatement(REMOVE_ISSUE_SQL);
+			connection.setAutoCommit(false);
+			String issueType = IssueDAO.getIssueType(toRemove.getId());
+			String table =IssueDAO.getIssueType(toRemove.getId()).equals("story") ? "storie" : IssueDAO.getIssueType(toRemove.getId());
+			
+			final String DELETE_BUG_TASK_STORY_SQL =  "DELETE FROM " + table + "s" + " WHERE " + issueType + "_id = ?;";
+			PreparedStatement ps = connection.prepareStatement(DELETE_BUG_TASK_STORY_SQL);
+			ps.setInt(1, toRemove.getId());
+			
+			if(ps.executeUpdate() < 1){
+				throw new IssueDAOException("failed to remove " + issueType);
+			}
+			
+			
+			ps = connection.prepareStatement(REMOVE_ISSUE_SQL);
 			ps.setInt(1, issueId);
 			
 			if (ps.executeUpdate() < 1) {
 				throw new IssueDAOException("failed to remove issue");
 			}
 			
+			connection.commit();
 		} catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				throw new IssueDAOException(e1.getMessage());
+			}
 			throw new IssueDAOException(e.getMessage());
 		}
 	}

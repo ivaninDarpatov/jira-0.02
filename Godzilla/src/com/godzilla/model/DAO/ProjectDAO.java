@@ -26,11 +26,11 @@ public class ProjectDAO {
 	public static final String INSERT_INTO_PROJECTS = "INSERT INTO projects VALUES(? , ? , ?);";
 	public static final String SELECT_ALL_PROJECTS_WITH_COMPANY_ID_SQL = "SELECT * FROM projects WHERE company_id = ? ";
 
-	public static void addProject(Project newProject,String companyName) throws ProjectDAOException{
+	public static void addProject(Project newProject,Company company) throws ProjectDAOException{
 		Connection connection = DBConnection.getInstance().getConnection();
 		
 		try {
-			if(!CompanyDAO.isThereCompanyWithTheSameName(companyName)){
+			if(!CompanyDAO.isThereCompanyWithTheSameName(company.getName())){
 				throw new ProjectDAOException("unknow company to add project to");
 			}
 		} catch (CompanyDAOException e1) {
@@ -43,7 +43,7 @@ public class ProjectDAO {
 		
 		int companyId;
 		try {
-			companyId = CompanyDAO.getIdOfCompanyWithName(companyName);
+			companyId = CompanyDAO.getIdOfCompanyWithName(company.getName());
 		} catch (CompanyDAOException e1) {
 			throw new ProjectDAOException(e1.getMessage());
 		}
@@ -101,14 +101,14 @@ public class ProjectDAO {
 		return false;
 	}
 
-	public static Set<Project> getAllProjectsByCompany(Company company) throws ProjectDAOException {
+	public static HashSet<Project> getAllProjectsByCompany(Company company) throws ProjectDAOException {
 		if (company == null) {
 			throw new ProjectDAOException("cant find company");
 		}
 		
 		int companyId = company.getId();
 		
-		Set<Project> result = new HashSet<Project>(); 
+		HashSet<Project> result = new HashSet<Project>(); 
 		
 		Connection connection = DBConnection.getInstance().getConnection();
 		try {
@@ -122,16 +122,17 @@ public class ProjectDAO {
 				
 				Project project = ProjectDAO.getProjectById(projectId);
 				
+				
 				result.add(project);
 			}
 		} catch (SQLException e) {
 			throw new ProjectDAOException(e.getMessage());
 
 		}
-		return null;
+		return result;
 	}
 
-	private static Project getProjectById(int projectId) throws ProjectDAOException {
+	public static Project getProjectById(int projectId) throws ProjectDAOException {
 		if (projectId == 0) {
 			throw new ProjectDAOException("invalid project id");
 		}
@@ -146,7 +147,7 @@ public class ProjectDAO {
 			ResultSet rs = ps.executeQuery();
 			
 			if (rs.next()) {
-				toReturn = new Project(rs.getString("name"));
+				toReturn = new Project(rs.getString("project_name"));
 				toReturn.setId(projectId);
 				Set<Sprint> sprints = SprintDAO.getAllSprintsByProject(toReturn);
 				Set<Issue> issues = IssueDAO.getAllIssuesByProject(toReturn);
@@ -168,6 +169,7 @@ public class ProjectDAO {
 		} catch (SprintDAOException e) {
 			throw new ProjectDAOException("failed to get sprints", e);
 		} catch (IssueDAOException e) {
+			System.out.println(e.getMessage());
 			throw new ProjectDAOException("failed to get issues", e);
 		}
 		

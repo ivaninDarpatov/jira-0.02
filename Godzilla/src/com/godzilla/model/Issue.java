@@ -58,6 +58,7 @@ public abstract class Issue {
 		return this.summary;
 	}
 	
+
 	public String getDescription() {
 		return this.description;
 	}
@@ -84,5 +85,27 @@ public abstract class Issue {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	@Override
+	public String toString() {
+		return "Issue [id=" + id + ", summary=" + summary + ", description=" + description + ", priority=" + priority
+				+ ", state=" + state + ", dateCreated=" + dateCreated + ", dateLastModified=" + dateLastModified + "]";
+	}
+
+	public static String getIssueType(Issue issue) {
+		if(issue instanceof Task){
+			return "task";
+		}
+		if(issue instanceof Bug){
+			return "bug";
+		}
+		if(issue instanceof Epic){
+			return "epic";
+		}
+		if(issue instanceof Story){
+			return "story";
+		}
+		
+		return null;
 	}
 }

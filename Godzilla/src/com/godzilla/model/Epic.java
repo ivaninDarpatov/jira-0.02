@@ -21,4 +21,8 @@ public class Epic extends Issue {
 			this.issues.add(toAdd);
 		}
 	}
+	
+	public String getName(){
+		return this.name;
+	}
 }

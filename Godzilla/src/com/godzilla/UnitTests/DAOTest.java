@@ -14,6 +14,8 @@ import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.ProjectException;
 import com.godzilla.model.exceptions.UserException;
 
+import junit.framework.Assert;
+
 public class DAOTest {
 
 	@Test
@@ -37,6 +39,13 @@ public class DAOTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	@Test
+	public void testIssue() throws IssueDAOException{
+		Issue issue = IssueDAO.getIssueById(2);
+		
+		System.out.println(issue);
 	}
 
 }

@@ -35,7 +35,7 @@ public class UserDAO {
 												+ "WHERE u.email = ? "
 												+ "AND u.password = ? "
 												+ "AND c.company_name = ?;";
-	private static final String FIND_COMPANY_SQL = "SELECT id "
+	private static final String FIND_COMPANY_SQL = "SELECT company_id "
 												+ "FROM companies "
 												+ "WHERE company_name = ?;";
 	private static final String REGISTER_USER_SQL = "INSERT INTO users "
@@ -51,7 +51,7 @@ public class UserDAO {
 			String email = toRegister.getEmail();
 			String password = toRegister.getPassword();
 			String company = toRegister.getCompany();
-			int permisstionsId = 0;
+			int permissionsId = 0;
 			int companyId;
 			
 			try {
@@ -62,8 +62,8 @@ public class UserDAO {
 				ResultSet rs = ps.executeQuery();
 				
 				if (rs.next()) {
-					companyId = rs.getInt("id");
-					permisstionsId = USER_PERMISSIONS;
+					companyId = rs.getInt("company_id");
+					permissionsId = USER_PERMISSIONS;
 				} else {
 					Company newCompany;
 					try {
@@ -78,7 +78,7 @@ public class UserDAO {
 					}
 					
 					companyId = newCompany.getId();
-					permisstionsId = ADMIN_PERMISSIONS;
+					permissionsId = ADMIN_PERMISSIONS;
 					try {
 						toRegister.setPermissions(Permissions.ADMINISTRATOR);
 					} catch (PermissionException e) {
@@ -89,7 +89,7 @@ public class UserDAO {
 				ps = connection.prepareStatement(REGISTER_USER_SQL, Statement.RETURN_GENERATED_KEYS);
 				ps.setString(1, email);
 				ps.setString(2, password);
-				ps.setInt(3, permisstionsId);
+				ps.setInt(3, permissionsId);
 				ps.setInt(4, companyId);
 				
 				ps.executeUpdate();
@@ -224,7 +224,7 @@ public class UserDAO {
 			ResultSet rs = ps.executeQuery();
 			
 			while (rs.next()) {
-				int userId = rs.getInt("id");
+				int userId = rs.getInt("user_id");
 				User toAdd = UserDAO.getUserById(userId);
 				
 				result.add(toAdd);

@@ -14,7 +14,7 @@ public class CompanyDAOTest {
 
 	@Test
 	public void testCreationOfComapny() throws CompanyException, CompanyDAOException {
-		Company testCompany = new Company("Test Company");
+		Company testCompany = new Company("Test Company2");
 		 
 		CompanyDAO.createNewCompany(testCompany);
 		System.out.println(testCompany.getId());
@@ -22,6 +22,11 @@ public class CompanyDAOTest {
 		Assert.assertTrue(testCompany.getId() > 0);
 		
 		
+	}
+	
+	@Test
+	public void testGetComapnyById() throws CompanyDAOException{
+		Company company = CompanyDAO.getCompanyById(1); 
 	}
 
 }
