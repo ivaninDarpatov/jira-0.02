@@ -23,7 +23,7 @@ public class ProjectDAOTest {
 	@Test
 	public void newProjectTest() throws ProjectException, ProjectDAOException, CompanyDAOException {
 		Project project = new Project("Test project22");
-		int companyId = CompanyDAO.getIdOfCompanyWithName("Test Company");
+		int companyId = CompanyDAO.getIdOfCompanyWithName("Test Company2");
 		Company company = CompanyDAO.getCompanyById(companyId);
 		
 		ProjectDAO.addProject(project, company);
@@ -36,7 +36,7 @@ public class ProjectDAOTest {
 		Company company = new Company("Some company");
 		company.setId(1);
 		
-		HashSet<Project> projects = ProjectDAO.getAllProjectsByCompany(company);
+		Set<Project> projects = ProjectDAO.getAllProjectsByCompany(company);
 		System.out.println(projects.size());
 		
 		for(Project p : projects){

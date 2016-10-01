@@ -6,6 +6,11 @@ import java.util.Set;
 import com.godzilla.model.exceptions.ProjectException;
 
 public class Project {
+	@Override
+	public String toString() {
+		return "Project [id=" + id + ", name=" + name + ", issues=" + issues + ", sprints=" + sprints + "]";
+	}
+
 	private int id;
 	private String name;
 	private Set<Issue> issues;
@@ -57,9 +62,5 @@ public class Project {
 		}else{
 			throw new ProjectException("Sprint value == null");
 		}
-	}
-	@Override
-	public String toString() {
-		return "Project [id=" + id + ", name=" + name + ", issues=" + issues + ", sprints=" + sprints + "]";
 	}
 }
