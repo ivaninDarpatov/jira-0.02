@@ -58,8 +58,4 @@ public class Project {
 			throw new ProjectException("Sprint value == null");
 		}
 	}
-	@Override
-	public String toString() {
-		return "Project [id=" + id + ", name=" + name + ", issues=" + issues + ", sprints=" + sprints + "]";
-	}
 }
