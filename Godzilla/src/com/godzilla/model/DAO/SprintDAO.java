@@ -10,16 +10,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.godzilla.DBConnection.DBConnection;
-import com.godzilla.model.Issue;
 import com.godzilla.model.Project;
 import com.godzilla.model.Sprint;
-import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.SprintDAOException;
 import com.godzilla.model.exceptions.SprintException;
 
 public class SprintDAO {
-	private static final String REMOVE_SPRINT_SQL = "DELETE FROM sprints "
-													+ "WHERE sprint_id = ?;";
 	private static final String SELECT_ALL_SPRINTS_BY_PROJECT_ID = "SELECT * FROM sprints "
 																+ "WHERE project_id = ? ";
 	private static final String INSERT_SPRINT_SQL = "INSERT INTO sprints "
@@ -97,35 +93,5 @@ public class SprintDAO {
 		} catch (SQLException e) {
 			throw new SprintDAOException(e.getMessage());
 		}
-	}
-
-
-	public static void removeSprint(Sprint sprintToRemove) throws SprintDAOException {
-		if (sprintToRemove == null) {
-			throw new SprintDAOException("cant find sprint to remove");
-		}
-		
-		Connection connection = DBConnection.getInstance().getConnection();
-		int sprintId = sprintToRemove.getId();
-		
-		try {
-			Set<Issue> issuesToSetFree = IssueDAO.getAllIssuesBySprint(sprintToRemove);
-			
-			for (Issue issueToSetFree : issuesToSetFree) {
-				IssueDAO.removeFromSprint(issueToSetFree);
-			}
-			
-			PreparedStatement removeSprintPS = connection.prepareStatement(REMOVE_SPRINT_SQL);
-			removeSprintPS.setInt(1, sprintId);
-			
-			if (removeSprintPS.executeUpdate() < 1) {
-				throw new SprintDAOException("failed to remove sprint");
-			}
-		} catch (SQLException e) {
-			throw new SprintDAOException(e.getMessage());
-		} catch (IssueDAOException e) {
-			throw new SprintDAOException("issues failure", e);
-		}
-		
 	}
 }

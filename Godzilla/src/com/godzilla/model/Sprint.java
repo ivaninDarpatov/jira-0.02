@@ -61,8 +61,4 @@ public class Sprint {
 		return "Sprint [id=" + id + ", name=" + name + ", sprintGoal=" + sprintGoal
 				+ ", startingDate=" + startingDate + ", endDate=" + endDate + "]";
 	}
-
-	public int getId() {
-		return this.id;
-	}
 }

@@ -2,19 +2,8 @@ package com.godzilla.UnitTests;
 
 import static org.junit.Assert.*;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
 import org.junit.Test;
 
-import com.godzilla.DBConnection.DBConnection;
 import com.godzilla.model.Issue;
 import com.godzilla.model.Project;
 import com.godzilla.model.Story;
@@ -25,45 +14,38 @@ import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.ProjectException;
 import com.godzilla.model.exceptions.UserException;
 
+import junit.framework.Assert;
+
 public class DAOTest {
 
-	public static void appendExceptions(StringBuilder builder,Throwable ex){
+	@Test
+	public void test() {
 		
-		builder.append(ex.getMessage() + "\n");
-		
-		if(ex.getCause() == null){
-			return;
+		try {
+			Issue testIssue = new Story("test");
+			Project testProject = new Project("testProject");
+			testProject.setId(1);
+			User testUser = new User("ivan@abv.bg", "123456abc", "testCompany");
+			testUser.setId(12);
+			
+			IssueDAO.createIssue(testIssue, testProject, testUser);
+		} catch (IssueDAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ProjectException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		Throwable cause = ex.getCause();
-		
-		appendExceptions(builder, cause);
-		
 	}
 	
-	
 	@Test
-	public void test() throws Exception {
-		Connection connection = DBConnection.getInstance().getConnection();
+	public void testIssue() throws IssueDAOException{
+		Issue issue = IssueDAO.getIssueById(2);
 		
-		PreparedStatement ps = connection.prepareStatement("select Date_created from issues;");
-		ResultSet rs = ps.executeQuery();
-		
-		//sql dateTime -> java localDateTime
-		if (rs.next()) {
-			Date rDate = rs.getDate(1);
-			Time rTime = rs.getTime(1);
-			System.out.println(rDate.toString());
-			System.out.println(rTime.toString());
-			
-			LocalDate date = rDate.toLocalDate();
-			LocalTime time = rTime.toLocalTime();
-			
-			LocalDateTime dateTime = LocalDateTime.of(date, time);
-			
-			System.out.println(date.toString() + time.toString());
-			System.out.println(dateTime.toString());
-		}
+		System.out.println(issue);
 	}
 
 }

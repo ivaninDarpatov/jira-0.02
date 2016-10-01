@@ -23,7 +23,7 @@ private static DBConnection instance;
 //		System.out.print("Data Base Username: ");
 		String userName = "root";
 //		System.out.print("Data Base password: ");
-		String password = "aichetolub6747";
+		String password = "";
 //		System.out.print("Data Base schema: ");
 		String schema = "godzilla";
 //		sc.close();

@@ -22,7 +22,7 @@ public class Epic extends Issue {
 		}
 	}
 	
-	public String getName() {
+	public String getName(){
 		return this.name;
 	}
 }
