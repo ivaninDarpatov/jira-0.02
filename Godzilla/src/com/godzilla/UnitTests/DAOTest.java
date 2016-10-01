@@ -20,12 +20,19 @@ import com.godzilla.model.Project;
 import com.godzilla.model.Story;
 import com.godzilla.model.User;
 import com.godzilla.model.DAO.IssueDAO;
+import com.godzilla.model.DAO.StaticValuesInitializerDAO;
 import com.godzilla.model.DAO.UserDAO;
 import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.ProjectException;
 import com.godzilla.model.exceptions.UserException;
 
 public class DAOTest {
+	
+	public static void printExceptionMessages(Throwable ex) {
+		StringBuilder builder = new StringBuilder();
+		appendExceptions(builder, ex);
+		System.out.println(builder.toString());
+	}
 
 	public static void appendExceptions(StringBuilder builder,Throwable ex){
 		
@@ -43,26 +50,11 @@ public class DAOTest {
 	
 	
 	@Test
-	public void test() throws Exception {
-		Connection connection = DBConnection.getInstance().getConnection();
-		
-		PreparedStatement ps = connection.prepareStatement("select Date_created from issues;");
-		ResultSet rs = ps.executeQuery();
-		
-		//sql dateTime -> java localDateTime
-		if (rs.next()) {
-			Date rDate = rs.getDate(1);
-			Time rTime = rs.getTime(1);
-			System.out.println(rDate.toString());
-			System.out.println(rTime.toString());
-			
-			LocalDate date = rDate.toLocalDate();
-			LocalTime time = rTime.toLocalTime();
-			
-			LocalDateTime dateTime = LocalDateTime.of(date, time);
-			
-			System.out.println(date.toString() + time.toString());
-			System.out.println(dateTime.toString());
+	public void test() {
+		try {
+			StaticValuesInitializerDAO.initializeStaticValues();
+		} catch (SQLException e) {
+			System.out.println("values are already initialized" + e.getMessage());
 		}
 	}
 

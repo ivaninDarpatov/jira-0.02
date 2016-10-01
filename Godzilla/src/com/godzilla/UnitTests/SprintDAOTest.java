@@ -8,7 +8,9 @@ import org.junit.Test;
 
 import com.godzilla.model.Project;
 import com.godzilla.model.Sprint;
+import com.godzilla.model.DAO.ProjectDAO;
 import com.godzilla.model.DAO.SprintDAO;
+import com.godzilla.model.exceptions.ProjectDAOException;
 import com.godzilla.model.exceptions.ProjectException;
 import com.godzilla.model.exceptions.SprintDAOException;
 import com.godzilla.model.exceptions.SprintException;
@@ -25,10 +27,16 @@ public class SprintDAOTest {
 	
 	@Test
 	public void getSprintsByProjectId() throws SprintDAOException{
-		Set<Sprint> sprints = SprintDAO.getAllSprintsByProjectId(1);
-		
-		for(Sprint s : sprints){
-			System.out.println(s);
+		Project project;
+		try {
+			project = ProjectDAO.getProjectById(1);
+			Set<Sprint> sprints = SprintDAO.getAllSprintsByProject(project);
+			
+			for(Sprint s : sprints){
+				System.out.println(s);
+			}
+		} catch (ProjectDAOException e) {
+			DAOTest.printExceptionMessages(e);
 		}
 		
 		

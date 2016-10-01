@@ -13,18 +13,30 @@ import com.godzilla.model.exceptions.UserException;
 public class UserDAOTest {
 
 	@Test
-	public void registerNewUserTest() throws UserException, UserDAOException {
-		int randomNumber = new Random().nextInt(100000);
-		String email = "someEmail" + randomNumber + "@abv.bg";
-		String password = "somePassword1";
-		String company = "someCompany" + randomNumber;
-		
-		
-		User userToReg = new User(email,password,company);
-		UserDAO.registerUser(userToReg);
-		
-		Assert.assertTrue(userToReg.getId() > 0);
+	public void removeUserTest() {
+		try {
+			User userToRemove = new User("s@s.s", "123456abc", "company");
+			UserDAO.remmoveUser(userToRemove);
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			DAOTest.printExceptionMessages(e);
+		}
 	}
+	
+//	@Test
+//	public void registerNewUserTest() throws UserException, UserDAOException {
+//		int randomNumber = new Random().nextInt(100000);
+//		String email = "someEmail" + randomNumber + "@abv.bg";
+//		String password = "somePassword1";
+//		String company = "someCompany" + randomNumber;
+//		
+//		
+//		User userToReg = new User(email,password,company);
+//		UserDAO.registerUser(userToReg);
+//		
+//		Assert.assertTrue(userToReg.getId() > 0);
+//	}
 	
 //	@Test
 //	public void registerUserWithTheSameName(){
