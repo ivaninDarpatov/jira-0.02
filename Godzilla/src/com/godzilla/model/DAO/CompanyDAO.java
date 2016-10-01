@@ -19,6 +19,8 @@ import com.godzilla.model.exceptions.UserDAOException;
 public class CompanyDAO {
 
 	
+	private static final String REMOVE_COMPANY_SQL = "DELETE FROM companies "
+													+ "WHERE company_id = ?;";
 	private static final String SELECT_COMPANY_BY_ID_SQL = "Select * from companies where company_id = ?";
 	private static final String FIND_COMPANY_ID_BY_NAME = "SELECT company_id from companies where company_name =  ?;";
 	private static final String SELECT_NAME_FROM_COMPANIES = "SELECT company_name from companies";
@@ -112,9 +114,9 @@ public class CompanyDAO {
 		} catch (CompanyException e1){
 			throw new CompanyDAOException(e1.getMessage());
 		} catch (ProjectDAOException e) {
-			System.out.println(e.getMessage());
 			throw new CompanyDAOException("failed to get companys projects", e);
 		} catch (UserDAOException e) {
+			e.printStackTrace();
 			throw new CompanyDAOException("failed to get companys users", e);
 		}
 		
@@ -122,4 +124,42 @@ public class CompanyDAO {
 		
 		return company;
 	}
+	
+	public static void removeCompany(Company toRemove) throws CompanyDAOException {
+		if (toRemove == null) {
+			throw new CompanyDAOException("cant find company to remove");
+		}
+		
+		Connection connection = DBConnection.getInstance().getConnection();
+		int companyId = toRemove.getId();
+		
+		try {
+			Set<User> usersToRemove = UserDAO.getAllUsersByCompany(toRemove);
+			Set<Project> projectsToRemove = ProjectDAO.getAllProjectsByCompany(toRemove);
+			
+			for (User userToRemove : usersToRemove) {
+				UserDAO.remmoveUser(userToRemove);
+			}
+			
+			for (Project projectToRemove : projectsToRemove) {
+				ProjectDAO.removeProject(projectToRemove);
+			}
+			
+			PreparedStatement removeCompanyPS = connection.prepareStatement(REMOVE_COMPANY_SQL);
+			removeCompanyPS.setInt(1, companyId);
+			if (removeCompanyPS.executeUpdate() < 1) {
+				throw new CompanyDAOException("failed to remove company");
+			}
+			
+		} catch (SQLException e) {
+			throw new CompanyDAOException(e.getMessage());
+		} catch (UserDAOException e) {
+			e.printStackTrace();
+			throw new CompanyDAOException("failed to get companys users", e);
+		} catch (ProjectDAOException e) {
+			throw new CompanyDAOException("failed to get companys projects", e);
+		}
+		
+	}
+
 }

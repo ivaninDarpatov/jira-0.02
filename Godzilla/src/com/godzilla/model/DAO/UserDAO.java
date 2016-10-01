@@ -40,9 +40,9 @@ public class UserDAO {
 												+ "WHERE company_name = ?;";
 	private static final String REGISTER_USER_SQL = "INSERT INTO users "
 												+ "VALUES (null, ?, ?, ? , ?);";
-	private static final String REMOVE_USER_SQL = "DELETE FROM users"
-												+ "WHERE email = ?;";
-	private static final String SELECT_ID_EMAIL_PASSWORD_PERMISSION_SQL = "Select id, email.password,Permission_id from users where id = ?;";
+	private static final String REMOVE_USER_SQL = "DELETE FROM users "
+												+ "WHERE user_id = ?;";
+	private static final String SELECT_ID_EMAIL_PASSWORD_PERMISSION_SQL = "Select user_id, email, password, permissions_id from users where user_id = ?;";
 	
 	
 	public static void registerUser(User toRegister) throws UserException, UserDAOException {
@@ -51,7 +51,7 @@ public class UserDAO {
 			String email = toRegister.getEmail();
 			String password = toRegister.getPassword();
 			String company = toRegister.getCompany();
-			int permissionsId = 0;
+			int permisstionsId = 0;
 			int companyId;
 			
 			try {
@@ -63,7 +63,7 @@ public class UserDAO {
 				
 				if (rs.next()) {
 					companyId = rs.getInt("company_id");
-					permissionsId = USER_PERMISSIONS;
+					permisstionsId = USER_PERMISSIONS;
 				} else {
 					Company newCompany;
 					try {
@@ -77,8 +77,9 @@ public class UserDAO {
 						throw new UserDAOException("Company not created",e1);
 					}
 					
+					
 					companyId = newCompany.getId();
-					permissionsId = ADMIN_PERMISSIONS;
+					permisstionsId = ADMIN_PERMISSIONS;
 					try {
 						toRegister.setPermissions(Permissions.ADMINISTRATOR);
 					} catch (PermissionException e) {
@@ -89,7 +90,7 @@ public class UserDAO {
 				ps = connection.prepareStatement(REGISTER_USER_SQL, Statement.RETURN_GENERATED_KEYS);
 				ps.setString(1, email);
 				ps.setString(2, password);
-				ps.setInt(3, permissionsId);
+				ps.setInt(3, permisstionsId);
 				ps.setInt(4, companyId);
 				
 				ps.executeUpdate();
@@ -146,13 +147,30 @@ public class UserDAO {
 	}
 	
 	public static void remmoveUser(User userToRemove) throws UserDAOException{
+		if (userToRemove == null) {
+			throw new UserDAOException("cant find user to remove");
+		}
 		Connection connection = DBConnection.getInstance().getConnection();
+		int userId = userToRemove.getId();
 		
 		try {
-			PreparedStatement ps = connection.prepareStatement(REMOVE_USER_SQL);
+			Set<Issue> assignedIssues = IssueDAO.getAllIssuesAssignedTo(userToRemove);
+			Set<Issue> reportedIssues = IssueDAO.getAllReportedIssuesByUser(userToRemove);
 			
-			ps.setString(1, userToRemove.getEmail());
-			ps.executeUpdate();
+			for (Issue assignedIssue : assignedIssues) {
+				IssueDAO.unassignIssue(assignedIssue);
+			}
+			
+			for (Issue reportedIssue : reportedIssues) {
+				IssueDAO.handToAdmin(reportedIssue);
+			}
+			
+			PreparedStatement ps = connection.prepareStatement(REMOVE_USER_SQL);
+			ps.setInt(1, userId);
+			
+			if (ps.executeUpdate() < 1) {
+				throw new UserDAOException("failed to remove user");
+			}
 		} catch (SQLException e) {
 			throw new UserDAOException(e.getMessage());
 		}
@@ -177,6 +195,7 @@ public class UserDAO {
 				Permissions userPermission = permission == 1 ? Permissions.ADMINISTRATOR : Permissions.USER;
 				
 				user = new User(email, password);
+				user.setId(userId);
 				user.setPermissions(userPermission);
 				
 				for(Issue issue : IssueDAO.getAllReportedIssuesByUser(user)){
@@ -224,7 +243,7 @@ public class UserDAO {
 			ResultSet rs = ps.executeQuery();
 			
 			while (rs.next()) {
-				int userId = rs.getInt("user_id");
+				int userId = rs.getInt(1);
 				User toAdd = UserDAO.getUserById(userId);
 				
 				result.add(toAdd);
