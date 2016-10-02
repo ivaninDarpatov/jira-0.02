@@ -18,6 +18,7 @@ import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.ProjectDAOException;
 import com.godzilla.model.exceptions.ProjectException;
 
+@SuppressWarnings("all")
 public class ProjectDAOTest {
 
 	@Test

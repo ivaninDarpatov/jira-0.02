@@ -10,6 +10,7 @@ import com.godzilla.model.DAO.UserDAO;
 import com.godzilla.model.exceptions.UserDAOException;
 import com.godzilla.model.exceptions.UserException;
 
+@SuppressWarnings("all")
 public class UserDAOTest {
 
 	@Test

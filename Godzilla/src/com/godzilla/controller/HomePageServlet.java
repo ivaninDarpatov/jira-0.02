@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.godzilla.model.User;
-import com.godzilla.model.DAO.UserDAO;
 
 /**
  * Servlet implementation class HomePageServlet

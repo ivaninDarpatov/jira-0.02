@@ -15,6 +15,7 @@ import com.godzilla.model.exceptions.ProjectException;
 import com.godzilla.model.exceptions.SprintDAOException;
 import com.godzilla.model.exceptions.SprintException;
 
+@SuppressWarnings("all")
 public class SprintDAOTest {
 
 	@Test

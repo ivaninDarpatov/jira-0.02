@@ -12,7 +12,6 @@ import com.godzilla.DBConnection.DBConnection;
 import com.godzilla.model.Company;
 import com.godzilla.model.Issue;
 import com.godzilla.model.User;
-import com.godzilla.model.enums.IssueState;
 import com.godzilla.model.enums.Permissions;
 import com.godzilla.model.exceptions.CompanyDAOException;
 import com.godzilla.model.exceptions.CompanyException;

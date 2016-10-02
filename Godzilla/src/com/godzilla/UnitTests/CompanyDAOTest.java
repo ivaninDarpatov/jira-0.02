@@ -10,6 +10,7 @@ import com.godzilla.model.DAO.CompanyDAO;
 import com.godzilla.model.exceptions.CompanyDAOException;
 import com.godzilla.model.exceptions.CompanyException;
 
+@SuppressWarnings("all")
 public class CompanyDAOTest {
 
 	@Test

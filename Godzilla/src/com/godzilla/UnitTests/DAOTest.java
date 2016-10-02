@@ -8,9 +8,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import org.junit.Test;
 
@@ -26,6 +28,7 @@ import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.ProjectException;
 import com.godzilla.model.exceptions.UserException;
 
+@SuppressWarnings("all")
 public class DAOTest {
 	
 	public static void printExceptionMessages(Throwable ex) {
@@ -51,11 +54,15 @@ public class DAOTest {
 	
 	@Test
 	public void test() {
-		try {
-			StaticValuesInitializerDAO.initializeStaticValues();
-		} catch (SQLException e) {
-			System.out.println("values are already initialized" + e.getMessage());
-		}
+		LocalDateTime dateTime = LocalDateTime.now();
+		LocalDate date = dateTime.toLocalDate();
+		LocalTime time = dateTime.toLocalTime();
+		String dateTimeString = date.toString() + " " + time.toString();
+		System.out.println(dateTimeString);
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:SS:nnn");
+		LocalDateTime dateTime1 = LocalDateTime.parse(dateTimeString, formatter);
+		System.out.println(dateTime1.toString());
 	}
 
 }

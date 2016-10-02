@@ -6,6 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Godzilla registration</title>
 </head>
+
 <body>
 	<form action="/RegisterServlet" method="POST">
   	Company:<br>

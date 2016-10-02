@@ -177,6 +177,10 @@ public class User {
 	public String getEmail() {
 		return this.email;
 	}
+	
+	public Permissions getPermissions() {
+		return this.permissions;
+	}
 
 	public String getPassword() {
 		return this.password;

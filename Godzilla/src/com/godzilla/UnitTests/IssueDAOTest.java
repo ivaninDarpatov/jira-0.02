@@ -18,7 +18,7 @@ import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.ProjectException;
 import com.godzilla.model.exceptions.UserException;
 
-
+@SuppressWarnings("all")
 public class IssueDAOTest {
 
 //	@Test

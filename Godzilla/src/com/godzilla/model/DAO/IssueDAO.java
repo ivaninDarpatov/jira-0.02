@@ -1,14 +1,11 @@
 package com.godzilla.model.DAO;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +17,6 @@ import com.godzilla.model.enums.IssueState;
 import com.godzilla.model.exceptions.EpicException;
 import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.IssueException;
-import com.godzilla.model.exceptions.UserDAOException;
 
 public class IssueDAO {
 	private static final String HAND_ISSUE_TO_ADMIN_SQL = "UPDATE issues " + "SET reporter_id = ? "
