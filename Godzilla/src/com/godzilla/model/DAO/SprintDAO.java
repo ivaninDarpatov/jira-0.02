@@ -19,10 +19,60 @@ import com.godzilla.model.exceptions.SprintDAOException;
 import com.godzilla.model.exceptions.SprintException;
 
 public class SprintDAO {
+	private static final String GET_SPRINT_BY_ID_SQL = "SELECT * "
+													+ "FROM issues "
+													+ "WHERE issue_id = ?;";
 	private static final String REMOVE_SPRINT_SQL = "DELETE FROM sprints " + "WHERE sprint_id = ?;";
 	private static final String SELECT_ALL_SPRINTS_BY_PROJECT_ID = "SELECT * FROM sprints " + "WHERE project_id = ? ";
 	private static final String INSERT_SPRINT_SQL = "INSERT INTO sprints " + "VALUES(null, ? , ? , ? , ? , ?);";
 
+	public static Sprint getSprintById(int sprintId) throws SprintDAOException {
+		if (sprintId < 1) {
+			throw new SprintDAOException("sprint id cannot be 0");
+		}
+		Sprint result = null;
+		Connection connection = DBConnection.getInstance().getConnection();
+		Set<Issue> issues = new HashSet<Issue>();
+		LocalDateTime startingDate;
+		LocalDateTime endDate;
+		String name;
+		String goal;
+		
+		try {
+			PreparedStatement getSprintByIdPS = connection.prepareStatement(GET_SPRINT_BY_ID_SQL);
+			getSprintByIdPS.setInt(1, sprintId);
+			
+			ResultSet getSprintByIdRS = getSprintByIdPS.executeQuery();
+			
+			if (getSprintByIdRS.next()) {
+				name = getSprintByIdRS.getString("sprint_name");
+				result = new Sprint(name);
+				goal = getSprintByIdRS.getString("sprint_goal");
+				startingDate = IssueDAO.getLocalDateTimeFromString(getSprintByIdRS.getString("starting_date"));
+				endDate = IssueDAO.getLocalDateTimeFromString(getSprintByIdRS.getString("end_date"));
+				
+				result.setSprintGoal(goal);
+				result.setStartingDate(startingDate);
+				result.setEndDate(endDate);
+				result.setId(sprintId);
+				
+				issues = IssueDAO.getAllIssuesBySprint(result);
+				
+				for (Issue issue : issues) {
+					result.addIssue(issue);
+				}
+			}
+		} catch (SQLException e) {
+			throw new SprintDAOException(e.getMessage());
+		} catch (SprintException e) {
+			throw new SprintDAOException("failed to create sprint", e);
+		} catch (IssueDAOException e) {
+			throw new SprintDAOException("failed to convert to LocalDateTime", e);
+		}
+		
+		return result;
+	}
+	
 	public static Set<Sprint> getAllSprintsByProject(Project project) throws SprintDAOException {
 		if (project == null) {
 			throw new SprintDAOException("couldn't find project");
@@ -43,27 +93,15 @@ public class SprintDAO {
 
 			while (rs.next()) {
 				Sprint sprint = null;
-				int sprintId = rs.getInt(1);
-				String name = rs.getString(2);
-				String goal = rs.getString(3);
-				LocalDateTime startingDate = IssueDAO.getLocalDateTimeFromString(rs.getString(4));
-				LocalDateTime endDate = IssueDAO.getLocalDateTimeFromString(rs.getString(5));
-
-				sprint = new Sprint(name);
-				sprint.setId(sprintId);
-				sprint.setSprintGoal(goal);
-				sprint.setStartingDate(startingDate);
-				sprint.setEndDate(endDate);
-
+				int sprintId = rs.getInt("sprint_id");
+				
+				sprint = SprintDAO.getSprintById(sprintId);
+				
 				result.add(sprint);
 			}
 
 		} catch (SQLException e) {
 			throw new SprintDAOException(e.getMessage());
-		} catch (SprintException e) {
-			throw new SprintDAOException("couldn't create sprint", e);
-		} catch (IssueDAOException e) {
-			throw new SprintDAOException("failed to convert to LocalDateTime", e);
 		}
 
 		return result;

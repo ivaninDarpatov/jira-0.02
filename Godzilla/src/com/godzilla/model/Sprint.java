@@ -18,6 +18,14 @@ public class Sprint {
 		this.issues = new HashSet<Issue>();
 		this.setName(name);
 	}
+	
+	public void addIssue(Issue issue) throws SprintException {
+		if (issue != null) {
+			this.issues.add(issue);
+		} else {
+			throw new SprintException("cannot add issue with a null value");
+		}
+	}
 
 	public void setName(String name) throws SprintException {
 		if (name != null && !name.trim().equals("")) {
