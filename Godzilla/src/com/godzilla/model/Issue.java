@@ -86,6 +86,22 @@ public abstract class Issue {
 			throw new IssueException("issue state cannot be null");
 		}
 	}
+	
+	public void setDateCreated(LocalDateTime dateTime) throws IssueException {
+		if (dateTime != null) {
+			this.dateCreated = dateTime;
+		} else {
+			throw new IssueException("date created cannot be null");
+		}
+	}
+	
+	public void setDateLastModified(LocalDateTime dateTime) throws IssueException {
+		if (dateTime != null) {
+			this.dateLastModified = dateTime;
+		} else {
+			throw new IssueException("date last modified cannot be null");
+		}
+	}
 
 	public void setId(int id) throws IssueException {
 		if (id > 0) {

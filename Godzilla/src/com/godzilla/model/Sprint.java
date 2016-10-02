@@ -35,6 +35,22 @@ public class Sprint {
 		}
 	}
 
+	public void setStartingDate(LocalDateTime startingDate) throws SprintException {
+		if (startingDate != null) {
+			this.startingDate = startingDate;
+		} else {
+			throw new SprintException("starting date cannot be null");
+		}
+	}
+
+	public void setEndDate(LocalDateTime endDate) throws SprintException {
+		if (endDate != null) {
+			this.endDate = endDate;
+		} else {
+			throw new SprintException("end date cannot be null");
+		}
+	}
+
 	public void setId(int id) throws SprintException {
 		if (id > 0) {
 			this.id = id;
@@ -49,6 +65,14 @@ public class Sprint {
 
 	public String getSpintGoal() {
 		return this.sprintGoal;
+	}
+	
+	public LocalDateTime getStartingDate() {
+		return this.startingDate;
+	}
+	
+	public LocalDateTime getEndDate() {
+		return this.endDate;
 	}
 
 	public int getId() {

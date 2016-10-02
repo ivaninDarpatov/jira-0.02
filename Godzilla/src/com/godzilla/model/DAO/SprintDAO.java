@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ import com.godzilla.model.exceptions.SprintException;
 public class SprintDAO {
 	private static final String REMOVE_SPRINT_SQL = "DELETE FROM sprints " + "WHERE sprint_id = ?;";
 	private static final String SELECT_ALL_SPRINTS_BY_PROJECT_ID = "SELECT * FROM sprints " + "WHERE project_id = ? ";
-	private static final String INSERT_SPRINT_SQL = "INSERT INTO sprints " + "VALUES(null, ? , ? , now() , now() , ?);";
+	private static final String INSERT_SPRINT_SQL = "INSERT INTO sprints " + "VALUES(null, ? , ? , ? , ? , ?);";
 
 	public static Set<Sprint> getAllSprintsByProject(Project project) throws SprintDAOException {
 		if (project == null) {
@@ -45,13 +46,14 @@ public class SprintDAO {
 				int sprintId = rs.getInt(1);
 				String name = rs.getString(2);
 				String goal = rs.getString(3);
-				Date startingDate = rs.getDate(4);
-				Date lastModifiedDate = rs.getDate(5);
+				LocalDateTime startingDate = IssueDAO.getLocalDateTimeFromString(rs.getString(4));
+				LocalDateTime endDate = IssueDAO.getLocalDateTimeFromString(rs.getString(5));
 
 				sprint = new Sprint(name);
 				sprint.setId(sprintId);
 				sprint.setSprintGoal(goal);
-				// TODO: da vidq kak shte setvame starting date i lastModified
+				sprint.setStartingDate(startingDate);
+				sprint.setEndDate(endDate);
 
 				result.add(sprint);
 			}
@@ -60,6 +62,8 @@ public class SprintDAO {
 			throw new SprintDAOException(e.getMessage());
 		} catch (SprintException e) {
 			throw new SprintDAOException("couldn't create sprint", e);
+		} catch (IssueDAOException e) {
+			throw new SprintDAOException("failed to convert to LocalDateTime", e);
 		}
 
 		return result;
@@ -71,14 +75,22 @@ public class SprintDAO {
 		}
 		
 		Connection connection = DBConnection.getInstance().getConnection();
-
+		String startingDate = sprintToAdd.getStartingDate().toLocalDate().toString() +
+								" " + 
+								sprintToAdd.getStartingDate().toLocalTime().toString();
+		String endDate = sprintToAdd.getEndDate().toLocalDate().toString() +
+							" " +
+							sprintToAdd.getEndDate().toLocalTime().toString();
+		
 		try {
 			PreparedStatement insertSprint = connection.prepareStatement(INSERT_SPRINT_SQL,
 					Statement.RETURN_GENERATED_KEYS);
-
+			
 			insertSprint.setString(1, sprintToAdd.getName());
 			insertSprint.setString(2, sprintToAdd.getSpintGoal());
-			insertSprint.setInt(3, project.getId());
+			insertSprint.setString(3, startingDate);
+			insertSprint.setString(4, endDate);
+			insertSprint.setInt(5, project.getId());
 
 			insertSprint.executeUpdate();
 
