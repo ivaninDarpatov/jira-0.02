@@ -1,6 +1,8 @@
 package com.godzilla.model;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,11 +26,33 @@ public abstract class Issue {
 		this.setPriority(IssuePriority.MEDIUM);
 		this.setState(IssueState.TO_DO);
 		this.initializeDates();
+		this.initializeLinkedIssues();
 	}
 
 	private void initializeDates() {
 		this.dateCreated = LocalDateTime.now();
 		this.dateLastModified = this.dateCreated;
+	}
+	
+	private void initializeLinkedIssues() {
+		this.linkedIssues = new HashMap<IssueLinkType, Set<Issue>>();
+		
+		for (IssueLinkType linkType : IssueLinkType.values()) {
+			Set<Issue> issuesSet = new HashSet<Issue>();
+			
+			this.linkedIssues.put(linkType, issuesSet);
+		}
+	}
+	
+	public void linkToIssue(IssueLinkType linkType, Issue linkedIssue) {
+		Set<Issue> linkedIssues = this.linkedIssues.get(linkType);
+		if (linkedIssues.contains(linkedIssue)) {
+			return;
+		}
+		linkedIssues.add(linkedIssue);
+		
+		IssueLinkType oppositeLinkType = IssueLinkType.getOppositeLinkType(linkType);
+		linkedIssue.linkToIssue(oppositeLinkType, this);
 	}
 
 	public void setSummary(String summary) throws IssueException {
