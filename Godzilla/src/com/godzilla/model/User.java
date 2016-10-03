@@ -1,5 +1,6 @@
 package com.godzilla.model;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -106,19 +107,19 @@ public class User {
 		return true;
 	}
 
-	public void addIssuesReportedByMe(Issue issueToAdd) throws UserException {
+	public void addIssueReportedByMe(Issue issueToAdd) throws UserException {
 		if (issueToAdd != null) {
 			this.issuesReportedBy.add(issueToAdd);
 		} else {
-			throw new UserException("failed to add reported issue");
+			throw new UserException("you cannot report an issue with value null");
 		}
 	}
 	
-	public void addIssuesAssignedToMe(Issue issueToAdd) throws UserException {
+	public void addIssueAssignedToMe(Issue issueToAdd) throws UserException {
 		if (issueToAdd != null) {
 			this.issuesAssignedTo.add(issueToAdd);
 		} else {
-			throw new UserException("failed to add assigned issue");
+			throw new UserException("you cannot be assigned an issue with value null");
 		}
 	}
 
@@ -162,9 +163,9 @@ public class User {
 		}
 	}
 
-	public void setId(int id) throws UserException {
-		if (id > 0) {
-			this.id = id;
+	public void setId(int userId) throws UserException {
+		if (userId > 0) {
+			this.id = userId;
 		} else {
 			throw new UserException("user's id cannot be 0");
 		}
@@ -189,12 +190,26 @@ public class User {
 	public String getCompany() {
 		return this.company;
 	}
+	
+	public Set<Issue> getIssuesReportedByMe() {
+		return Collections.unmodifiableSet(this.issuesReportedBy);
+	}
+	
+	public Set<Issue> getIssuesAssignedToMe() {
+		return Collections.unmodifiableSet(this.issuesAssignedTo);
+	}
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", email=" + email + ", password=" + password + ", permissions=" + permissions
-				+ ", company=" + company + ", issuesAssignedTo=" + issuesAssignedTo + ", issuesReportedBy="
-				+ issuesReportedBy + "] <br/>";
+		return "User [" +
+				"\n\tid=" + id + 
+				",\n\t email=" + email + 
+				",\n\t password=" + password + 
+				",\n\t permissions=" + permissions +
+				",\n\t company=" + company + 
+				",\n\t issuesAssignedTo=" + issuesAssignedTo + 
+				",\n\t issuesReportedBy=" + issuesReportedBy + 
+				"\n]\n";
 	}
 	
 	

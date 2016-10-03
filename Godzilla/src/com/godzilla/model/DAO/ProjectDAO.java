@@ -13,8 +13,6 @@ import com.godzilla.model.Company;
 import com.godzilla.model.Issue;
 import com.godzilla.model.Project;
 import com.godzilla.model.Sprint;
-import com.godzilla.model.exceptions.CompanyDAOException;
-import com.godzilla.model.exceptions.CompanyException;
 import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.ProjectDAOException;
 import com.godzilla.model.exceptions.ProjectException;
@@ -24,59 +22,41 @@ public class ProjectDAO {
 
 	private static final String REMOVE_PROJECT_SQL = "DELETE FROM projects WHERE project_id = ?;";
 	private static final String FIND_PROJECT_BY_ID_SQL = "SELECT * FROM projects WHERE project_id = ?;";
-	public static final String SELECT_NAME_FROM_PROJECTS = "SELECT project_name FROM projects";
-	private static final String FIND_PROJECT_ID_BY_NAME = "SELECT project_id from projects where project_name =  ?;";
-	public static final String INSERT_INTO_PROJECTS = "INSERT INTO projects VALUES(? , ? , ?);";
-	public static final String SELECT_ALL_PROJECTS_WITH_COMPANY_ID_SQL = "SELECT * FROM projects WHERE company_id = ? ";
+	private static final String GET_PROJECT_NAMES_SQL = "SELECT project_name FROM projects;";
+	private static final String FIND_PROJECT_ID_BY_NAME_SQL = "SELECT project_id FROM projects WHERE project_name = ?;";
+	private static final String ADD_PROJECT_SQL = "INSERT INTO projects VALUES(null ,? ,?);";
+	private static final String FIND_ALL_PROJECTS_BY_COMPANY_ID_SQL = "SELECT * FROM projects WHERE company_id = ?;";
 
 	public static void addProject(Project newProject, Company company) throws ProjectDAOException {
-		if (company == null) {
-			throw new ProjectDAOException("couldn't find company");
+		if (company == null || newProject == null) {
+			throw new ProjectDAOException("company and project must not be null");
 		}
-
-		String companyName = company.getName();
-
+		
+		int companyId = company.getId();
+		String projectName = newProject.getName();
+		
 		Connection connection = DBConnection.getInstance().getConnection();
 
 		try {
-			if (!CompanyDAO.isThereCompanyWithTheSameName(companyName)) {
-				throw new ProjectDAOException("unknow company to add project to");
-			}
-		} catch (CompanyDAOException e1) {
-			throw new ProjectDAOException(e1.getMessage());
-		}
 
-		if (isThereProjectWithTheSameName(newProject.getName())) {
-			throw new ProjectDAOException("project already exists");
-		}
-
-		int companyId;
-		try {
-			companyId = CompanyDAO.getIdOfCompanyWithName(companyName);
-		} catch (CompanyDAOException e1) {
-			throw new ProjectDAOException("couldn't get id of the company with the name" + companyName, e1);
-		}
-
-		try {
-			PreparedStatement insertIntoProjects = connection.prepareStatement(INSERT_INTO_PROJECTS,
+			PreparedStatement insertIntoProjects = connection.prepareStatement(ADD_PROJECT_SQL,
 					Statement.RETURN_GENERATED_KEYS);
-			insertIntoProjects.setInt(1, 0);
-			insertIntoProjects.setString(2, newProject.getName());
-			insertIntoProjects.setInt(3, companyId);
+			insertIntoProjects.setString(1, projectName);
+			insertIntoProjects.setInt(2, companyId);
 			insertIntoProjects.executeUpdate();
 
 			ResultSet rs = insertIntoProjects.getGeneratedKeys();
 
 			if (rs.next()) {
-				newProject.setId(rs.getInt(1));
+				int projectId = rs.getInt(1);
+				newProject.setId(projectId);
 			} else {
 				throw new ProjectDAOException("failed to create project");
 			}
-
 		} catch (SQLException e) {
 			throw new ProjectDAOException(e.getMessage());
 		} catch (ProjectException e) {
-			throw new ProjectDAOException("couldn't set project's id", e);
+			throw new ProjectDAOException("couldn't set project id");
 		}
 
 	}
@@ -87,14 +67,14 @@ public class ProjectDAO {
 		}
 
 		Connection connection = DBConnection.getInstance().getConnection();
-		Statement selectStatement;
-		ResultSet rs = null;
+
 		try {
-			selectStatement = connection.createStatement();
-			rs = selectStatement.executeQuery(SELECT_NAME_FROM_PROJECTS);
+			PreparedStatement selectStatement = connection.prepareStatement(GET_PROJECT_NAMES_SQL);
+			ResultSet rs = selectStatement.executeQuery();
 
 			while (rs.next()) {
-				if (rs.getString(1).equals(projectName)) {
+				String nextProjectName = rs.getString(1);
+				if (nextProjectName.equals(projectName)) {
 					return true;
 				}
 			}
@@ -106,7 +86,7 @@ public class ProjectDAO {
 
 	public static Set<Project> getAllProjectsByCompany(Company company) throws ProjectDAOException {
 		if (company == null) {
-			throw new ProjectDAOException("can't find company");
+			throw new ProjectDAOException("company cannot be null");
 		}
 
 		int companyId = company.getId();
@@ -115,8 +95,7 @@ public class ProjectDAO {
 
 		Connection connection = DBConnection.getInstance().getConnection();
 		try {
-			PreparedStatement selectProjectsByComapnyId = connection
-					.prepareStatement(SELECT_ALL_PROJECTS_WITH_COMPANY_ID_SQL);
+			PreparedStatement selectProjectsByComapnyId = connection.prepareStatement(FIND_ALL_PROJECTS_BY_COMPANY_ID_SQL);
 			selectProjectsByComapnyId.setInt(1, companyId);
 
 			ResultSet rs = selectProjectsByComapnyId.executeQuery();
@@ -150,13 +129,12 @@ public class ProjectDAO {
 			ResultSet rs = ps.executeQuery();
 
 			if (rs.next()) {
-				toReturn = new Project(rs.getString("project_name"));
+				String projectName = rs.getString("project_name");
+				toReturn = new Project(projectName);
 				toReturn.setId(projectId);
 				Set<Sprint> sprints = SprintDAO.getAllSprintsByProject(toReturn);
 				Set<Issue> issues = IssueDAO.getAllIssuesByProject(toReturn);
 
-				
-				
 				for (Sprint toAdd : sprints) {
 					toReturn.addSprint(toAdd);
 				}
@@ -216,12 +194,16 @@ public class ProjectDAO {
 		}
 
 	}
-	
+
 	public static int getProjectIdByName(String projectName) throws ProjectDAOException {
+		if (projectName == null || projectName.length() == 0) {
+			throw new ProjectDAOException("project name cannot be empty or null");
+		}
+		
 		Connection connection = DBConnection.getInstance().getConnection();
 		int id = 0;
 		try {
-			PreparedStatement selectProjectWithName = connection.prepareStatement(FIND_PROJECT_ID_BY_NAME);
+			PreparedStatement selectProjectWithName = connection.prepareStatement(FIND_PROJECT_ID_BY_NAME_SQL);
 			selectProjectWithName.setString(1, projectName);
 
 			ResultSet rs = selectProjectWithName.executeQuery();

@@ -1,5 +1,6 @@
 package com.godzilla.model;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,17 +13,9 @@ public class Project {
 	private Set<Sprint> sprints;
 
 	public Project(String name) throws ProjectException {
+		this.setName(name);
 		this.issues = new HashSet<>();
 		this.sprints = new HashSet<>();
-		this.setName(name);
-	}
-
-	private void setName(String name) throws ProjectException {
-		if (name != null && !name.trim().equals("")) {
-			this.name = name;
-		} else {
-			throw new ProjectException("project name cannot be null");
-		}
 	}
 
 	public void addIssue(Issue issueToAdd) throws ProjectException {
@@ -30,6 +23,14 @@ public class Project {
 			issues.add(issueToAdd);
 		} else {
 			throw new ProjectException("you cannot add an issue with value null to your project");
+		}
+	}
+
+	private void setName(String name) throws ProjectException {
+		if (name != null && !name.trim().equals("")) {
+			this.name = name;
+		} else {
+			throw new ProjectException("project name cannot be null");
 		}
 	}
 
@@ -41,24 +42,37 @@ public class Project {
 		}
 	}
 
-	public void setId(int id) throws ProjectException {
-		if (id > 0) {
-			this.id = id;
+	public void setId(int projectId) throws ProjectException {
+		if (projectId > 0) {
+			this.id = projectId;
 		} else {
 			throw new ProjectException("project's id cannot be 0");
 		}
 	}
 
 	public int getId() {
-		return id;
+		return this.id;
 	}
 
 	public String getName() {
 		return this.name;
 	}
+	
+	public Set<Issue> getIssues() {
+		return Collections.unmodifiableSet(this.issues);
+	}
+	
+	public Set<Sprint> getSprints() {
+		return Collections.unmodifiableSet(this.sprints);
+	}
 
 	@Override
 	public String toString() {
-		return "Project [id=" + id + ", name=" + name + ", issues=" + issues + ", sprints=" + sprints + "]" + "<br>";
+		return "Project [" +
+				"\n\tid=" + id + 
+				",\n\t name=" + name + 
+				",\n\t issues=" + issues + 
+				",\n\t sprints=" + sprints + 
+				"\n]\n";
 	}
 }

@@ -46,9 +46,11 @@ public abstract class Issue {
 	
 	public void linkToIssue(IssueLinkType linkType, Issue linkedIssue) {
 		Set<Issue> linkedIssues = this.linkedIssues.get(linkType);
+		
 		if (linkedIssues.contains(linkedIssue)) {
 			return;
 		}
+		
 		linkedIssues.add(linkedIssue);
 		
 		IssueLinkType oppositeLinkType = IssueLinkType.getOppositeLinkType(linkType);
@@ -103,9 +105,9 @@ public abstract class Issue {
 		}
 	}
 
-	public void setId(int id) throws IssueException {
-		if (id > 0) {
-			this.id = id;
+	public void setId(int issueId) throws IssueException {
+		if (issueId > 0) {
+			this.id = issueId;
 		} else {
 			throw new IssueException("issue's id cannot be 0");
 		}
@@ -158,7 +160,14 @@ public abstract class Issue {
 
 	@Override
 	public String toString() {
-		return "Issue [id=" + id + ", summary=" + summary + ", description=" + description + ", priority=" + priority
-				+ ", state=" + state + ", dateCreated=" + dateCreated + ", dateLastModified=" + dateLastModified + "]" + "<br/>";
+		return "Issue [" + 
+				"\n\tid=" + id + 
+				",\n\t summary=" + summary + 
+				",\n\t description=" + description + 
+				",\n\t priority=" + priority + 
+				",\n\t state=" + state + 
+				",\n\t dateCreated=" + dateCreated + 
+				",\n\t dateLastModified=" + dateLastModified + 
+				"\n]\n" ;
 	}
 }

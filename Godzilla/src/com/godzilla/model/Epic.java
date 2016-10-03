@@ -1,5 +1,6 @@
 package com.godzilla.model;
 
+import java.util.Collections;
 import java.util.Set;
 
 import com.godzilla.model.exceptions.EpicException;
@@ -24,7 +25,11 @@ public class Epic extends Issue {
 
 	public void addIssue(Issue toAdd) throws EpicException {
 		if (toAdd != null) {
-			this.issues.add(toAdd);
+			if (!(toAdd instanceof Epic)) {
+				this.issues.add(toAdd);
+			} else {
+				throw new EpicException("cannot add epic to another epic");
+			}
 		} else {
 			throw new EpicException("cannot add issue with value null");
 		}
@@ -32,5 +37,9 @@ public class Epic extends Issue {
 
 	public String getName() {
 		return this.name;
+	}
+	
+	public Set<Issue> getIssues() {
+		return Collections.unmodifiableSet(this.issues);
 	}
 }

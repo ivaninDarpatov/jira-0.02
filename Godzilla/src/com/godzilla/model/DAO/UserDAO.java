@@ -17,38 +17,33 @@ import com.godzilla.model.exceptions.CompanyDAOException;
 import com.godzilla.model.exceptions.CompanyException;
 import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.PermissionException;
-import com.godzilla.model.exceptions.ProjectDAOException;
-import com.godzilla.model.exceptions.ProjectException;
 import com.godzilla.model.exceptions.UserDAOException;
 import com.godzilla.model.exceptions.UserException;
 
 public class UserDAO {
-	private static final String FIND_USERS_BY_COMPANY_ID_SQL = "SELECT * " + "FROM users " + "WHERE company_id = ?;";
+	private static final String FIND_USERS_BY_COMPANY_ID_SQL = "SELECT * FROM users WHERE company_id = ?;";
 	private static final int USER_PERMISSIONS = Permissions.USER.ordinal() + 1;
 	private static final int ADMIN_PERMISSIONS = Permissions.ADMINISTRATOR.ordinal() + 1;
-	private static final String FIND_USER_ID_BY_EMAIL = "SELECT user_id from users where email =  ?;";
-
-	private static final String FIND_USER_SQL = "SELECT u.user_id " + "FROM users u " + "JOIN companies c "
-			+ "ON (c.company_id = u.company_id) " + "WHERE u.email = ? " + "AND u.password = ? "
-			+ "AND c.company_name = ?;";
-	private static final String FIND_COMPANY_SQL = "SELECT company_id " + "FROM companies " + "WHERE company_name = ?;";
-	private static final String REGISTER_USER_SQL = "INSERT INTO users " + "VALUES (null, ?, ?, ? , ?);";
-	private static final String REMOVE_USER_SQL = "DELETE FROM users " + "WHERE user_id = ?;";
-	private static final String SELECT_ID_EMAIL_PASSWORD_PERMISSION_SQL = "Select user_id, email, password, permissions_id from users where user_id = ?;";
+	private static final String FIND_USER_ID_BY_EMAIL_SQL = "SELECT user_id FROM users WHERE email = ?;";
+	private static final String FIND_USER_BY_EMAIL_PASSWORD_COMPANY_SQL = "SELECT u.user_id FROM users u JOIN companies c ON (c.company_id = u.company_id) WHERE u.email = ? AND u.password = ? AND c.company_name = ?;";
+	private static final String FIND_COMPANY_ID_BY_NAME_SQL = "SELECT company_id FROM companies WHERE company_name = ?;";
+	private static final String REGISTER_USER_SQL = "INSERT INTO users VALUES (null, ?, ?, ? , ?);";
+	private static final String REMOVE_USER_SQL = "DELETE FROM users WHERE user_id = ?;";
+	private static final String GET_USER_BY_ID_SQL = "SELECT * FROM users WHERE user_id = ?;";
 
 	public static void registerUser(User toRegister) throws UserException, UserDAOException {
 		if (toRegister != null) {
 			Connection connection = DBConnection.getInstance().getConnection();
 			String email = toRegister.getEmail();
 			String password = toRegister.getPassword();
-			String company = toRegister.getCompany();
+			String companyName = toRegister.getCompany();
 			int permissionsId = 0;
 			int companyId;
 
 			try {
 				connection.setAutoCommit(false);
-				PreparedStatement ps = connection.prepareStatement(FIND_COMPANY_SQL);
-				ps.setString(1, company);
+				PreparedStatement ps = connection.prepareStatement(FIND_COMPANY_ID_BY_NAME_SQL);
+				ps.setString(1, companyName);
 
 				ResultSet rs = ps.executeQuery();
 
@@ -57,15 +52,14 @@ public class UserDAO {
 					permissionsId = USER_PERMISSIONS;
 				} else {
 					Company newCompany;
+					
 					try {
-						newCompany = new Company(company);
+						newCompany = new Company(companyName);
+						CompanyDAO.createNewCompany(newCompany);
 					} catch (CompanyException e1) {
 						throw new UserDAOException("couldn't create company", e1);
-					}
-					try {
-						CompanyDAO.createNewCompany(newCompany);
-					} catch (CompanyDAOException e1) {
-						throw new UserDAOException("failed to create company", e1);
+					} catch (CompanyDAOException e) {
+						throw new UserDAOException("failed to create company", e);
 					}
 
 					companyId = newCompany.getId();
@@ -120,7 +114,7 @@ public class UserDAO {
 		Connection connection = DBConnection.getInstance().getConnection();
 
 		try {
-			PreparedStatement ps = connection.prepareStatement(FIND_USER_SQL);
+			PreparedStatement ps = connection.prepareStatement(FIND_USER_BY_EMAIL_PASSWORD_COMPANY_SQL);
 			ps.setString(1, user.getEmail());
 			ps.setString(2, user.getPassword());
 			ps.setString(3, user.getCompany());
@@ -171,8 +165,8 @@ public class UserDAO {
 		}
 	}
 
-	public static User getUserById(int id) throws UserDAOException {
-		if (id < 1) {
+	public static User getUserById(int userId) throws UserDAOException {
+		if (userId < 1) {
 			throw new UserDAOException("can't find user with that id");
 		}
 		User user = null;
@@ -180,29 +174,30 @@ public class UserDAO {
 
 		try {
 			connection.setAutoCommit(false);
-			PreparedStatement selectIdNamePasswordPermission = connection
-					.prepareStatement(SELECT_ID_EMAIL_PASSWORD_PERMISSION_SQL);
-			selectIdNamePasswordPermission.setInt(1, id);
+			PreparedStatement selectIdNamePasswordPermission = connection.prepareStatement(GET_USER_BY_ID_SQL);
+			selectIdNamePasswordPermission.setInt(1, userId);
 
 			ResultSet rs = selectIdNamePasswordPermission.executeQuery();
 
 			if (rs.next()) {
-				int userId = rs.getInt("user_id");
-				String email = rs.getString(2);
-				String password = rs.getString(3);
-				int permission = rs.getInt(4);
-				Permissions userPermission = permission == 1 ? Permissions.ADMINISTRATOR : Permissions.USER;
+			
+				String email = rs.getString("email");
+				String password = rs.getString("password");
+				int permissions = rs.getInt("permissions_id");
+				int companyId = rs.getInt("company_id");
+				String companyName = CompanyDAO.getCompanyNameById(companyId);
+				Permissions userPermissions = permissions == 1 ? Permissions.ADMINISTRATOR : Permissions.USER;
 
-				user = new User(email, password);
+				user = new User(email, password, companyName);
 				user.setId(userId);
-				user.setPermissions(userPermission);
+				user.setPermissions(userPermissions);
 
 				for (Issue issue : IssueDAO.getAllReportedIssuesByUser(user)) {
-					user.addIssuesReportedByMe(issue);
+					user.addIssueReportedByMe(issue);
 				}
 
 				for (Issue issue : IssueDAO.getAllIssuesAssignedTo(user)) {
-					user.addIssuesAssignedToMe(issue);
+					user.addIssueAssignedToMe(issue);
 				}
 
 			} else {
@@ -217,6 +212,8 @@ public class UserDAO {
 		} catch (IssueDAOException e) {
 			e.printStackTrace();
 			throw new UserDAOException("failed to get issues", e);
+		} catch (CompanyDAOException e) {
+			throw new UserDAOException("failed to get company name", e);
 		} finally {
 			try {
 				connection.setAutoCommit(true);
@@ -256,16 +253,16 @@ public class UserDAO {
 
 		return result;
 	}
-	
+
 	public static int getUserIdByEmail(String userEmail) throws UserDAOException {
-		if(userEmail == null){
+		if (userEmail == null) {
 			throw new UserDAOException("email cannot be null");
 		}
-		
+
 		Connection connection = DBConnection.getInstance().getConnection();
 		int id = 0;
 		try {
-			PreparedStatement selectUserWithEmail = connection.prepareStatement(FIND_USER_ID_BY_EMAIL);
+			PreparedStatement selectUserWithEmail = connection.prepareStatement(FIND_USER_ID_BY_EMAIL_SQL);
 			selectUserWithEmail.setString(1, userEmail);
 
 			ResultSet rs = selectUserWithEmail.executeQuery();

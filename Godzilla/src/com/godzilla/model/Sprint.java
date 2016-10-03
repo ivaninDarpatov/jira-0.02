@@ -1,6 +1,7 @@
 package com.godzilla.model;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,14 +16,14 @@ public class Sprint {
 	private Set<Issue> issues;
 
 	public Sprint(String name, String sprintGoal) throws SprintException {
-		this.issues = new HashSet<Issue>();
 		this.setName(name);
 		this.setSprintGoal(sprintGoal);
+		this.issues = new HashSet<Issue>();
 	}
 	
-	public void addIssue(Issue issue) throws SprintException {
-		if (issue != null) {
-			this.issues.add(issue);
+	public void addIssue(Issue issueToAdd) throws SprintException {
+		if (issueToAdd != null) {
+			this.issues.add(issueToAdd);
 		} else {
 			throw new SprintException("cannot add issue with a null value");
 		}
@@ -60,9 +61,9 @@ public class Sprint {
 		}
 	}
 
-	public void setId(int id) throws SprintException {
-		if (id > 0) {
-			this.id = id;
+	public void setId(int sprintId) throws SprintException {
+		if (sprintId > 0) {
+			this.id = sprintId;
 		} else {
 			throw new SprintException("sprint's id cannot be 0");
 		}
@@ -87,11 +88,21 @@ public class Sprint {
 	public int getId() {
 		return this.id;
 	}
+	
+	public Set<Issue> getIssues() {
+		return Collections.unmodifiableSet(this.issues);
+	}
 
 	@Override
 	public String toString() {
-		return "Sprint [id=" + id + ", name=" + name + ", sprintGoal=" + sprintGoal + ", startingDate=" + startingDate
-				+ ", endDate=" + endDate + ", issues=" + issues + "]";
+		return "Sprint [" +
+				"\n\tid=" + id + 
+				",\n\t name=" + name + 
+				",\n\t sprintGoal=" + sprintGoal + 
+				",\n\t startingDate=" + startingDate + 
+				",\n\t endDate=" + endDate + 
+				",\n\t issues=" + issues + 
+				"\n]\n";
 	}
 
 }

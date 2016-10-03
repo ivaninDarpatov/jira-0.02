@@ -1,5 +1,6 @@
 package com.godzilla.model;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,26 +13,26 @@ public class Company {
 	private Set<User> users;
 
 	public Company(String name) throws CompanyException {
-		this.projects = new HashSet<>();
-		this.users = new HashSet<>();
 		try {
 			this.setName(name);
 		} catch (CompanyException e) {
 			throw new CompanyException("Invalid company name", e);
 		}
+		this.projects = new HashSet<>();
+		this.users = new HashSet<>();
 	}
 
-	public void addNewProject(Project newProject) throws CompanyException {
-		if (newProject != null) {
-			this.projects.add(newProject);
+	public void addProject(Project projectToAdd) throws CompanyException {
+		if (projectToAdd != null) {
+			this.projects.add(projectToAdd);
 		} else {
 			throw new CompanyException("null value for project you're trying to add");
 		}
 	}
 
-	public void addNewUser(User newUser) throws CompanyException {
-		if (newUser != null) {
-			this.users.add(newUser);
+	public void addUser(User userToAdd) throws CompanyException {
+		if (userToAdd != null) {
+			this.users.add(userToAdd);
 		} else {
 			throw new CompanyException("null value for user you're trying to add");
 		}
@@ -45,9 +46,9 @@ public class Company {
 		}
 	}
 
-	public void setId(int id) throws CompanyException {
-		if (id != 0) {
-			this.id = id;
+	public void setId(int companyId) throws CompanyException {
+		if (companyId != 0) {
+			this.id = companyId;
 		} else {
 			throw new CompanyException("company id cannot be 0");
 		}
@@ -58,21 +59,25 @@ public class Company {
 	}
 
 	public int getId() {
-		return id;
+		return this.id;
 	}
 
 	public Set<Project> getProjects() {
-		return projects;
+		return Collections.unmodifiableSet(this.projects);
 	}
-	
-	public Set<User> getUsers(){
-		return users;
+
+	public Set<User> getUsers() {
+		return Collections.unmodifiableSet(this.users);
 	}
 
 	@Override
 	public String toString() {
-		return "Company [id=" + id + ", name=" + name + ", projects=" + projects + ", users=" + users + "]";
+		return "Company [" +
+				"\n\tid=" + id + 
+				",\n\t name=" + name + 
+				",\n\t projects=" + projects + 
+				",\n\t users=" + users + 
+				"\n]\n";
 	}
-	
-	
+
 }

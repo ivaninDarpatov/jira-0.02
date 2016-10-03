@@ -15,7 +15,17 @@ import com.godzilla.model.exceptions.UserException;
 @SuppressWarnings("all")
 public class UserDAOTest {
 
-
+	@Test
+	public void getUserById() {
+		int userId = 1;
+		
+		try {
+			User user = UserDAO.getUserById(userId);
+			System.out.println(user);
+		} catch (UserDAOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	//@Test
 	public void registerTwoUsers(){
@@ -44,7 +54,7 @@ public class UserDAOTest {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void removeUser(){
 		int userId = 10;
 		try {

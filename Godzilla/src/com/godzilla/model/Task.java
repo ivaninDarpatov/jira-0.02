@@ -4,7 +4,7 @@ import com.godzilla.model.exceptions.IssueException;
 
 public class Task extends Issue {
 
-	public Task(String summary) throws IssueException{
+	public Task(String summary) throws IssueException {
 		super(summary);
 	}
 }

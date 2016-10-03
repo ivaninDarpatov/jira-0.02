@@ -18,30 +18,33 @@ import com.godzilla.model.exceptions.UserDAOException;
 
 public class CompanyDAO {
 
-	private static final String REMOVE_COMPANY_SQL = "DELETE FROM companies " + "WHERE company_id = ?;";
-	private static final String SELECT_COMPANY_BY_ID_SQL = "Select * from companies where company_id = ?";
-	private static final String FIND_COMPANY_ID_BY_NAME = "SELECT company_id from companies where company_name =  ?;";
-	private static final String SELECT_NAME_FROM_COMPANIES = "SELECT company_name from companies";
-	private static final String INSERT_INTO_COMPANIES = "INSERT INTO companies VALUES(? , ? );";
+	private static final String GET_COMPANY_NAME_BY_ID_SQL = "SELECT company_name FROM companies WHERE company_id = ?;";
+	private static final String REMOVE_COMPANY_SQL = "DELETE FROM companies WHERE company_id = ?;";
+	private static final String FIND_COMPANY_BY_ID_SQL = "SELECT * FROM companies WHERE company_id = ?;";
+	private static final String FIND_COMPANY_ID_BY_NAME_SQL = "SELECT company_id FROM companies WHERE company_name = ?;";
+	private static final String GET_ALL_COMPANY_NAMES_SQL = "SELECT company_name FROM companies;";
+	private static final String ADD_COMPANY_SQL = "INSERT INTO companies VALUES(null , ?);";
 
 	public static void createNewCompany(Company newCompany) throws CompanyDAOException {
 		if (isThereCompanyWithTheSameName(newCompany.getName())) {
 			throw new CompanyDAOException("company's name is taken");
 		}
+		
+		String companyName = newCompany.getName();
 
 		Connection connection = DBConnection.getInstance().getConnection();
 		try {
-			PreparedStatement insertIntoCompanies = connection.prepareStatement(INSERT_INTO_COMPANIES,
+			PreparedStatement insertIntoCompanies = connection.prepareStatement(ADD_COMPANY_SQL,
 					Statement.RETURN_GENERATED_KEYS);
 
-			insertIntoCompanies.setInt(1, 0);
-			insertIntoCompanies.setString(2, newCompany.getName());
+			insertIntoCompanies.setString(1, companyName);
 			insertIntoCompanies.executeUpdate();
 
 			ResultSet rs = insertIntoCompanies.getGeneratedKeys();
 
 			if (rs.next()) {
-				newCompany.setId(rs.getInt(1));
+				int companyId = rs.getInt(1);
+				newCompany.setId(companyId);
 			} else {
 				throw new CompanyDAOException("failed to create company");
 			}
@@ -54,15 +57,19 @@ public class CompanyDAO {
 	}
 
 	public static boolean isThereCompanyWithTheSameName(String companyName) throws CompanyDAOException {
+		if (companyName == null || companyName.length() == 0) {
+			throw new CompanyDAOException("company's name cannot be empty or null");
+		}
+		
 		Connection connection = DBConnection.getInstance().getConnection();
-		Statement selectStatement;
-		ResultSet rs = null;
+		
 		try {
-			selectStatement = connection.createStatement();
-			rs = selectStatement.executeQuery(SELECT_NAME_FROM_COMPANIES);
+			PreparedStatement selectStatement = connection.prepareStatement(GET_ALL_COMPANY_NAMES_SQL);
+			ResultSet rs = selectStatement.executeQuery();
 
 			while (rs.next()) {
-				if (rs.getString(1).equals(companyName)) {
+				String nextCompanyName = rs.getString(1);
+				if (nextCompanyName.equals(companyName)) {
 					return true;
 				}
 			}
@@ -73,11 +80,14 @@ public class CompanyDAO {
 	}
 
 	public static int getIdOfCompanyWithName(String companyName) throws CompanyDAOException {
-
+		if (companyName == null || companyName.length() == 0) {
+			throw new CompanyDAOException("company's name cannot be empty or null");
+		}
+		
 		Connection connection = DBConnection.getInstance().getConnection();
 		int id = 0;
 		try {
-			PreparedStatement selectCompanyWithName = connection.prepareStatement(FIND_COMPANY_ID_BY_NAME);
+			PreparedStatement selectCompanyWithName = connection.prepareStatement(FIND_COMPANY_ID_BY_NAME_SQL);
 			selectCompanyWithName.setString(1, companyName);
 
 			ResultSet rs = selectCompanyWithName.executeQuery();
@@ -99,27 +109,29 @@ public class CompanyDAO {
 		if (companyId < 1) {
 			throw new CompanyDAOException("can't find company with that id");
 		}
+		
 		Connection connection = DBConnection.getInstance().getConnection();
 		Company company = null;
 
 		PreparedStatement selectCompanyById;
 		try {
-			selectCompanyById = connection.prepareStatement(SELECT_COMPANY_BY_ID_SQL);
+			selectCompanyById = connection.prepareStatement(FIND_COMPANY_BY_ID_SQL);
 			selectCompanyById.setInt(1, companyId);
 			ResultSet rs = selectCompanyById.executeQuery();
 			if (rs.next()) {
-				company = new Company(rs.getString(2));
+				String companyName = rs.getString("company_name");
+				company = new Company(companyName);
 				company.setId(companyId);
 
 				Set<Project> projects = ProjectDAO.getAllProjectsByCompany(company);
 				Set<User> users = UserDAO.getAllUsersByCompany(company);
-				
+
 				for (Project project : projects) {
-					company.addNewProject(project);
+					company.addProject(project);
 				}
-				
+
 				for (User user : users) {
-					company.addNewUser(user);
+					company.addUser(user);
 				}
 
 			} else {
@@ -174,6 +186,31 @@ public class CompanyDAO {
 			throw new CompanyDAOException("failed to get company's projects", e);
 		}
 
+	}
+
+	public static String getCompanyNameById(int companyId) throws CompanyDAOException {
+		if (companyId < 1) {
+			throw new CompanyDAOException("company id cannot be 0");
+		}
+		
+		Connection connection = DBConnection.getInstance().getConnection();
+		String companyName = "";
+		
+		try {
+			PreparedStatement getCompanyNameByIdPS = connection.prepareStatement(GET_COMPANY_NAME_BY_ID_SQL);
+			getCompanyNameByIdPS.setInt(1, companyId);
+			
+			ResultSet getCompanyNameByIdRS = getCompanyNameByIdPS.executeQuery();
+			if (getCompanyNameByIdRS.next()) {
+				companyName = getCompanyNameByIdRS.getString(1);
+			} else {
+				throw new CompanyDAOException("failed to get company name");
+			}
+		} catch (SQLException e) {
+			throw new CompanyDAOException(e.getMessage());
+		}
+		
+		return companyName;
 	}
 
 }

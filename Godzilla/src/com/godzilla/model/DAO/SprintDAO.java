@@ -18,17 +18,17 @@ import com.godzilla.model.exceptions.SprintDAOException;
 import com.godzilla.model.exceptions.SprintException;
 
 public class SprintDAO {
-	private static final String GET_SPRINT_BY_ID_SQL = "SELECT * "
-													+ "FROM sprints "
-													+ "WHERE sprint_id = ?;";
-	private static final String REMOVE_SPRINT_SQL = "DELETE FROM sprints " + "WHERE sprint_id = ?;";
-	private static final String SELECT_ALL_SPRINTS_BY_PROJECT_ID = "SELECT * FROM sprints " + "WHERE project_id = ? ";
-	private static final String INSERT_SPRINT_SQL = "INSERT INTO sprints " + "VALUES(null, ? , ? , 'someDate' , 'someDate' , ?);";
+	private static final String GET_SPRINT_BY_ID_SQL = "SELECT * FROM sprints WHERE sprint_id = ?;";
+	private static final String REMOVE_SPRINT_SQL = "DELETE FROM sprints WHERE sprint_id = ?;";
+	private static final String GET_SPRINTS_BY_PROJECT_ID_SQL = "SELECT * FROM sprints WHERE project_id = ?;";
+	private static final String ADD_SPRINT_SQL = "INSERT INTO sprints VALUES(null, ? , ? , 'someDate' , 'someDate' , ?);";
 
+	@SuppressWarnings("unused")
 	public static Sprint getSprintById(int sprintId) throws SprintDAOException {
 		if (sprintId < 1) {
 			throw new SprintDAOException("sprint id cannot be 0");
 		}
+		
 		Sprint result = null;
 		Connection connection = DBConnection.getInstance().getConnection();
 		Set<Issue> issues = new HashSet<Issue>();
@@ -72,7 +72,7 @@ public class SprintDAO {
 	
 	public static Set<Sprint> getAllSprintsByProject(Project project) throws SprintDAOException {
 		if (project == null) {
-			throw new SprintDAOException("couldn't find project");
+			throw new SprintDAOException("project cannot be null");
 		}
 
 		Connection connection = DBConnection.getInstance().getConnection();
@@ -81,9 +81,7 @@ public class SprintDAO {
 		Set<Sprint> result = new HashSet<Sprint>();
 
 		try {
-			PreparedStatement selectAllSprintsByProjectId = connection
-					.prepareStatement(SELECT_ALL_SPRINTS_BY_PROJECT_ID);
-
+			PreparedStatement selectAllSprintsByProjectId = connection.prepareStatement(GET_SPRINTS_BY_PROJECT_ID_SQL);
 			selectAllSprintsByProjectId.setInt(1, projectId);
 
 			ResultSet rs = selectAllSprintsByProjectId.executeQuery();
@@ -118,8 +116,7 @@ public class SprintDAO {
 //							sprintToAdd.getEndDate().toLocalTime().toString();
 		
 		try {
-			PreparedStatement insertSprint = connection.prepareStatement(INSERT_SPRINT_SQL,
-					Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement insertSprint = connection.prepareStatement((ADD_SPRINT_SQL), Statement.RETURN_GENERATED_KEYS);
 			
 			insertSprint.setString(1, sprintToAdd.getName());
 			insertSprint.setString(2, sprintToAdd.getSpintGoal());

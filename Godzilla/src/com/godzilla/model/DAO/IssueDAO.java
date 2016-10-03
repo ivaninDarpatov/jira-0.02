@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,42 +19,32 @@ import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.IssueException;
 
 public class IssueDAO {
-	private static final String SELECT_SPRINT_ID_FOR_ISSUE_SQL = "SELECT sprint_id from issues where issue_id = ?";
-	private static final String ADD_ISSUE_TO_EPIC_SQL = "UPDATE issues SET epic_id= ? WHERE issue_id= ?;";
-	private static final String ADD_ISSUE_TO_SPRINT_SQL = "UPDATE issues SET sprint_id= ? WHERE issue_id= ?;";
-	private static final String HAND_ISSUE_TO_ADMIN_SQL = "UPDATE issues " + "SET reporter_id = ? "
-			+ "WHERE issue_id = ?;";
-	private static final String FIND_PROJECT_COMPANY_SQL = "SELECT c.* " + "FROM companies c " + "JOIN projects p "
-			+ "ON (c.company_id = p.company_id) " + "WHERE p.project_id = ?;";
-	private static final String FIND_ISSUE_PROJECT_SQL = "SELECT p.* " + "FROM projects p " + "JOIN issues i "
-			+ "ON (i.project_id = p.project_id) " + "WHERE i.issue_id = ?;";
-	private static final String FIND_COMPANY_ADMIN_SQL = "SELECT * " + "FROM users " + "WHERE permissions_id = 1 "
-			+ "AND company_id = ?";
-
-	private static final String GET_ISSUES_ASSIGNED_TO_USER_SQL = "SELECT issue_id,summary,description,"
-			+ "state_id,priority," + "date_created,date_last_modified" + " FROM issues " + "WHERE assignee_id = ?;";
-	private static final String UNASSIGN_ISSUE_SQL = "UPDATE issues " + "SET assignee_id = null "
-			+ "WHERE issue_id = ?;";
-	private static final String REMOVE_ISSUE_FROM_SPRINT_SQL = "UPDATE issues " + "SET sprint_id = null "
-			+ "WHERE issue_id = ?;";
-	private static final String ADD_BUG_SQL = "Insert into bugs VALUES(? , null );";
-	private static final String ADD_TASK_SQL = "Insert into tasks VALUES( ?, null);";
-	private static final String ADD_EPIC_SQL = "Insert into epics VALUES( ? , ? );";
-	private static final String ADD_STORY_SQL = "Insert into stories VALUES( ? , null);";
-	private static final String FIND_ISSUES_BY_EPIC_ID_SQL = "SELECT issue_id " + "FROM issues " + "WHERE epic_id = ?;";
-	private static final String FIND_ISSUES_BY_PROJECT_ID_SQL = "SELECT issue_id " + "FROM issues "
-			+ "WHERE project_id = ?;";
-	private static final String IS_BUG_SQL = "SELECT bug_id " + "FROM bugs " + "WHERE bug_id = ?;";
-	private static final String IS_TASK_SQL = "SELECT task_id " + "FROM tasks " + "WHERE task_id = ?;";
-	private static final String IS_STORY_SQL = "SELECT story_id " + "FROM stories " + "WHERE story_id = ?;";
-	private static final String IS_EPIC_SQL = "SELECT epic_id " + "FROM epics " + "WHERE epic_id = ?;";
-	private static final String REMOVE_ISSUE_SQL = "DELETE FROM issues " + "WHERE issue_id = ?;";
-	private static final String CREATE_ISSUE_SQL = "INSERT INTO issues "
-			+ "VALUES (null, ?, ?, ?, ?, ?, ?, ?, 'someDate', 'someDate', null, null);";
-	private static final String SELECT_ISSUE_BY_REPORTER_SQL = "Select issue_id,summary,description,"
-			+ "state_id,priority," + "date_created,date_last_modified" + " from issues where reporter_id = ?;";
-	private static final String FIND_ISSUE_BY_ID_SQL = "SELECT * " + "FROM issues " + "WHERE issue_id = ?;";
-	private static final String FIND_ISSUES_BY_SPRINT_SQL = "SELECT * " + "FROM issues " + "WHERE sprint_id = ?;";
+	private static final String ASSIGN_ISSUE_SQL = "UPDATE issues SET assignee_id = ? WHERE issue_id = ?;";
+	private static final String GET_SPRINT_ID_FOR_ISSUE_SQL = "SELECT sprint_id FROM issues WHERE issue_id = ?;";
+	private static final String ADD_ISSUE_TO_EPIC_SQL = "UPDATE issues SET epic_id = ? WHERE issue_id = ?;";
+	private static final String ADD_ISSUE_TO_SPRINT_SQL = "UPDATE issues SET sprint_id = ? WHERE issue_id = ?;";
+	private static final String HAND_ISSUE_TO_ADMIN_SQL = "UPDATE issues SET reporter_id = ? WHERE issue_id = ?;";
+	private static final String FIND_COMPANY_FOR_PROJECT_SQL = "SELECT c.* FROM companies c JOIN projects p ON (c.company_id = p.company_id) WHERE p.project_id = ?;";
+	private static final String FIND_PROJECT_FOR_ISSUE_SQL = "SELECT p.* FROM projects p JOIN issues i ON (i.project_id = p.project_id) WHERE i.issue_id = ?;";
+	private static final String FIND_ADMIN_FOR_COMPANY_SQL = "SELECT * FROM users WHERE permissions_id = 1 AND company_id = ?;";
+	private static final String GET_ISSUES_ASSIGNED_TO_USER_SQL = "SELECT issue_id, summary, description, state_id, priority, date_created, date_last_modified FROM issues WHERE assignee_id = ?;";
+	private static final String UNASSIGN_ISSUE_SQL = "UPDATE issues SET assignee_id = null WHERE issue_id = ?;";
+	private static final String REMOVE_ISSUE_FROM_SPRINT_SQL = "UPDATE issues SET sprint_id = null WHERE issue_id = ?;";
+	private static final String ADD_BUG_SQL = "INSERT INTO bugs VALUES(? , null);";
+	private static final String ADD_TASK_SQL = "INSERT INTO tasks VALUES(?, null);";
+	private static final String ADD_EPIC_SQL = "INSERT INTO epics VALUES(? , ?);";
+	private static final String ADD_STORY_SQL = "INSERT INTO stories VALUES(? , null);";
+	private static final String FIND_ISSUES_BY_EPIC_ID_SQL = "SELECT issue_id FROM issues WHERE epic_id = ?;";
+	private static final String FIND_ISSUES_BY_PROJECT_ID_SQL = "SELECT issue_id FROM issues WHERE project_id = ?;";
+	private static final String IS_BUG_SQL = "SELECT bug_id FROM bugs WHERE bug_id = ?;";
+	private static final String IS_TASK_SQL = "SELECT task_id FROM tasks WHERE task_id = ?;";
+	private static final String IS_STORY_SQL = "SELECT story_id FROM stories WHERE story_id = ?;";
+	private static final String IS_EPIC_SQL = "SELECT epic_id FROM epics WHERE epic_id = ?;";
+	private static final String REMOVE_ISSUE_SQL = "DELETE FROM issues WHERE issue_id = ?;";
+	private static final String CREATE_ISSUE_SQL = "INSERT INTO issues VALUES (null, ?, ?, ?, ?, ?, ?, ?, 'someDate', 'someDate', null, null);";
+	private static final String FIND_ISSUE_BY_REPORTER_SQL = "SELECT issue_id, summary, description, state_id, priority, date_created, date_last_modified FROM issues WHERE reporter_id = ?;";
+	private static final String FIND_ISSUE_BY_ID_SQL = "SELECT * FROM issues WHERE issue_id = ?;";
+	private static final String FIND_ISSUES_BY_SPRINT_SQL = "SELECT * FROM issues WHERE sprint_id = ?;";
 
 	public static void createIssue(Issue toCreate, Project project, User reporter) throws IssueDAOException {
 		if (toCreate == null || project == null || reporter == null) {
@@ -63,7 +52,6 @@ public class IssueDAO {
 		}
 
 		String issueType = Issue.getIssueType(toCreate);
-		System.out.println(issueType);
 
 		Connection connection = DBConnection.getInstance().getConnection();
 		int issueId;
@@ -84,8 +72,7 @@ public class IssueDAO {
 
 		try {
 			connection.setAutoCommit(false);
-			PreparedStatement insertIntoIssues = connection.prepareStatement(CREATE_ISSUE_SQL,
-					Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement insertIntoIssues = connection.prepareStatement(CREATE_ISSUE_SQL, Statement.RETURN_GENERATED_KEYS);
 			insertIntoIssues.setString(1, summary);
 			insertIntoIssues.setString(2, description);
 			insertIntoIssues.setInt(3, projectId);
@@ -126,6 +113,8 @@ public class IssueDAO {
 				insertIntoBugTaskEpicOrStory = connection.prepareStatement(ADD_EPIC_SQL);
 				insertIntoBugTaskEpicOrStory.setInt(1, issueId);
 				insertIntoBugTaskEpicOrStory.setString(2, ((Epic) toCreate).getName());
+				PreparedStatement addIssueToEpicPS = connection.prepareStatement(ADD_ISSUE_TO_EPIC_SQL);
+				addIssueToEpicPS.executeUpdate();
 				break;
 			case "story":
 				insertIntoBugTaskEpicOrStory = connection.prepareStatement(ADD_STORY_SQL);
@@ -136,7 +125,7 @@ public class IssueDAO {
 			}
 
 			if (insertIntoBugTaskEpicOrStory.executeUpdate() < 1) {
-				throw new IssueDAOException("Ne bqha napraveni promeni");
+				throw new IssueDAOException("failed to insert issue properly");
 			}
 
 		} catch (SQLException e) {
@@ -171,16 +160,12 @@ public class IssueDAO {
 			PreparedStatement ps = connection.prepareStatement(FIND_ISSUES_BY_PROJECT_ID_SQL);
 			ps.setInt(1, projectId);
 
-			System.out.println("Predi execute");
 			ResultSet rs = ps.executeQuery();
-			System.out.println("sled execute");
-			System.out.println();
 
 			while (rs.next()) {
 				int issueId = rs.getInt(1);
-				System.out.println("Predi getIssue");
-				result.add(getIssueById(issueId));
-				System.out.println("Sled getIssue");
+				Issue issueToAdd = IssueDAO.getIssueById(issueId);
+				result.add(issueToAdd);
 			}
 
 		} catch (SQLException e) {
@@ -213,7 +198,7 @@ public class IssueDAO {
 				IssueState state = IssueState.getTypeById(stateId);
 
 				String type = IssueDAO.getIssueType(issueId);
-				System.out.println(type);
+
 				switch (type) {
 				case "bug":
 					issue = new Bug(summary);
@@ -240,9 +225,8 @@ public class IssueDAO {
 					throw new IssueDAOException("couldn't find issue");
 				}
 
-				if (description != null) {
-					issue.setDescription(description);
-				}
+
+				issue.setDescription(description);
 				issue.setPriority(priority);
 				issue.setState(state);
 //				issue.setDateCreated(dateCreated);
@@ -280,7 +264,8 @@ public class IssueDAO {
 
 			while (rs.next()) {
 				int issueId = rs.getInt(1);
-				result.add(IssueDAO.getIssueById(issueId));
+				Issue issueToAdd = IssueDAO.getIssueById(issueId);
+				result.add(issueToAdd);
 			}
 
 		} catch (SQLException e) {
@@ -300,13 +285,12 @@ public class IssueDAO {
 
 		try {
 			connection.setAutoCommit(false);
-			String issueType = IssueDAO.getIssueType(toRemove.getId());
-			String table = IssueDAO.getIssueType(toRemove.getId()).equals("story") ? "storie"
-					: IssueDAO.getIssueType(toRemove.getId());
+			String issueType = IssueDAO.getIssueType(issueId);
+			String table = IssueDAO.getIssueType(issueId).equals("story") ? "storie" : IssueDAO.getIssueType(issueId);
 
 			final String DELETE_BUG_TASK_STORY_SQL = "DELETE FROM " + table + "s" + " WHERE " + issueType + "_id = ?;";
 			PreparedStatement ps = connection.prepareStatement(DELETE_BUG_TASK_STORY_SQL);
-			ps.setInt(1, toRemove.getId());
+			ps.setInt(1, issueId);
 
 			if (ps.executeUpdate() < 1) {
 				throw new IssueDAOException("failed to remove " + issueType);
@@ -337,18 +321,19 @@ public class IssueDAO {
 		}
 	}
 
-	public static Set<Issue> getAllReportedIssuesByUser(User user) throws IssueDAOException {
-		if (user == null) {
+	public static Set<Issue> getAllReportedIssuesByUser(User reporter) throws IssueDAOException {
+		if (reporter == null) {
 			throw new IssueDAOException("couldn't find user");
 		}
 
 		Set<Issue> reportedByThatUser = new HashSet<Issue>();
 		Connection connection = DBConnection.getInstance().getConnection();
-
+		int reporterId = reporter.getId();
+		
 		try {
-			PreparedStatement ps = connection.prepareStatement(SELECT_ISSUE_BY_REPORTER_SQL);
+			PreparedStatement ps = connection.prepareStatement(FIND_ISSUE_BY_REPORTER_SQL);
 
-			ps.setInt(1, user.getId());
+			ps.setInt(1, reporterId);
 
 			ResultSet rs = ps.executeQuery();
 
@@ -506,14 +491,14 @@ public class IssueDAO {
 	
 	private static boolean isIssueInSprint(Issue issue) throws IssueDAOException{
 		if(issue == null){
-			throw new IssueDAOException("issue = null");
+			throw new IssueDAOException("issue cannot be null");
 		}
 		
 		Connection connection = DBConnection.getInstance().getConnection();
 		
 		PreparedStatement getIssueSprint;
 		try {
-			getIssueSprint = connection.prepareStatement(SELECT_SPRINT_ID_FOR_ISSUE_SQL);
+			getIssueSprint = connection.prepareStatement(GET_SPRINT_ID_FOR_ISSUE_SQL);
 			getIssueSprint.setInt(1, issue.getId());
 			
 			ResultSet rs = getIssueSprint.executeQuery();
@@ -546,7 +531,8 @@ public class IssueDAO {
 
 			while (rs.next()) {
 				int issueId = rs.getInt(1);
-				result.add(IssueDAO.getIssueById(issueId));
+				Issue issueToAdd = IssueDAO.getIssueById(issueId);
+				result.add(issueToAdd);
 			}
 
 		} catch (SQLException e) {
@@ -554,6 +540,28 @@ public class IssueDAO {
 		}
 
 		return result;
+	}
+	
+	public static void assignIssue(Issue toAssign, User assignee) throws IssueDAOException {
+		if (toAssign == null || assignee == null) {
+			throw new IssueDAOException("issue to assign and assignee must not be null");
+		}
+		
+		Connection connection = DBConnection.getInstance().getConnection();
+		int issueId = toAssign.getId();
+		int assigneeId = assignee.getId();
+		
+		try {
+			PreparedStatement assignIssuePS = connection.prepareStatement(ASSIGN_ISSUE_SQL);
+			assignIssuePS.setInt(1, assigneeId);
+			assignIssuePS.setInt(2, issueId);
+			
+			if (assignIssuePS.executeUpdate() < 1) {
+				throw new IssueDAOException("failed to assign issue");
+			}
+		} catch (SQLException e) {
+			throw new IssueDAOException(e.getMessage());
+		}
 	}
 
 	public static void unassignIssue(Issue assignedIssue) throws IssueDAOException {
@@ -586,7 +594,7 @@ public class IssueDAO {
 		int issueId = reportedIssue.getId();
 
 		try {
-			PreparedStatement findIssueProjectPS = connection.prepareStatement(FIND_ISSUE_PROJECT_SQL);
+			PreparedStatement findIssueProjectPS = connection.prepareStatement(FIND_PROJECT_FOR_ISSUE_SQL);
 			findIssueProjectPS.setInt(1, issueId);
 			int projectId;
 
@@ -597,7 +605,7 @@ public class IssueDAO {
 				throw new IssueDAOException("couldn't find issue's project");
 			}
 
-			PreparedStatement findProjectCompanyPS = connection.prepareStatement(FIND_PROJECT_COMPANY_SQL);
+			PreparedStatement findProjectCompanyPS = connection.prepareStatement(FIND_COMPANY_FOR_PROJECT_SQL);
 			findProjectCompanyPS.setInt(1, projectId);
 			int companyId;
 
@@ -608,7 +616,7 @@ public class IssueDAO {
 				throw new IssueDAOException("couldn't find project's company");
 			}
 
-			PreparedStatement findCompanyAdminPS = connection.prepareStatement(FIND_COMPANY_ADMIN_SQL);
+			PreparedStatement findCompanyAdminPS = connection.prepareStatement(FIND_ADMIN_FOR_COMPANY_SQL);
 			findCompanyAdminPS.setInt(1, companyId);
 			int companyAdminId;
 
@@ -631,19 +639,18 @@ public class IssueDAO {
 		}
 	}
 
-	public static Set<Issue> getAllIssuesAssignedTo(User user) throws IssueDAOException {
-		if (user == null) {
+	public static Set<Issue> getAllIssuesAssignedTo(User assignee) throws IssueDAOException {
+		if (assignee == null) {
 			throw new IssueDAOException("couldn't find user");
 		}
 
 		Set<Issue> assignedToUser = new HashSet<Issue>();
 		Connection connection = DBConnection.getInstance().getConnection();
-		int userId = user.getId();
+		int assigneeId = assignee.getId();
 
 		try {
 			PreparedStatement ps = connection.prepareStatement(GET_ISSUES_ASSIGNED_TO_USER_SQL);
-
-			ps.setInt(1, userId);
+			ps.setInt(1, assigneeId);
 
 			ResultSet rs = ps.executeQuery();
 
