@@ -19,7 +19,7 @@ import com.godzilla.model.exceptions.UserException;
 @SuppressWarnings("all")
 public class CompanyDAOTest {
 
-	@Test
+	//@Test
 	public void registerCompany(){
 		try {
 			Company company = new Company("Company 1");
@@ -36,5 +36,18 @@ public class CompanyDAOTest {
 		}
 		
 	}
-
+	
+	@Test
+	public void removeCompany(){
+		int companyId = 12;
+		try {
+			Company company = CompanyDAO.getCompanyById(companyId);
+			CompanyDAO.removeCompany(company);
+		} catch (CompanyDAOException e) {
+			Assert.assertTrue(e.getMessage().equals("can't find company with that id")
+					|| e.getMessage().equals("there is no company with that id")
+					|| e.getMessage().equals("failed to get company's projects")
+					|| e.getMessage().equals("failed to get company's users"));
+		}
+	}
 }

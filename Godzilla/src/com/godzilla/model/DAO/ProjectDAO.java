@@ -156,6 +156,7 @@ public class ProjectDAO {
 				Set<Issue> issues = IssueDAO.getAllIssuesByProject(toReturn);
 
 				
+				
 				for (Sprint toAdd : sprints) {
 					toReturn.addSprint(toAdd);
 				}

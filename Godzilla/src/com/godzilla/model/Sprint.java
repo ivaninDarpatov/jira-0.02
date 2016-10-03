@@ -91,6 +91,7 @@ public class Sprint {
 	@Override
 	public String toString() {
 		return "Sprint [id=" + id + ", name=" + name + ", sprintGoal=" + sprintGoal + ", startingDate=" + startingDate
-				+ ", endDate=" + endDate + "]";
+				+ ", endDate=" + endDate + ", issues=" + issues + "]";
 	}
+
 }

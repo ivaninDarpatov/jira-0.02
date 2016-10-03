@@ -17,7 +17,7 @@ public class UserDAOTest {
 
 
 	
-	@Test
+	//@Test
 	public void registerTwoUsers(){
 		try {
 			User firstUser = new User("user1@abv.bg", "password1","Company 1");
@@ -41,6 +41,23 @@ public class UserDAOTest {
 					|| e.getMessage().equals("invalid permissions")
 					|| e.getMessage().equals("failed to register"));
 			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void removeUser(){
+		int userId = 10;
+		try {
+			User user = UserDAO.getUserById(userId);
+			UserDAO.removeUser(user);
+		} catch (UserDAOException e) {
+			Assert.assertTrue(e.getMessage().equals("couldn't create company") 
+					|| e.getMessage().equals("failed to create company")
+					|| e.getMessage().equals("invalid permissions")
+					|| e.getMessage().equals("failed to register")
+					|| e.getMessage().equals("can't find user to remove")
+					|| e.getMessage().equals("failed to get issues")
+					|| e.getMessage().equals("failed to remove user"));
 		}
 	}
 }

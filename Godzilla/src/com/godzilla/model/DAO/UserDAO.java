@@ -139,7 +139,7 @@ public class UserDAO {
 		return false;
 	}
 
-	public static void remmoveUser(User userToRemove) throws UserDAOException {
+	public static void removeUser(User userToRemove) throws UserDAOException {
 		if (userToRemove == null) {
 			throw new UserDAOException("can't find user to remove");
 		}
@@ -258,6 +258,10 @@ public class UserDAO {
 	}
 	
 	public static int getUserIdByEmail(String userEmail) throws UserDAOException {
+		if(userEmail == null){
+			throw new UserDAOException("email cannot be null");
+		}
+		
 		Connection connection = DBConnection.getInstance().getConnection();
 		int id = 0;
 		try {

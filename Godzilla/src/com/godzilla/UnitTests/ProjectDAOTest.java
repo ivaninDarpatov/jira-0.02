@@ -21,7 +21,7 @@ import com.godzilla.model.exceptions.ProjectException;
 @SuppressWarnings("all")
 public class ProjectDAOTest {
 
-	@Test
+	//@Test
 	public void createProject(){
 		
 			
@@ -30,7 +30,7 @@ public class ProjectDAOTest {
 				companyId = CompanyDAO.getIdOfCompanyWithName("Company 1");
 				Company company = CompanyDAO.getCompanyById(companyId);
 				
-				Project project = new Project("project 1");
+				Project project = new Project("project 2");
 				ProjectDAO.addProject(project, company);
 				
 				Assert.assertTrue(project.getId() > 0);
@@ -51,5 +51,21 @@ public class ProjectDAOTest {
 						|| e.getMessage().equals("couldn't set project's id"));
 			}
 	}
-
+	
+	@Test
+	public void removeProject(){
+		int projectId = 12;
+		try {
+			Project project = ProjectDAO.getProjectById(projectId);
+			
+			ProjectDAO.removeProject(project);
+		} catch (ProjectDAOException e) {
+			Assert.assertTrue(e.getMessage().equals("couldn't find company")
+					|| e.getMessage().equals("unknow company to add project to")
+					|| e.getMessage().equals("project already exists")
+					|| e.getMessage().equals("couldn't get id of the company with the name")
+					|| e.getMessage().equals("failed to create project")
+					|| e.getMessage().equals("couldn't set project's id"));
+		}
+	}
 }

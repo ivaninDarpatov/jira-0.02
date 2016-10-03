@@ -19,8 +19,8 @@ import com.godzilla.model.exceptions.SprintException;
 
 public class SprintDAO {
 	private static final String GET_SPRINT_BY_ID_SQL = "SELECT * "
-													+ "FROM issues "
-													+ "WHERE issue_id = ?;";
+													+ "FROM sprints "
+													+ "WHERE sprint_id = ?;";
 	private static final String REMOVE_SPRINT_SQL = "DELETE FROM sprints " + "WHERE sprint_id = ?;";
 	private static final String SELECT_ALL_SPRINTS_BY_PROJECT_ID = "SELECT * FROM sprints " + "WHERE project_id = ? ";
 	private static final String INSERT_SPRINT_SQL = "INSERT INTO sprints " + "VALUES(null, ? , ? , 'someDate' , 'someDate' , ?);";
@@ -67,7 +67,6 @@ public class SprintDAO {
 		} catch (IssueDAOException e) {
 			throw new SprintDAOException("failed to convert to LocalDateTime", e);
 		}
-		
 		return result;
 	}
 	

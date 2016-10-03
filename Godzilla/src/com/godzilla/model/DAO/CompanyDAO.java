@@ -152,7 +152,7 @@ public class CompanyDAO {
 			Set<Project> projectsToRemove = ProjectDAO.getAllProjectsByCompany(toRemove);
 
 			for (User userToRemove : usersToRemove) {
-				UserDAO.remmoveUser(userToRemove);
+				UserDAO.removeUser(userToRemove);
 			}
 
 			for (Project projectToRemove : projectsToRemove) {

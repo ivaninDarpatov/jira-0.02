@@ -9,8 +9,9 @@ public class Epic extends Issue {
 	private String name;
 	private Set<Issue> issues;
 
-	public Epic(String summary) throws IssueException {
+	public Epic(String summary,String epicName) throws IssueException, EpicException {
 		super(summary);
+		this.setName(epicName);
 	}
 
 	public void setName(String name) throws EpicException {

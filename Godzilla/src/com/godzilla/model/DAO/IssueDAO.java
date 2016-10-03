@@ -20,6 +20,9 @@ import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.IssueException;
 
 public class IssueDAO {
+	private static final String SELECT_SPRINT_ID_FOR_ISSUE_SQL = "SELECT sprint_id from issues where issue_id = ?";
+	private static final String ADD_ISSUE_TO_EPIC_SQL = "UPDATE issues SET epic_id= ? WHERE issue_id= ?;";
+	private static final String ADD_ISSUE_TO_SPRINT_SQL = "UPDATE issues SET sprint_id= ? WHERE issue_id= ?;";
 	private static final String HAND_ISSUE_TO_ADMIN_SQL = "UPDATE issues " + "SET reporter_id = ? "
 			+ "WHERE issue_id = ?;";
 	private static final String FIND_PROJECT_COMPANY_SQL = "SELECT c.* " + "FROM companies c " + "JOIN projects p "
@@ -222,9 +225,8 @@ public class IssueDAO {
 					issue = new Story(summary);
 					break;
 				case "epic":
-					issue = new Epic(summary);
+					issue = new Epic(summary,"epic");
 					issue.setId(issueId);
-					((Epic) issue).setName("epic");
 					Set<Issue> issues = IssueDAO.getAllIssuesByEpic((Epic) issue);
 
 					for (Issue entry : issues) {
@@ -483,6 +485,9 @@ public class IssueDAO {
 		if (issueToSetFree == null) {
 			throw new IssueDAOException("can't find issue to set free");
 		}
+		if(!isIssueInSprint(issueToSetFree)){
+			throw new IssueDAOException("Issue is not in sprint");
+		}
 
 		Connection connection = DBConnection.getInstance().getConnection();
 		int issueId = issueToSetFree.getId();
@@ -492,11 +497,35 @@ public class IssueDAO {
 			removeIssueFromSprintPS.setInt(1, issueId);
 
 			if (removeIssueFromSprintPS.executeUpdate() < 1) {
-				throw new IssueDAOException("failed to rmeove issue from sprint");
+				throw new IssueDAOException("failed to remove issue from sprint");
 			}
 		} catch (SQLException e) {
 			throw new IssueDAOException(e.getMessage());
 		}
+	}
+	
+	private static boolean isIssueInSprint(Issue issue) throws IssueDAOException{
+		if(issue == null){
+			throw new IssueDAOException("issue = null");
+		}
+		
+		Connection connection = DBConnection.getInstance().getConnection();
+		
+		PreparedStatement getIssueSprint;
+		try {
+			getIssueSprint = connection.prepareStatement(SELECT_SPRINT_ID_FOR_ISSUE_SQL);
+			getIssueSprint.setInt(1, issue.getId());
+			
+			ResultSet rs = getIssueSprint.executeQuery();
+			
+			if(rs.next()){
+				return !(rs.getInt(1) == 0);
+			}
+		} catch (SQLException e) {
+			throw new IssueDAOException(e.getMessage());
+		}
+		
+		return false;
 	}
 
 	public static Set<Issue> getAllIssuesBySprint(Sprint sprint) throws IssueDAOException {
@@ -642,5 +671,53 @@ public class IssueDAO {
 		result = LocalDateTime.parse(dateTime, formatter);
 		
 		return result;
+	}
+	
+	public static void addIssueToEpic(Issue issue, Epic epic) throws IssueDAOException {
+		if (epic == null || issue == null) {
+			throw new IssueDAOException("epic and issue cannot be null");
+		}
+		
+		int epicId = epic.getId();
+		int issueId = issue.getId();
+		Connection connection = DBConnection.getInstance().getConnection();
+		
+		try {
+			PreparedStatement addIssueToEpicPS = connection.prepareStatement(ADD_ISSUE_TO_EPIC_SQL);
+			addIssueToEpicPS.setInt(1, epicId);
+			addIssueToEpicPS.setInt(2, issueId);
+			
+			if(addIssueToEpicPS.executeUpdate() < 1){
+				throw new IssueDAOException("Failed to add issue in epic");
+			}
+			
+		} catch (SQLException e) {
+			throw new IssueDAOException(e.getMessage());
+		}
+		
+	}
+	
+	public static void addIssueToSprint(Issue issue,Sprint sprint) throws IssueDAOException{
+		if (sprint == null || issue == null) {
+			throw new IssueDAOException("sprint and issue cannot be null");
+		}
+		
+		int sprintId = sprint.getId();
+		int issueId = issue.getId();
+		Connection connection = DBConnection.getInstance().getConnection();
+		
+		try {
+			PreparedStatement addIssueToEpicPS = connection.prepareStatement(ADD_ISSUE_TO_SPRINT_SQL);
+			addIssueToEpicPS.setInt(1, sprintId);
+			addIssueToEpicPS.setInt(2, issueId);
+			
+			if(addIssueToEpicPS.executeUpdate() < 1){
+				throw new IssueDAOException("Failed to add issue in epic");
+			}
+			
+		} catch (SQLException e) {
+			throw new IssueDAOException(e.getMessage());
+		}
+		
 	}
 }
