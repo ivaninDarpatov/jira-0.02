@@ -10,11 +10,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.godzilla.model.Company;
+import com.godzilla.model.Project;
 import com.godzilla.model.User;
 import com.godzilla.model.DAO.CompanyDAO;
+import com.godzilla.model.DAO.ProjectDAO;
 import com.godzilla.model.DAO.UserDAO;
 import com.godzilla.model.exceptions.CompanyDAOException;
 import com.godzilla.model.exceptions.CompanyException;
+import com.godzilla.model.exceptions.ProjectDAOException;
 import com.godzilla.model.exceptions.UserDAOException;
 import com.godzilla.model.exceptions.UserException;
 
@@ -44,6 +47,15 @@ public class LoginServlet extends HttpServlet {
 			
 			int id = CompanyDAO.getIdOfCompanyWithName(companyName);
 			company.setId(id);
+			
+			company = CompanyDAO.getCompanyById(id);
+			
+//			for(Project p : ProjectDAO.getAllProjectsByCompany(company)){
+//				company.addNewProject(p);
+//			}
+			
+			
+			
 			try {
 				if(UserDAO.validateLogin(userToLogIn)){
 					response.getWriter().println("<html> <body> <h1> uspeshen login </h1> </body> </html>");

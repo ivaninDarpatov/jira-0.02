@@ -14,6 +14,7 @@ import com.godzilla.model.Issue;
 import com.godzilla.model.Project;
 import com.godzilla.model.Sprint;
 import com.godzilla.model.exceptions.CompanyDAOException;
+import com.godzilla.model.exceptions.CompanyException;
 import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.ProjectDAOException;
 import com.godzilla.model.exceptions.ProjectException;
@@ -24,6 +25,7 @@ public class ProjectDAO {
 	private static final String REMOVE_PROJECT_SQL = "DELETE FROM projects WHERE project_id = ?;";
 	private static final String FIND_PROJECT_BY_ID_SQL = "SELECT * FROM projects WHERE project_id = ?;";
 	public static final String SELECT_NAME_FROM_PROJECTS = "SELECT project_name FROM projects";
+	private static final String FIND_PROJECT_ID_BY_NAME = "SELECT project_id from projects where project_name =  ?;";
 	public static final String INSERT_INTO_PROJECTS = "INSERT INTO projects VALUES(? , ? , ?);";
 	public static final String SELECT_ALL_PROJECTS_WITH_COMPANY_ID_SQL = "SELECT * FROM projects WHERE company_id = ? ";
 
@@ -153,6 +155,7 @@ public class ProjectDAO {
 				Set<Sprint> sprints = SprintDAO.getAllSprintsByProject(toReturn);
 				Set<Issue> issues = IssueDAO.getAllIssuesByProject(toReturn);
 
+				
 				for (Sprint toAdd : sprints) {
 					toReturn.addSprint(toAdd);
 				}
@@ -170,6 +173,7 @@ public class ProjectDAO {
 		} catch (SprintDAOException e) {
 			throw new ProjectDAOException("failed to get sprints", e);
 		} catch (IssueDAOException e) {
+			e.printStackTrace();
 			throw new ProjectDAOException("failed to get issues", e);
 		}
 
@@ -210,5 +214,27 @@ public class ProjectDAO {
 			throw new ProjectDAOException("failed to get projects sprints", e);
 		}
 
+	}
+	
+	public static int getProjectIdByName(String projectName) throws ProjectDAOException {
+		Connection connection = DBConnection.getInstance().getConnection();
+		int id = 0;
+		try {
+			PreparedStatement selectProjectWithName = connection.prepareStatement(FIND_PROJECT_ID_BY_NAME);
+			selectProjectWithName.setString(1, projectName);
+
+			ResultSet rs = selectProjectWithName.executeQuery();
+
+			if (rs.next()) {
+				id = rs.getInt(1);
+			} else {
+				throw new ProjectException("couldn't find a project with that name");
+			}
+		} catch (SQLException e) {
+			throw new ProjectDAOException(e.getMessage());
+		} catch (ProjectException e) {
+			throw new ProjectDAOException(e);
+		}
+		return id;
 	}
 }

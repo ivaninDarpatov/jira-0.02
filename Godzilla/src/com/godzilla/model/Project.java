@@ -59,6 +59,6 @@ public class Project {
 
 	@Override
 	public String toString() {
-		return "Project [id=" + id + ", name=" + name + ", issues=" + issues + ", sprints=" + sprints + "]";
+		return "Project [id=" + id + ", name=" + name + ", issues=" + issues + ", sprints=" + sprints + "]" + "<br>";
 	}
 }

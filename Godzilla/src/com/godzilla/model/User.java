@@ -189,4 +189,13 @@ public class User {
 	public String getCompany() {
 		return this.company;
 	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", email=" + email + ", password=" + password + ", permissions=" + permissions
+				+ ", company=" + company + ", issuesAssignedTo=" + issuesAssignedTo + ", issuesReportedBy="
+				+ issuesReportedBy + "] <br/>";
+	}
+	
+	
 }

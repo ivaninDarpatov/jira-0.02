@@ -17,7 +17,7 @@ public class Company {
 		try {
 			this.setName(name);
 		} catch (CompanyException e) {
-			throw new CompanyException("Invalid company name ", e);
+			throw new CompanyException("Invalid company name", e);
 		}
 	}
 
@@ -60,4 +60,19 @@ public class Company {
 	public int getId() {
 		return id;
 	}
+
+	public Set<Project> getProjects() {
+		return projects;
+	}
+	
+	public Set<User> getUsers(){
+		return users;
+	}
+
+	@Override
+	public String toString() {
+		return "Company [id=" + id + ", name=" + name + ", projects=" + projects + ", users=" + users + "]";
+	}
+	
+	
 }

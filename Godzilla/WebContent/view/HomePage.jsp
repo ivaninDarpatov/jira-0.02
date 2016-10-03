@@ -1,3 +1,7 @@
+<%@page import="com.godzilla.model.User"%>
+<%@page import="java.util.Set"%>
+<%@page import="com.godzilla.model.Project"%>
+<%@page import="com.godzilla.model.Company"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -12,6 +16,30 @@
 <c:out value="${company.name}"> </c:out></p>
 <p>Kato 
 <c:out value="${user.email}"></c:out></p>
+
+<%
+	Company company = ((Company) request.getAttribute("company"));
+	for(Project p : ((Set<Project>)company.getProjects())){
+	
+%>
+
+<%= p.toString() %><br/><br/>
+
+<%
+		System.out.println();
+	}
+%>
+
+<%
+	for(User u : ((Set<User>)company.getUsers())){
+
+%>
+<%= u.toString() %><br/><br/>
+
+<%
+		System.out.println();	
+	}
+%>
 
 </body>
 </html>

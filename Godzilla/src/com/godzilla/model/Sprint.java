@@ -14,9 +14,10 @@ public class Sprint {
 	private LocalDateTime endDate;
 	private Set<Issue> issues;
 
-	public Sprint(String name) throws SprintException {
+	public Sprint(String name, String sprintGoal) throws SprintException {
 		this.issues = new HashSet<Issue>();
 		this.setName(name);
+		this.setSprintGoal(sprintGoal);
 	}
 	
 	public void addIssue(Issue issue) throws SprintException {

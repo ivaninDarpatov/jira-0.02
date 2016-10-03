@@ -159,6 +159,6 @@ public abstract class Issue {
 	@Override
 	public String toString() {
 		return "Issue [id=" + id + ", summary=" + summary + ", description=" + description + ", priority=" + priority
-				+ ", state=" + state + ", dateCreated=" + dateCreated + ", dateLastModified=" + dateLastModified + "]";
+				+ ", state=" + state + ", dateCreated=" + dateCreated + ", dateLastModified=" + dateLastModified + "]" + "<br/>";
 	}
 }

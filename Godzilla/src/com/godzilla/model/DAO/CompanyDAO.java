@@ -132,6 +132,7 @@ public class CompanyDAO {
 		} catch (ProjectDAOException e) {
 			throw new CompanyDAOException("failed to get company's projects", e);
 		} catch (UserDAOException e) {
+			e.printStackTrace();
 			throw new CompanyDAOException("failed to get company's users", e);
 		}
 

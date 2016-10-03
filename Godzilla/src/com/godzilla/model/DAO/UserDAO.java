@@ -17,6 +17,8 @@ import com.godzilla.model.exceptions.CompanyDAOException;
 import com.godzilla.model.exceptions.CompanyException;
 import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.PermissionException;
+import com.godzilla.model.exceptions.ProjectDAOException;
+import com.godzilla.model.exceptions.ProjectException;
 import com.godzilla.model.exceptions.UserDAOException;
 import com.godzilla.model.exceptions.UserException;
 
@@ -24,6 +26,7 @@ public class UserDAO {
 	private static final String FIND_USERS_BY_COMPANY_ID_SQL = "SELECT * " + "FROM users " + "WHERE company_id = ?;";
 	private static final int USER_PERMISSIONS = Permissions.USER.ordinal() + 1;
 	private static final int ADMIN_PERMISSIONS = Permissions.ADMINISTRATOR.ordinal() + 1;
+	private static final String FIND_USER_ID_BY_EMAIL = "SELECT user_id from users where email =  ?;";
 
 	private static final String FIND_USER_SQL = "SELECT u.user_id " + "FROM users u " + "JOIN companies c "
 			+ "ON (c.company_id = u.company_id) " + "WHERE u.email = ? " + "AND u.password = ? "
@@ -212,6 +215,7 @@ public class UserDAO {
 		} catch (PermissionException e) {
 			throw new UserDAOException("permissions not set", e);
 		} catch (IssueDAOException e) {
+			e.printStackTrace();
 			throw new UserDAOException("failed to get issues", e);
 		} finally {
 			try {
@@ -251,6 +255,28 @@ public class UserDAO {
 		}
 
 		return result;
+	}
+	
+	public static int getUserIdByEmail(String userEmail) throws UserDAOException {
+		Connection connection = DBConnection.getInstance().getConnection();
+		int id = 0;
+		try {
+			PreparedStatement selectUserWithEmail = connection.prepareStatement(FIND_USER_ID_BY_EMAIL);
+			selectUserWithEmail.setString(1, userEmail);
+
+			ResultSet rs = selectUserWithEmail.executeQuery();
+
+			if (rs.next()) {
+				id = rs.getInt(1);
+			} else {
+				throw new UserException("couldn't find a user with that email");
+			}
+		} catch (SQLException e) {
+			throw new UserDAOException(e.getMessage());
+		} catch (UserException e) {
+			throw new UserDAOException(e);
+		}
+		return id;
 	}
 
 }

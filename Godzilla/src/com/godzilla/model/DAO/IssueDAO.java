@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,7 +30,7 @@ public class IssueDAO {
 			+ "AND company_id = ?";
 
 	private static final String GET_ISSUES_ASSIGNED_TO_USER_SQL = "SELECT issue_id,summary,description,"
-			+ "state_id,priority," + "date_created,date_last_modified" + "FROM issues " + "WHERE assignee_id = ?;";
+			+ "state_id,priority," + "date_created,date_last_modified" + " FROM issues " + "WHERE assignee_id = ?;";
 	private static final String UNASSIGN_ISSUE_SQL = "UPDATE issues " + "SET assignee_id = null "
 			+ "WHERE issue_id = ?;";
 	private static final String REMOVE_ISSUE_FROM_SPRINT_SQL = "UPDATE issues " + "SET sprint_id = null "
@@ -47,7 +48,7 @@ public class IssueDAO {
 	private static final String IS_EPIC_SQL = "SELECT epic_id " + "FROM epics " + "WHERE epic_id = ?;";
 	private static final String REMOVE_ISSUE_SQL = "DELETE FROM issues " + "WHERE issue_id = ?;";
 	private static final String CREATE_ISSUE_SQL = "INSERT INTO issues "
-			+ "VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, null,null);";
+			+ "VALUES (null, ?, ?, ?, ?, ?, ?, ?, 'someDate', 'someDate', null, null);";
 	private static final String SELECT_ISSUE_BY_REPORTER_SQL = "Select issue_id,summary,description,"
 			+ "state_id,priority," + "date_created,date_last_modified" + " from issues where reporter_id = ?;";
 	private static final String FIND_ISSUE_BY_ID_SQL = "SELECT * " + "FROM issues " + "WHERE issue_id = ?;";
@@ -71,12 +72,12 @@ public class IssueDAO {
 		int projectId = project.getId();
 		int reporterId = reporter.getId();
 		int assigneeId = reporterId;
-		String dateTimeCreated = toCreate.getDateCreated().toLocalDate().toString() + 
-								" " + 
-								toCreate.getDateCreated().toLocalTime().toString();
-		String dateTimeLastModified = toCreate.getDateLastModified().toLocalDate().toString() + 
-									" " + 
-									toCreate.getDateLastModified().toLocalTime().toString();
+//		String dateTimeCreated = toCreate.getDateCreated().toLocalDate().toString() + 
+//								" " + 
+//								toCreate.getDateCreated().toLocalTime().toString();
+//		String dateTimeLastModified = toCreate.getDateLastModified().toLocalDate().toString() + 
+//									" " + 
+//									toCreate.getDateLastModified().toLocalTime().toString();
 
 		try {
 			connection.setAutoCommit(false);
@@ -89,9 +90,9 @@ public class IssueDAO {
 			insertIntoIssues.setInt(5, priorityId);
 			insertIntoIssues.setInt(6, reporterId);
 			insertIntoIssues.setInt(7, assigneeId);
-			insertIntoIssues.setString(8, dateTimeCreated);
-			insertIntoIssues.setString(9, dateTimeLastModified);
-			
+//			insertIntoIssues.setString(8, dateTimeCreated);
+//			insertIntoIssues.setString(9, dateTimeLastModified);
+
 
 			if (insertIntoIssues.executeUpdate() > 0) {
 				ResultSet rs = insertIntoIssues.getGeneratedKeys();
@@ -203,8 +204,8 @@ public class IssueDAO {
 				String description = rs.getString("description");
 				int priorityId = rs.getInt("priority");
 				int stateId = rs.getInt("state_id");
-				LocalDateTime dateCreated = getLocalDateTimeFromString(rs.getString("date_created"));
-				LocalDateTime dateLastModified = getLocalDateTimeFromString(rs.getString("date_last_modified"));
+//				LocalDateTime dateCreated = getLocalDateTimeFromString(rs.getString("date_created"));
+//				LocalDateTime dateLastModified = getLocalDateTimeFromString(rs.getString("date_last_modified"));
 				IssuePriority priority = IssuePriority.getTypeById(priorityId);
 				IssueState state = IssueState.getTypeById(stateId);
 
@@ -242,8 +243,8 @@ public class IssueDAO {
 				}
 				issue.setPriority(priority);
 				issue.setState(state);
-				issue.setDateCreated(dateCreated);
-				issue.setDateLastModified(dateLastModified);
+//				issue.setDateCreated(dateCreated);
+//				issue.setDateLastModified(dateLastModified);
 				
 				issue.setId(issueId);
 			}
@@ -634,10 +635,10 @@ public class IssueDAO {
 		if (dateTime == null) {
 			throw new IssueDAOException("cannot convert null value to LocalDateTime");
 		}
-		
+		System.err.println(dateTime);
 		LocalDateTime result;
 	
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:SS:nnn");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:SS.nnn");
 		result = LocalDateTime.parse(dateTime, formatter);
 		
 		return result;

@@ -22,33 +22,34 @@ import com.godzilla.model.exceptions.ProjectException;
 public class ProjectDAOTest {
 
 	@Test
-	public void newProjectTest() throws ProjectException, ProjectDAOException, CompanyDAOException {
-		Project project = new Project("Test project22");
-		int companyId = CompanyDAO.getIdOfCompanyWithName("Test Company2");
-		Company company = CompanyDAO.getCompanyById(companyId);
+	public void createProject(){
 		
-		ProjectDAO.addProject(project, company);
-		
-		Assert.assertTrue(project.getId() > 0);
+			
+			int companyId;
+			try {
+				companyId = CompanyDAO.getIdOfCompanyWithName("Company 1");
+				Company company = CompanyDAO.getCompanyById(companyId);
+				
+				Project project = new Project("project 1");
+				ProjectDAO.addProject(project, company);
+				
+				Assert.assertTrue(project.getId() > 0);
+			} catch (CompanyDAOException e) {
+				Assert.assertTrue(e.getMessage().equals("couldn't find a company with that name")
+					|| e.getMessage().equals("there is no company with that id")
+					|| e.getMessage().equals("failed to get company's projects")
+					|| e.getMessage().equals("failed to get company's users")
+					|| e.getMessage().equals("Invalid company name"));
+			} catch (ProjectException e) {
+				Assert.assertTrue(e.getMessage().equals("project name cannot be null"));
+			} catch (ProjectDAOException e) {
+				Assert.assertTrue(e.getMessage().equals("couldn't find company")
+						|| e.getMessage().equals("unknow company to add project to")
+						|| e.getMessage().equals("project already exists")
+						|| e.getMessage().equals("couldn't get id of the company with the name")
+						|| e.getMessage().equals("failed to create project")
+						|| e.getMessage().equals("couldn't set project's id"));
+			}
 	}
-	
-	@Test
-	public void getAllProjectsByCompany() throws CompanyException, ProjectDAOException{
-		Company company = new Company("Some company");
-		company.setId(1);
-		
-		Set<Project> projects = ProjectDAO.getAllProjectsByCompany(company);
-		System.out.println(projects.size());
-		
-		for(Project p : projects){
-			System.out.println(p);
-		}
-	}
-	
-//	@Test
-//	public void deleteProjectTest(){
-//		
-//		ProjectDAO.
-//	}
 
 }

@@ -2,6 +2,8 @@ package com.godzilla.UnitTests;
 
 import java.util.Random;
 
+import javax.annotation.Priority;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,49 +15,32 @@ import com.godzilla.model.exceptions.UserException;
 @SuppressWarnings("all")
 public class UserDAOTest {
 
+
+	
 	@Test
-	public void removeUserTest() {
+	public void registerTwoUsers(){
 		try {
-			User userToRemove = new User("s@s.s", "123456abc", "company");
-			UserDAO.remmoveUser(userToRemove);
-		} catch (Exception e)
-		{
+			User firstUser = new User("user1@abv.bg", "password1","Company 1");
+			User secondUser = new User("user2@abv.bg", "password1", "Company 1");
+			
+			UserDAO.registerUser(firstUser);
+			UserDAO.registerUser(secondUser);
+			
+			Assert.assertTrue(firstUser.getId() > 0);
+			Assert.assertTrue(secondUser.getId() > 0);
+			
+			
+		} catch (UserException e) {
+			Assert.assertTrue(e.getMessage().equals("Invalid email")
+					||	e.getMessage().equals("Invalid password")
+					||	e.getMessage().equals("Invalid permissions")
+					||	e.getMessage().equals("Invalid Company"));
+		} catch (UserDAOException e) {
+			Assert.assertTrue(e.getMessage().equals("couldn't create company") 
+					|| e.getMessage().equals("failed to create company")
+					|| e.getMessage().equals("invalid permissions")
+					|| e.getMessage().equals("failed to register"));
 			e.printStackTrace();
-			DAOTest.printExceptionMessages(e);
 		}
 	}
-	
-//	@Test
-//	public void registerNewUserTest() throws UserException, UserDAOException {
-//		int randomNumber = new Random().nextInt(100000);
-//		String email = "someEmail" + randomNumber + "@abv.bg";
-//		String password = "somePassword1";
-//		String company = "someCompany" + randomNumber;
-//		
-//		
-//		User userToReg = new User(email,password,company);
-//		UserDAO.registerUser(userToReg);
-//		
-//		Assert.assertTrue(userToReg.getId() > 0);
-//	}
-	
-//	@Test
-//	public void registerUserWithTheSameName(){
-//		int randomNumber = new Random().nextInt(100000);
-//		String email = "sameEmail" + randomNumber + "@abv.bg";
-//		String password = "samePassword1";
-//		String company = "sameCompany" + randomNumber;
-//		
-//		
-//		User userToReg = new User(email,password,company);
-//		UserDAO.registerUser(userToReg);
-//		
-//		UserDAO.registerUser(userToReg);
-//	}
-	
-//	@Test
-//	public void removeUser(User userToRemove){
-//		
-//	}
-
 }
