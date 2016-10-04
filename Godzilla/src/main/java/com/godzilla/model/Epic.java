@@ -1,6 +1,7 @@
 package com.godzilla.model;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.godzilla.model.exceptions.EpicException;
@@ -13,6 +14,7 @@ public class Epic extends Issue {
 	public Epic(String summary,String epicName) throws IssueException, EpicException {
 		super(summary);
 		this.setName(epicName);
+		this.issues = new HashSet<Issue>();
 	}
 
 	public void setName(String name) throws EpicException {

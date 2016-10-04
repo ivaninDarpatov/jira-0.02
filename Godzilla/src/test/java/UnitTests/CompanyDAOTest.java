@@ -31,15 +31,14 @@ public class CompanyDAOTest {
 			Assert.assertTrue(e.getMessage().equals("company's name is taken"));
 			
 		} catch (CompanyException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 	}
 	
-	@Test
+	//@Test
 	public void removeCompany(){
-		int companyId = 12;
+		int companyId = 1;
 		try {
 			Company company = CompanyDAO.getCompanyById(companyId);
 			CompanyDAO.removeCompany(company);

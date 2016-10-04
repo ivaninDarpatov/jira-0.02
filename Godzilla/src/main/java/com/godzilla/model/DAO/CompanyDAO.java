@@ -163,12 +163,22 @@ public class CompanyDAO {
 			Set<User> usersToRemove = UserDAO.getAllUsersByCompany(toRemove);
 			Set<Project> projectsToRemove = ProjectDAO.getAllProjectsByCompany(toRemove);
 
-			for (User userToRemove : usersToRemove) {
-				UserDAO.removeUser(userToRemove);
-			}
-
 			for (Project projectToRemove : projectsToRemove) {
 				ProjectDAO.removeProject(projectToRemove);
+			}
+			
+			for (User userToRemove : usersToRemove) {
+				if (userToRemove.isAdministrator()) {
+					continue;
+				}
+				UserDAO.removeUser(userToRemove);
+			}
+			
+			usersToRemove = UserDAO.getAllUsersByCompany(toRemove);
+			for (User userToRemove : usersToRemove) {
+				if (userToRemove.isAdministrator()) {
+					UserDAO.removeUser(userToRemove);
+				}
 			}
 
 			PreparedStatement removeCompanyPS = connection.prepareStatement(REMOVE_COMPANY_SQL);

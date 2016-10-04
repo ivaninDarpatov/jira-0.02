@@ -144,6 +144,16 @@ public class UserDAO {
 			Set<Issue> assignedIssues = IssueDAO.getAllIssuesAssignedTo(userToRemove);
 			Set<Issue> reportedIssues = IssueDAO.getAllReportedIssuesByUser(userToRemove);
 
+			if (userToRemove.isAdministrator()) {
+				for (Issue assignedIssue : assignedIssues) {
+					IssueDAO.removeIssue(assignedIssue);
+				}
+				
+				for (Issue reportedIssue : reportedIssues) {
+					IssueDAO.removeIssue(reportedIssue);
+				}
+			}
+			
 			for (Issue assignedIssue : assignedIssues) {
 				IssueDAO.unassignIssue(assignedIssue);
 			}
