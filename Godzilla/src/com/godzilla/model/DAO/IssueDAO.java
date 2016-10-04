@@ -19,6 +19,8 @@ import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.IssueException;
 
 public class IssueDAO {
+	private static final String FIND_ISSUE_EPIC_SQL = "SELECT epic_id FROM issues WHERE issue_id = ?;";
+	private static final String GET_EPIC_NAME_BY_ID_SQL = "SELECT epic_name FROM epics WHERE epic_id = ?;";
 	private static final String ASSIGN_ISSUE_SQL = "UPDATE issues SET assignee_id = ? WHERE issue_id = ?;";
 	private static final String GET_SPRINT_ID_FOR_ISSUE_SQL = "SELECT sprint_id FROM issues WHERE issue_id = ?;";
 	private static final String ADD_ISSUE_TO_EPIC_SQL = "UPDATE issues SET epic_id = ? WHERE issue_id = ?;";
@@ -30,6 +32,7 @@ public class IssueDAO {
 	private static final String GET_ISSUES_ASSIGNED_TO_USER_SQL = "SELECT issue_id, summary, description, state_id, priority, date_created, date_last_modified FROM issues WHERE assignee_id = ?;";
 	private static final String UNASSIGN_ISSUE_SQL = "UPDATE issues SET assignee_id = null WHERE issue_id = ?;";
 	private static final String REMOVE_ISSUE_FROM_SPRINT_SQL = "UPDATE issues SET sprint_id = null WHERE issue_id = ?;";
+	private static final String REMOVE_ISSUE_FROM_EPIC_SQL = "UPDATE issues SET epic_id = null WHERE issue_id = ?;";
 	private static final String ADD_BUG_SQL = "INSERT INTO bugs VALUES(? , null);";
 	private static final String ADD_TASK_SQL = "INSERT INTO tasks VALUES(?, null);";
 	private static final String ADD_EPIC_SQL = "INSERT INTO epics VALUES(? , ?);";
@@ -113,8 +116,6 @@ public class IssueDAO {
 				insertIntoBugTaskEpicOrStory = connection.prepareStatement(ADD_EPIC_SQL);
 				insertIntoBugTaskEpicOrStory.setInt(1, issueId);
 				insertIntoBugTaskEpicOrStory.setString(2, ((Epic) toCreate).getName());
-				PreparedStatement addIssueToEpicPS = connection.prepareStatement(ADD_ISSUE_TO_EPIC_SQL);
-				addIssueToEpicPS.executeUpdate();
 				break;
 			case "story":
 				insertIntoBugTaskEpicOrStory = connection.prepareStatement(ADD_STORY_SQL);
@@ -127,7 +128,15 @@ public class IssueDAO {
 			if (insertIntoBugTaskEpicOrStory.executeUpdate() < 1) {
 				throw new IssueDAOException("failed to insert issue properly");
 			}
-
+			
+			if (issueType.equals("epic")) {
+				PreparedStatement addIssueToEpicPS = connection.prepareStatement(ADD_ISSUE_TO_EPIC_SQL);
+				addIssueToEpicPS.setInt(1, issueId);
+				addIssueToEpicPS.setInt(2, issueId);
+				addIssueToEpicPS.executeUpdate();
+			}
+			
+			connection.commit();
 		} catch (SQLException e) {
 			try {
 				connection.rollback();
@@ -179,6 +188,7 @@ public class IssueDAO {
 		if (issueId < 1) {
 			throw new IssueDAOException("cannot find issue with that id");
 		}
+
 		Connection connection = DBConnection.getInstance().getConnection();
 		Issue issue = null;
 
@@ -198,7 +208,6 @@ public class IssueDAO {
 				IssueState state = IssueState.getTypeById(stateId);
 
 				String type = IssueDAO.getIssueType(issueId);
-
 				switch (type) {
 				case "bug":
 					issue = new Bug(summary);
@@ -210,7 +219,8 @@ public class IssueDAO {
 					issue = new Story(summary);
 					break;
 				case "epic":
-					issue = new Epic(summary,"epic");
+					String epicName = IssueDAO.getEpicNameById(issueId);
+					issue = new Epic(summary, epicName);
 					issue.setId(issueId);
 					Set<Issue> issues = IssueDAO.getAllIssuesByEpic((Epic) issue);
 
@@ -246,12 +256,36 @@ public class IssueDAO {
 		return issue;
 	}
 
+	private static String getEpicNameById(int epicId) throws IssueDAOException {
+		if (epicId < 1) {
+			throw new IssueDAOException("issue id cannot be 0");
+		}
+		
+		String epicName = GET_EPIC_NAME_BY_ID_SQL;
+		Connection connection = DBConnection.getInstance().getConnection();
+		
+		try {
+			PreparedStatement getEpicNameByIdPS = connection.prepareStatement(GET_EPIC_NAME_BY_ID_SQL);
+			getEpicNameByIdPS.setInt(1, epicId);
+			
+			ResultSet getEpicNameByIdRS = getEpicNameByIdPS.executeQuery();
+			if (getEpicNameByIdRS.next()) {
+				epicName = getEpicNameByIdRS.getString("epic_name");
+			}
+		} catch (SQLException e) {
+			throw new IssueDAOException(e.getMessage());
+		}
+		
+		return epicName;
+	}
+
 	public static Set<Issue> getAllIssuesByEpic(Epic epic) throws IssueDAOException {
 		if (epic == null) {
 			throw new IssueDAOException("couldn't find epic");
 		}
 
 		int epicId = epic.getId();
+		
 		Set<Issue> result = new HashSet<Issue>();
 
 		Connection connection = DBConnection.getInstance().getConnection();
@@ -264,6 +298,9 @@ public class IssueDAO {
 
 			while (rs.next()) {
 				int issueId = rs.getInt(1);
+				if (IssueDAO.isEpic(issueId)) {
+					continue;
+				}
 				Issue issueToAdd = IssueDAO.getIssueById(issueId);
 				result.add(issueToAdd);
 			}
@@ -291,6 +328,10 @@ public class IssueDAO {
 			final String DELETE_BUG_TASK_STORY_SQL = "DELETE FROM " + table + "s" + " WHERE " + issueType + "_id = ?;";
 			PreparedStatement ps = connection.prepareStatement(DELETE_BUG_TASK_STORY_SQL);
 			ps.setInt(1, issueId);
+			
+			if (IssueDAO.issueIsInEpic(toRemove)) {
+				IssueDAO.removeFromEpic(toRemove);
+			}
 
 			if (ps.executeUpdate() < 1) {
 				throw new IssueDAOException("failed to remove " + issueType);
@@ -306,6 +347,7 @@ public class IssueDAO {
 			connection.commit();
 
 		} catch (SQLException e) {
+			e.printStackTrace();
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
@@ -319,6 +361,53 @@ public class IssueDAO {
 				throw new IssueDAOException(e.getMessage());
 			}
 		}
+	}
+
+	private static void removeFromEpic(Issue toRemove) throws IssueDAOException {
+		if (toRemove == null) {
+			throw new IssueDAOException("can't find issue to set free");
+		}
+		if(!issueIsInEpic(toRemove)){
+			throw new IssueDAOException("Issue is not in epic");
+		}
+
+		Connection connection = DBConnection.getInstance().getConnection();
+		int issueId = toRemove.getId();
+
+		try {
+			PreparedStatement removeIssueFromEpicPS = connection.prepareStatement(REMOVE_ISSUE_FROM_EPIC_SQL);
+			removeIssueFromEpicPS.setInt(1, issueId);
+
+			if (removeIssueFromEpicPS.executeUpdate() < 1) {
+				throw new IssueDAOException("failed to remove issue from epic");
+			}
+		} catch (SQLException e) {
+			throw new IssueDAOException(e.getMessage());
+		}
+	}
+
+	private static boolean issueIsInEpic(Issue toRemove) throws IssueDAOException {
+		if (toRemove == null) {
+			throw new IssueDAOException("invalid issue to remove");
+		}
+		
+		int issueId = toRemove.getId();
+		Connection connection = DBConnection.getInstance().getConnection();
+		
+		try {
+			PreparedStatement getIssueEpicPS = connection.prepareStatement(FIND_ISSUE_EPIC_SQL);
+			getIssueEpicPS.setInt(1, issueId);
+			
+			ResultSet rs = getIssueEpicPS.executeQuery();
+
+			if (rs.next()) {
+				return rs.getInt(1) > 0;
+			}
+		} catch (SQLException e) {
+			throw new IssueDAOException(e.getMessage());
+		}
+		
+		return false;
 	}
 
 	public static Set<Issue> getAllReportedIssuesByUser(User reporter) throws IssueDAOException {

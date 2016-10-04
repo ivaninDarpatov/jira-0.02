@@ -211,6 +211,10 @@ public class User {
 				",\n\t issuesReportedBy=" + issuesReportedBy + 
 				"\n]\n";
 	}
+
+	public boolean isAdministrator() {
+		return this.permissions.equals(Permissions.ADMINISTRATOR);
+	}
 	
 	
 }

@@ -15,7 +15,7 @@ import com.godzilla.model.exceptions.UserException;
 @SuppressWarnings("all")
 public class UserDAOTest {
 
-	@Test
+	//@Test
 	public void getUserById() {
 		int userId = 1;
 		
@@ -30,14 +30,9 @@ public class UserDAOTest {
 	//@Test
 	public void registerTwoUsers(){
 		try {
-			User firstUser = new User("user1@abv.bg", "password1","Company 1");
-			User secondUser = new User("user2@abv.bg", "password1", "Company 1");
+			User testUser = new User("ivan2@abv.bg", "password2","company1");
 			
-			UserDAO.registerUser(firstUser);
-			UserDAO.registerUser(secondUser);
-			
-			Assert.assertTrue(firstUser.getId() > 0);
-			Assert.assertTrue(secondUser.getId() > 0);
+			UserDAO.registerUser(testUser);
 			
 			
 		} catch (UserException e) {

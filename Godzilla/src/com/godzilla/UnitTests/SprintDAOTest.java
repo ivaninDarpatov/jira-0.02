@@ -23,10 +23,10 @@ public class SprintDAOTest {
 	//@Test
 	public void addSprintTest() {
 		try {
-			int projectId = ProjectDAO.getProjectIdByName("project 1");
+			int projectId = ProjectDAO.getProjectIdByName("project1");
 			Project project = ProjectDAO.getProjectById(projectId);
 			
-			Sprint sprint = new Sprint("sprint 1", "goal 1");
+			Sprint sprint = new Sprint("sprint1", "goal1");
 			
 			SprintDAO.addSprint(sprint, project);
 			
@@ -97,7 +97,6 @@ public class SprintDAOTest {
 			
 			SprintDAO.removeSprint(sprint);
 			
-			getSprintsByProject();
 		} catch (SprintDAOException e) {
 			Assert.assertTrue(e.getMessage().equals("sprint id cannot be 0")
 					|| e.getMessage().equals("failed to create sprint")
