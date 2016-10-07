@@ -44,6 +44,7 @@ public class CompanyDAO {
 
 			if (rs.next()) {
 				int companyId = rs.getInt(1);
+				System.err.println("New company Id: " + companyId);
 				newCompany.setId(companyId);
 			} else {
 				throw new CompanyDAOException("failed to create company");
@@ -157,9 +158,11 @@ public class CompanyDAO {
 		}
 
 		Connection connection = DBConnection.getInstance().getConnection();
+		
 		int companyId = toRemove.getId();
 
 		try {
+			connection.setAutoCommit(false);
 			Set<User> usersToRemove = UserDAO.getAllUsersByCompany(toRemove);
 			Set<Project> projectsToRemove = ProjectDAO.getAllProjectsByCompany(toRemove);
 
@@ -181,19 +184,42 @@ public class CompanyDAO {
 				}
 			}
 
+			
 			PreparedStatement removeCompanyPS = connection.prepareStatement(REMOVE_COMPANY_SQL);
 			removeCompanyPS.setInt(1, companyId);
 			if (removeCompanyPS.executeUpdate() < 1) {
 				throw new CompanyDAOException("failed to remove company");
 			}
+			
+			connection.commit();
 
 		} catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				throw new CompanyDAOException(e1.getMessage());
+			}
 			throw new CompanyDAOException(e.getMessage());
 		} catch (UserDAOException e) {
-			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				throw new CompanyDAOException(e1.getMessage());
+			}
 			throw new CompanyDAOException("failed to get company's users", e);
 		} catch (ProjectDAOException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				throw new CompanyDAOException(e1.getMessage());
+			}
 			throw new CompanyDAOException("failed to get company's projects", e);
+		}finally {
+			try {
+				connection.setAutoCommit(true);
+			} catch (SQLException e) {
+				throw new CompanyDAOException(e.getMessage());
+			}
 		}
 
 	}

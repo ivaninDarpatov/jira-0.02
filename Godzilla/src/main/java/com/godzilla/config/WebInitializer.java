@@ -1,4 +1,4 @@
-package com.godzilla.gonfig;
+package com.godzilla.config;
 
 import org.springframework.web.servlet.support.
 AbstractAnnotationConfigDispatcherServletInitializer;

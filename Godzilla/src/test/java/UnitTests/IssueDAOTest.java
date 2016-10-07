@@ -204,21 +204,16 @@ public class IssueDAOTest {
 //					|| e.getMessage().equals("failed to get issues"));
 		} catch (IssueDAOException e) {
 			e.printStackTrace();
-<<<<<<< HEAD:Godzilla/src/test/java/UnitTests/IssueDAOTest.java
-			Assert.assertTrue(
-					   e.getMessage().equals("couldn't set issue's id")
-					|| e.getMessage().equals("Ne bqha napraveni promeni")
-					|| e.getMessage().equals("cannot create issue, required: project, reporter and issue model")
-					|| e.getMessage().equals("could not set id of an issue")
-					|| e.getMessage().equals("failed to create issue"));
-=======
+
 //			Assert.assertTrue(
 //					   e.getMessage().equals("couldn't set issue's id")
 //					|| e.getMessage().equals("Ne bqha napraveni promeni")
 //					|| e.getMessage().equals("cannot create issue, required: project, reporter and issue model")
 //					|| e.getMessage().equals("could not set id of an issue")
 //					|| e.getMessage().equals("failed to create issue"));
->>>>>>> 4583ba29152b1774508a4826daaa66594b1358b0:Godzilla/src/com/godzilla/UnitTests/IssueDAOTest.java
+
+
+
 		} catch (EpicException e) {
 			e.printStackTrace();
 //			Assert.assertTrue(e.getMessage().equals("epic's name cannot be null"));

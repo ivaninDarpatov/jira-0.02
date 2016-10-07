@@ -16,7 +16,7 @@ public class DBConnection {
 	private static final String DB_SCHEMA = "godzilla";
 	private static final String DB_PARAMETERS = "?autoReconnect=true&useSSL=false";
 	private static final String DB_USERNAME = "root";
-	private static final String DB_PASSWORD = "ittstudents";
+	private static final String DB_PASSWORD = "";
 	private static final String DB_PATH = DB_ACCESS + DB_HOST + ":" + DB_PORT + "/" + DB_SCHEMA + DB_PARAMETERS;
 
 	private DBConnection() throws ClassNotFoundException, SQLException {

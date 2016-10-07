@@ -4,7 +4,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.godzilla.model.DAO.CompanyDAO;
+import com.godzilla.model.DAO.ProjectDAO;
+import com.godzilla.model.DAO.UserDAO;
 import com.godzilla.model.exceptions.CompanyException;
+import com.godzilla.model.exceptions.ProjectDAOException;
+import com.godzilla.model.exceptions.UserDAOException;
 
 public class Company {
 	private int id;
@@ -62,11 +67,21 @@ public class Company {
 		return this.id;
 	}
 
-	public Set<Project> getProjects() {
+	public Set<Project> getProjects() throws CompanyException {
+		try {
+			this.projects = ProjectDAO.getAllProjectsByCompany(this);
+		} catch (ProjectDAOException e) {
+			throw new CompanyException(e.getMessage());
+		}
 		return Collections.unmodifiableSet(this.projects);
 	}
 
-	public Set<User> getUsers() {
+	public Set<User> getUsers() throws CompanyException {
+		try {
+			this.users = UserDAO.getAllUsersByCompany(this);
+		} catch (UserDAOException e) {
+			throw new CompanyException(e.getMessage());
+		}
 		return Collections.unmodifiableSet(this.users);
 	}
 

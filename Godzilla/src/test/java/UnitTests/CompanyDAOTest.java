@@ -36,9 +36,9 @@ public class CompanyDAOTest {
 		
 	}
 	
-	//@Test
+	@Test
 	public void removeCompany(){
-		int companyId = 1;
+		int companyId = 9;
 		try {
 			Company company = CompanyDAO.getCompanyById(companyId);
 			CompanyDAO.removeCompany(company);
