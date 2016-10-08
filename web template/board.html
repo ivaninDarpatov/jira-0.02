@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>Board</title>
+
+<!-- Bootstrap Core CSS -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Custom CSS -->
+<link href="css/user_panel.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+<script>
+	function addIssueBoard(caller) {
+		var container = $(caller);
+		var issueNumber = document.querySelectorAll('div.board_issue_box').length + 1;
+		var issueId = caller.substring(1) + '_' + issueNumber;
+
+		//issue info
+		var name = 'ISSUE-' + issueNumber;
+		var summary = '\tSUMMARY-' + issueNumber;
+		//
+
+		var issueBox = document.createElement('div');
+		issueBox.setAttribute('class', 'board_issue_box');
+		issueBox.setAttribute('id', issueId);
+		var bold = document.createElement('b');
+		var addIssue = document.createElement('a');
+		addIssue.setAttribute('href', '#');
+		addIssue.setAttribute('onclick', 'openIssueInformation(\'' + name
+				+ '\')');
+		addIssue.innerHTML = name;
+		bold.append(addIssue);
+		issueBox.append(bold);
+		issueBox.append(summary);
+		container.append(issueBox);
+	}
+
+	function addSprintBoard(target) {
+		var container = $(target);
+
+		var name = 'SPRINT';
+		var issuesTable = document.createElement('table');
+		issuesTable.setAttribute('id', 'active_sprint');
+		var sprintName = document.createElement('h4');
+		sprintName.innerHTML = name;
+		
+		var headingsRow = document.createElement('tr');
+		var todoHeading = document.createElement('th');
+		todoHeading.innerHTML = 'TO DO';
+		var inprogressHeading = document.createElement('th');
+		inprogressHeading.innerHTML = 'IN PROGRESS';
+		var doneHeading = document.createElement('th');
+		doneHeading.innerHTML = 'DONE';
+		headingsRow.append(todoHeading);
+		headingsRow.append(inprogressHeading);
+		headingsRow.append(doneHeading);
+		
+		var issuesRow = document.createElement('tr');
+		var todoField = document.createElement('td');
+		todoField.setAttribute('id', 'to_do');
+		todoField.setAttribute('class', 'issues_container');
+		
+		var addIssueTodo = document.createElement('a');
+		addIssueTodo.setAttribute('href', '#');
+		addIssueTodo.setAttribute('onclick', 'addIssueBoard(\'#to_do\')');
+		addIssueTodo.innerHTML = 'add issue';
+		todoField.append(addIssueTodo);
+		
+		var inprogressField = document.createElement('td');
+		inprogressField.setAttribute('id', 'in_progress');
+		inprogressField.setAttribute('class', 'issues_container');
+		
+		var addIssueInprogress = document.createElement('a');
+		addIssueInprogress.setAttribute('href', '#');
+		addIssueInprogress.setAttribute('onclick', 'addIssueBoard(\'#in_progress\')');
+		addIssueInprogress.innerHTML = 'add issue';
+		inprogressField.append(addIssueInprogress);
+		
+		var doneField = document.createElement('td');
+		doneField.setAttribute('id', 'done');
+		doneField.setAttribute('class', 'issues_container');
+		
+		var addIssueDone = document.createElement('a');
+		addIssueDone.setAttribute('href', '#');
+		addIssueDone.setAttribute('onclick', 'addIssueBoard(\'#done\')');
+		addIssueDone.innerHTML = 'add issue';
+		doneField.append(addIssueDone);
+		
+		issuesRow.append(todoField);
+		issuesRow.append(inprogressField);
+		issuesRow.append(doneField);
+		
+		issuesTable.append(headingsRow);
+		issuesTable.append(issuesRow);
+		
+		container.empty();
+		$('#issue_info_well').empty();
+		container.append(sprintName);
+		container.append(issuesTable);
+		
+	}
+</script>
+
+
+</head>
+
+<body>
+
+	<!-- Navigation -->
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="" style="font-size: 200%;"><b>
+						godzilla </b></a>
+			</div>
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse"
+				id="bs-example-navbar-collapse--1">
+				<ul class="nav navbar-nav">
+					<li><a href='#' id='projects_button' class='dropbtn'
+						onclick="toggleShowDiv('#projects_menu')">Projects</a>
+						<div id='projects_menu' class='dropdown_content'>
+							<ul id='projects_menu_ul' class="nav navbar-nav">
+								<li><a href='#'>Create Project</a></li>
+								<br>
+							</ul>
+						</div></li>
+					<li><a href="#">Create Issue</a></li>
+					<li><a href="#">Backlog</a></li>
+					<li><a href="#">Board</a></li>
+					<li><a href="#">User Panel</a></li>
+					<li><a href='#' id='profile_button' class='dropbtn'
+						onclick="toggleShowDiv('#profile_menu')">Profile</a>
+						<div id='profile_menu' class='dropdown_content'>
+							<ul id='profile_menu_ul' class="nav navbar-nav">
+								<li><a href='#'> <img class="user_thumbnail"
+										src="images/profile_photo.png"> USER-1
+								</a></li>
+								<br>
+								<li><a href='#'>Log Out</a></li>
+							</ul>
+						</div></li>
+				</ul>
+			</div>
+			<!-- /.navbar-collapse -->
+		</div>
+		<!-- /.container -->
+	</nav>
+
+	<!-- Page Content -->
+	<div class="container">
+
+		<div class="row">
+
+			<h2>In Project PROJECT-1</h2>
+			<!-- project's issues column -->
+			<div class="col-md-8">
+				<hr>
+				<a href='#' onclick="addSprintBoard('#active_sprint_container')">add
+					sprint</a>
+				<div id="active_sprint_container">
+					<table id='active_sprint'>
+						<h4>SPRINT-1</h4>
+						<tr>
+							<th>TO DO</th>
+							<th>IN PROGRESS</th>
+							<th>DONE</th>
+						</tr>
+						<tr>
+							<td id="to_do" class="issues_container"><a href='#'
+								onclick="addIssueBoard('#to_do')">add issue</a></td>
+							<td id="in_progress" class="issues_container"><a href='#'
+								onclick="addIssueBoard('#in_progress')">add issue</a></td>
+							<td id="done" class="issues_container"><a href='#'
+								onclick="addIssueBoard('#done')">add issue</a></td>
+						</tr>
+					</table>
+				</div>
+
+			</div>
+
+			<!-- User Sidebar Column -->
+			<div class="col-md-4">
+
+				<!-- Issue Information Well -->
+				<div id='issue_info_well' class="well"></div>
+
+			</div>
+
+		</div>
+		<!-- /.row -->
+
+		<hr>
+
+		<!-- Footer -->
+		<footer>
+			<div class="row">
+				<div class="col-lg-12">
+					<p>Copyright &copy; Godzilla 2016</p>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<!-- /.row -->
+		</footer>
+
+	</div>
+	<!-- /.container -->
+
+	<!-- custom javascript -->
+	<script src="js/user_panel.js"></script>
+	<script src="js/backlog.js"></script>
+
+	<!-- jQuery -->
+	<script src="js/jquery.js"></script>
+
+	<!-- Bootstrap Core JavaScript -->
+	<script src="js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
