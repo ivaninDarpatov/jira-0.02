@@ -21,7 +21,14 @@ public class HomePageController {
 	public String homePage(HttpServletRequest request,HttpServletResponse response,HttpSession Usersession){
 		
 		String summary = request.getParameter("summary");
-		System.err.println(request.getParameter("issue_type"));
+		int selectedItem = 0;
+//		System.out.println(request.getParameter("issue_type"));
+//		if(request.getParameter("issue_type") != null)
+//		{
+//		   selectedItem=Integer.parseInt(request.getParameter("issue_type"));
+//		}
+//	
+//		System.out.println(selectedItem);
 		
 		return "HomePage";
 	}
