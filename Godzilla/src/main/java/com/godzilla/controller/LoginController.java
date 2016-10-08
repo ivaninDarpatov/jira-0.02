@@ -53,6 +53,7 @@ public class LoginController {
 				session.setAttribute("company", company);
 				session.setAttribute("companyUsers", company.getUsers());
 				session.setAttribute("projects", company.getProjects());
+				
 			} catch (CompanyDAOException e) {
 				builder.append(e.getMessage());
 			} catch (UserDAOException e) {

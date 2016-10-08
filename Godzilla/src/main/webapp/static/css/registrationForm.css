@@ -18,6 +18,22 @@ select {
   color: #4c4c4c;
 }
 
+#container {
+    margin: 0 auto 10px auto;
+    width: 640px;
+}
+#container {
+    text-align: left;
+    background: #fff;
+    border: 1px solid #ccc;
+    -o-box-shadow: rgba(0,0,0,0.2) 0px 0px 5px;
+    box-shadow: rgba(0,0,0,0.2) 0px 0px 5px;
+}
+user agent stylesheet
+div {
+    display: block;
+}
+
 p {
   font-size: 12px;
   width: 150px;
