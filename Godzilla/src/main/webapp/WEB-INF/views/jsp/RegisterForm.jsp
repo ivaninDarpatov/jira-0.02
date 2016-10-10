@@ -3,6 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <link rel="stylesheet" type="text/css" href="css/registrationForm.css" />
 <title>Godzilla registration</title>
@@ -25,8 +26,13 @@
 			 <input	type="password" name="password" id="name" placeholder="Password" required />
 			<label id="icon" for="name"><i class="icon-shield"></i></label> 
 			 <input	type="password" name="conf_password" id="name" placeholder="Confirm password" required />
+			
+			<div style="text-align:center; color:red; font-family:'Arial Black';" id="errors"><b>${error} </b></div>
+			
 			<button type="submit">Register</button>
 			<a href="./login" class="button">Back to Log In</a>
+			
+			<c:remove var="error"/>
 		</form>
 	</div>
 

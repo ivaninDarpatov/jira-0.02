@@ -39,13 +39,13 @@ public class IssueDAOTest {
 	public void addBugTest(){
 		
 		try {
-			int projectId = ProjectDAO.getProjectIdByName("project 1");
+			int projectId = ProjectDAO.getProjectIdByName("Project 1");
 			Project project = ProjectDAO.getProjectById(projectId);
 			
-			int reporterId = UserDAO.getUserIdByEmail("user1@abv.bg");
+			int reporterId = UserDAO.getUserIdByEmail("user_1@abv.bg");
 			User reporter = UserDAO.getUserById(reporterId);
 		
-			Issue issue = new Bug("Bug");
+			Issue issue = new Bug("bug summary");
 			
 			IssueDAO.createIssue(issue, project, reporter);
 			
@@ -81,13 +81,13 @@ public class IssueDAOTest {
 	public void addTaskTest(){
 		
 		try {
-			int projectId = ProjectDAO.getProjectIdByName("project 1");
+			int projectId = ProjectDAO.getProjectIdByName("Project 1");
 			Project project = ProjectDAO.getProjectById(projectId);
 			
-			int reporterId = UserDAO.getUserIdByEmail("user1@abv.bg");
+			int reporterId = UserDAO.getUserIdByEmail("user_1@abv.bg");
 			User reporter = UserDAO.getUserById(reporterId);
 		
-			Issue issue = new Task("Task");
+			Issue issue = new Task("task summary");
 			
 			IssueDAO.createIssue(issue, project, reporter);
 			
@@ -122,20 +122,17 @@ public class IssueDAOTest {
 	public void addStoryTest(){
 		
 		try {
-			int projectId = ProjectDAO.getProjectIdByName("project1");
+			int projectId = ProjectDAO.getProjectIdByName("Project 1");
 			Project project = ProjectDAO.getProjectById(projectId);
 			
-			int reporterId = UserDAO.getUserIdByEmail("ivan1@abv.bg");
+			int reporterId = UserDAO.getUserIdByEmail("user_1@abv.bg");
 			User reporter = UserDAO.getUserById(reporterId);
 		
-			Issue issue = new Story("first_story");
+			Issue issue = new Story("story summary");
 			
 			IssueDAO.createIssue(issue, project, reporter);
-			Issue epic = IssueDAO.getIssueById(9);
 			
-			IssueDAO.addIssueToEpic(issue, (Epic) epic);
-			
-			//Assert.assertTrue(issue.getId() > 0);
+			Assert.assertTrue(issue.getId() > 0);
 		} catch (IssueException e) {
 			e.printStackTrace();
 //			Assert.assertTrue(e.getMessage().equals("issue's summary cannot be null") 
@@ -167,21 +164,22 @@ public class IssueDAOTest {
 //					|| e.getMessage().equals("failed to create issue"));
 		}
 	}
+	
 	@Test
 	public void addEpicTest(){
 		
 		try {
-			int projectId = ProjectDAO.getProjectIdByName("project1");
+			int projectId = ProjectDAO.getProjectIdByName("Project 1");
 			Project project = ProjectDAO.getProjectById(projectId);
 			
-			int reporterId = UserDAO.getUserIdByEmail("ivan1@abv.bg");
+			int reporterId = UserDAO.getUserIdByEmail("user_1@abv.bg");
 			User reporter = UserDAO.getUserById(reporterId);
 		
-			Issue issue = new Epic("second_epic","epic2");
+			Issue issue = new Epic("epic summary","Epic 1");
 			
 			IssueDAO.createIssue(issue, project, reporter);
 			
-//			Assert.assertTrue(issue.getId() > 0);
+			Assert.assertTrue(issue.getId() > 0);
 		} catch (IssueException e) {
 			e.printStackTrace();
 //			Assert.assertTrue(e.getMessage().equals("issue's summary cannot be null") 

@@ -13,6 +13,7 @@ import com.godzilla.model.exceptions.IssueException;
 
 public abstract class Issue {
 	private int id;
+	private String type;
 	private String summary;
 	private String description;
 	private IssuePriority priority;
@@ -112,6 +113,14 @@ public abstract class Issue {
 			throw new IssueException("issue's id cannot be 0");
 		}
 	}
+	
+	public void setType(String type) throws IssueException {
+		if (type != null) {
+			this.type = type;
+		} else {
+			throw new IssueException("invalid issue type");
+		}
+	}
 
 	public String getSummary() {
 		return this.summary;
@@ -139,6 +148,10 @@ public abstract class Issue {
 
 	public int getId() {
 		return this.id;
+	}
+	
+	public String getType() {
+		return this.type;
 	}
 
 	public static String getIssueType(Issue issue) {

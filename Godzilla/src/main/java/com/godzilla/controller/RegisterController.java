@@ -31,7 +31,9 @@ public class RegisterController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public String register(HttpServletRequest request,HttpSession userSession){
-		HttpSession session = request.getSession();
+		HttpSession session = request.getSession(false);
+		session.invalidate();
+		session = request.getSession();
 		String companyName = request.getParameter("company");
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
@@ -52,24 +54,18 @@ public class RegisterController {
 				session.setAttribute("company", company);
 				session.setAttribute("user", userToReg);
 				session.setAttribute("companyUsers", company.getUsers());
-				session.setAttribute("projects", company.getProjects());
+				session.setAttribute("companyProjects", company.getProjects());
 				
-			} catch (UserException e) {
-				e.printStackTrace();
-				appendExceptions(exceptionMessage, e);
-			} catch (UserDAOException e) {
-				e.printStackTrace();
-				appendExceptions(exceptionMessage, e);
-			} catch (CompanyException e) {
-				e.printStackTrace();
-				appendExceptions(exceptionMessage, e);
-			} catch (CompanyDAOException e) {
-				e.printStackTrace();
-				appendExceptions(exceptionMessage, e);
+			} catch (UserException | UserDAOException | CompanyDAOException | CompanyException   e) {
+				session.setAttribute("error", e.getMessage());
+				return "redirect:registration";
+			} catch (Exception e) {
+				
 			}
 			
 		} else {
-			exceptionMessage.append("passwords !=");
+			session.setAttribute("error", "Passwords dont match");
+			return "redirect:registration";
 		}
 		return "redirect:HomePage";
 	}

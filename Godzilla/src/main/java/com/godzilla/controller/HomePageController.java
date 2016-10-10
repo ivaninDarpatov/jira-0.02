@@ -13,22 +13,25 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class HomePageController {
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String homePage(){
+	public String homePage(HttpServletRequest request){
+		HttpSession session = request.getSession(false);
+		if(session == null){
+			return "redirect:login";
+		} else {
+			if (session.getAttribute("user") == null) {
+				session.invalidate();
+				return "redirect:login";
+			}
+		}
+		
 		return "HomePage";
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public String homePage(HttpServletRequest request,HttpServletResponse response,HttpSession Usersession){
 		
-		String summary = request.getParameter("summary");
-		int selectedItem = 0;
-//		System.out.println(request.getParameter("issue_type"));
-//		if(request.getParameter("issue_type") != null)
-//		{
-//		   selectedItem=Integer.parseInt(request.getParameter("issue_type"));
-//		}
-//	
-//		System.out.println(selectedItem);
+		
+		
 		
 		return "HomePage";
 	}

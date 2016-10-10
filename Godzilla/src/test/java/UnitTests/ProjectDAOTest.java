@@ -23,14 +23,12 @@ public class ProjectDAOTest {
 
 	@Test
 	public void createProject(){
-		
-			
 			int companyId;
 			try {
 				companyId = CompanyDAO.getIdOfCompanyWithName("Company 1");
 				Company company = CompanyDAO.getCompanyById(companyId);
 				
-				Project project = new Project("project 1");
+				Project project = new Project("Project 2");
 				ProjectDAO.addProject(project, company);
 				
 				Assert.assertTrue(project.getId() > 0);

@@ -104,6 +104,8 @@ public class UserDAO {
 					throw new UserDAOException(e.getMessage());
 				}
 			}
+		} else {
+			throw new UserDAOException("Invalid user");
 		}
 	}
 

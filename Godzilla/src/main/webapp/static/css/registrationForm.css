@@ -9,6 +9,10 @@ ol, ul, li {list-style:none}
 
 :focus {outline:none}
 
+html, body {
+	height: 100%;
+}
+
 body,
 input,
 textarea,
@@ -65,7 +69,7 @@ html{
 .testbox {
   margin: 20px auto;
   width: 343px; 
-  height: 464px; 
+  height: 80%; 
   -webkit-border-radius: 8px/7px; 
   -moz-border-radius: 8px/7px; 
   border-radius: 8px/7px; 
@@ -213,7 +217,7 @@ button {
   font-size: 14px;
   font-weight: 600;
   color: white;
-  padding: 6px 25px 0px 20px;
+  padding: 6px 25px 20px 10px;
   margin: 50px 8px 20px 0px;
   display: inline-block;
   float: right;

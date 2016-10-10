@@ -1,5 +1,16 @@
 /*! jQuery v1.11.1 | (c) 2005, 2014 jQuery Foundation, Inc. | jquery.org/license */
 
+$(function () {
+		$("#dialog").dialog({
+			autoOpen: false,
+			width: 535.6
+		});
+		
+		$("#opener").click(function() {
+		    $("#dialog").dialog('open');
+		  });
+	}
+)
 
 function toggleShowParagraph (caller) {
 	var callerId = caller.id;
@@ -19,12 +30,12 @@ function toggleShowParagraph (caller) {
 	var jqueryParagraphId = "#" + paragraphId;
 	var paragraph = document.getElementById(paragraphId);
 
-	<!-- jquery -->
+//	<!-- jquery -->
 	$(jqueryParagraphId).toggle(200);
 }
 
 function toggleShowDiv (caller) {
-	<!-- jquery -->
+	//<!-- jquery -->
 	$(caller).toggle(200);
 }
 
@@ -45,21 +56,21 @@ window.onclick = function(event) {
 }
 
 //add issue
-function addIssue (caller) {
+function addIssue (caller, issue) {
 	var container = $(caller);
 	var issueType = caller.substring(1, 9);
 	var issueNumber = document.querySelectorAll('div.' + issueType + '_issue_box').length + 1;
 	
 	//issue values
 		var name = 'ISSUE-' + issueNumber;
-		var type = 'task';
-		var summary = 'task ' + issueNumber;
+		var type = issue.type;
+		var summary = issue.summary;
 		var project = 'project 1';
 		var reporter = 'user 1';
 		var assignee = 'user 1';
-		var description = 'description ' + issueNumber;
-		var dateCreated = '07/10/2016';
-		var dateLastModified = '07/10/2016';
+		var description = issue.description;
+		var dateCreated = issue.dateCreated;
+		var dateLastModified = issue.dateLastModified;
 	//
 	
 	var issueBox = document.createElement("div");
@@ -103,9 +114,8 @@ function addIssueToProject(caller, project) {
 }
 
 //add project
-function addProject(caller, project) {
-	alert($(project.name));
-	var container = $(caller);
+function addProject(target) {
+	var container = $(target);
 	var projectNumber = document.querySelectorAll('div.project_box').length + 1;
 	var projectName = "PROJECT-" + projectNumber;
 	var projectId = "project_" + projectNumber;
@@ -125,8 +135,8 @@ function addProject(caller, project) {
 	menuProject.setAttribute('id', projectIdLI);
 	menuProject.innerHTML = "<a href='#'>" + projectName +
 							"</a>";
-	
-	menu.append(menuProject);
+
 	menu.append(document.createElement("br"));
+	menu.append(menuProject);
 }
 

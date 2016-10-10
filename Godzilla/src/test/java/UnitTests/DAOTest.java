@@ -13,6 +13,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -20,13 +24,16 @@ import com.godzilla.model.DBConnection.DBConnection;
 import com.godzilla.model.Issue;
 import com.godzilla.model.Project;
 import com.godzilla.model.Story;
+import com.godzilla.model.Task;
 import com.godzilla.model.User;
 import com.godzilla.model.DAO.IssueDAO;
 import com.godzilla.model.DAO.StaticValuesInitializerDAO;
 import com.godzilla.model.DAO.UserDAO;
 import com.godzilla.model.exceptions.IssueDAOException;
+import com.godzilla.model.exceptions.IssueException;
 import com.godzilla.model.exceptions.ProjectException;
 import com.godzilla.model.exceptions.UserException;
+import com.google.gson.Gson;
 
 @SuppressWarnings("all")
 public class DAOTest {
@@ -54,15 +61,12 @@ public class DAOTest {
 	
 	@Test
 	public void test() {
-		LocalDateTime dateTime = LocalDateTime.now();
-		LocalDate date = dateTime.toLocalDate();
-		LocalTime time = dateTime.toLocalTime();
-		String dateTimeString = date.toString() + " " + time.toString();
-		System.out.println(dateTimeString);
-		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:SS:nnn");
-		LocalDateTime dateTime1 = LocalDateTime.parse(dateTimeString, formatter);
-		System.out.println(dateTime1.toString());
+		try {
+			StaticValuesInitializerDAO.initializeStaticValues();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
