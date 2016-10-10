@@ -67,7 +67,7 @@ public class RegisterController {
 			session.setAttribute("error", "Passwords dont match");
 			return "redirect:registration";
 		}
-		return "redirect:HomePage";
+		return "redirect:homepage";
 	}
 	
 	private void appendExceptions(StringBuilder builder,Throwable ex){

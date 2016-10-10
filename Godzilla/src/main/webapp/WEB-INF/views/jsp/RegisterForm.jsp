@@ -35,19 +35,5 @@
 			<c:remove var="error"/>
 		</form>
 	</div>
-
-	<!--
-	<form action="./registration" method="POST">
-  	Company:<br>
-  	<input type="text" name="company" placeholder="Enter company name"><br>
-  	Email:<br>
-  	<input type="text" name="email" placeholder="Enter your email"><br>
-  	Password:<br>
-  	<input type="password" name="password" placeholder="Type your password"><br>
-  	*min 8 symbols, at least one letter and at least one digit*<br>
-  	Confirm Password:<br>
-  	<input type="password" name="conf_password" placeholder="Confirm your password"><br><br>
-  	<input type="submit" value="Register">
-	</form> -->
 </body>
 </html>

@@ -7,14 +7,14 @@ function addIssueBacklog (caller) {
 	var name = 'ISSUE-' + issueNumber;
 	var summary = '\tSUMMARY-' + issueNumber;
 	//
-	var issueBox = document.createElement('div');
-	issueBox.setAttribute('class', 'backlog_issue_box');
-	issueBox.setAttribute('id', 'issue_' + issueNumber);
-	var bold = document.createElement('b');
-	var addIssue = document.createElement('a');
-	addIssue.setAttribute('href', '#');
-	addIssue.setAttribute('onclick', 'openIssueInformation(\'' + name + '\')');
-	addIssue.innerHTML = name;
+	var issueBox = $('<div></div>');
+	issueBox.attr('class', 'backlog_issue_box');
+	issueBox.attr('id', 'issue_' + issueNumber);
+	var bold = $('<b></b>');
+	var addIssue = $('<a></a>');
+	addIssue.attr('href', '#');
+	addIssue.attr('onclick', 'openIssueInformation(\'' + name + '\')');
+	addIssue.append(name);
 	bold.append(addIssue);
 	issueBox.append(bold);
 	issueBox.append(summary);
@@ -22,7 +22,7 @@ function addIssueBacklog (caller) {
 }
 
 function openIssueInformation(issueName) {
-	var issueInformation = document.createElement('div');
+	var issueInformation =$('<div></div>');
 	var issueNumber = issueName.substring(issueName.lastIndexOf('-') + 1);
 	//issue values
 	var name = 'ISSUE-' + issueNumber;
@@ -35,26 +35,26 @@ function openIssueInformation(issueName) {
 	var dateCreated = '07/10/2016';
 	var dateLastModified = '07/10/2016';
 	//
-	issueInformation.setAttribute('id', issueName.toLowerCase());
-	var issueName = document.createElement('h4');
-	issueName.innerHTML = name;
+	issueInformation.attr('id', issueName.toLowerCase());
+	var issueName = $('<h4></h4>');
+	issueName.append(name);
 	
-	var issueType = document.createElement('p');
-	issueType.innerHTML = 'Type: ' + type;
-	var issueSummary = document.createElement('p');
-	issueSummary.innerHTML = 'Summary: ' + summary;
-	var issueProject = document.createElement('p');
-	issueProject.innerHTML = 'Project: ' + project;
-	var issueReporter = document.createElement('p');
-	issueReporter.innerHTML = 'Reporter: ' + reporter;
-	var issueAssignee = document.createElement('p');
-	issueAssignee.innerHTML = 'Assignee: ' + assignee;
-	var issueDescription = document.createElement('p');
-	issueDescription.innerHTML = 'Description: ' + description;
-	var issueCreated = document.createElement('p');
-	issueCreated.innerHTML = 'Created: ' + dateCreated;
-	var issueLastModified = document.createElement('p');
-	issueLastModified.innerHTML = 'Last modified: ' + dateLastModified;
+	var issueType = $('<p></p>');
+	issueType.append('Type: ' + type);
+	var issueSummary = $('<p></p>');
+	issueSummary.append('Summary: ' + summary);
+	var issueProject = $('<p></p>');
+	issueProject.append('Project: ' + project);
+	var issueReporter = $('<p></p>');
+	issueReporter.append('Reporter: ' + reporter);
+	var issueAssignee = $('<p></p>');
+	issueAssignee.append('Assignee: ' + assignee);
+	var issueDescription = $('<p></p>');
+	issueDescription.append('Description: ' + description);
+	var issueCreated = $('<p></p>');
+	issueCreated.append('Created: ' + dateCreated);
+	var issueLastModified = $('<p></p>');
+	issueLastModified.append('Last modified: ' + dateLastModified);
 
 	issueInformation.append(issueName);
 	
@@ -75,20 +75,21 @@ function openIssueInformation(issueName) {
 function addSprintBacklog (target) {
 	var container = $(target);
 	var sprintNumber = document.querySelectorAll('div.sprints').length + 1;
-	var newSprint = document.createElement('div');
-	newSprint.setAttribute('id', 'sprint_' + sprintNumber);
-	newSprint.setAttribute('class', 'sprints');
+	var newSprint = $("<div></div>");
+	newSprint.attr('id', 'sprint_' + sprintNumber);
+	newSprint.attr('class', 'sprints');
 	//sprint info
 	var name = 'SPRINT-' + sprintNumber;
 	//
-	var sprintName = document.createElement('h4');
-	sprintName.innerHTML = name;
-	var issuesContainer = document.createElement('div');
-	issuesContainer.setAttribute('id', 'sprint_' + sprintNumber + '_issues');
-	var addIssue = document.createElement('a');
-	addIssue.setAttribute('href', '#');
-	addIssue.setAttribute('onclick', 'addIssueBacklog(\'#' + issuesContainer.id + '\')');
-	addIssue.innerHTML = 'add issue';
+	var sprintName = $('<h4></h4>');
+	sprintName.append(name);
+	var containerId = 'sprint_' + sprintNumber + '_issues';
+	var issuesContainer = $('<div></div>');
+	issuesContainer.attr('id', containerId);
+	var addIssue = $('<a></a>');
+	addIssue.attr('href', '#');
+	addIssue.attr('onclick', 'addIssueBacklog("#' + containerId + '")');
+	addIssue.append('add issue');
 	
 	issuesContainer.append(addIssue);
 	newSprint.append(sprintName);

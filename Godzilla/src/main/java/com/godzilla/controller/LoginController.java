@@ -127,6 +127,6 @@ public class LoginController {
 //			response.getWriter().println("<html> <body> <h1>" + builder.toString() + "</h1> </body> </html>");
 
 			
-			return "redirect:HomePage";
+			return "redirect:homepage";
 		}
 }

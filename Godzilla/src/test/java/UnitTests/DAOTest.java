@@ -27,10 +27,12 @@ import com.godzilla.model.Story;
 import com.godzilla.model.Task;
 import com.godzilla.model.User;
 import com.godzilla.model.DAO.IssueDAO;
+import com.godzilla.model.DAO.ProjectDAO;
 import com.godzilla.model.DAO.StaticValuesInitializerDAO;
 import com.godzilla.model.DAO.UserDAO;
 import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.IssueException;
+import com.godzilla.model.exceptions.ProjectDAOException;
 import com.godzilla.model.exceptions.ProjectException;
 import com.godzilla.model.exceptions.UserException;
 import com.google.gson.Gson;
@@ -62,11 +64,21 @@ public class DAOTest {
 	@Test
 	public void test() {
 		try {
-			StaticValuesInitializerDAO.initializeStaticValues();
-		} catch (SQLException e) {
+			int projectId = ProjectDAO.getProjectIdByName("Project 1");
+			Project project = ProjectDAO.getProjectById(projectId);
+			
+			Set<Issue> issues = IssueDAO.getAllFreeIssuesByProject(project);
+			
+			System.out.println(issues);
+			
+		} catch (ProjectDAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IssueDAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 	}
 
 }

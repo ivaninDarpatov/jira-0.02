@@ -19,6 +19,7 @@ import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.IssueException;
 
 public class IssueDAO {
+	private static final String FIND_FREE_ISSUES_BY_PROJECT_SQL = "SELECT issue_id FROM issues WHERE sprint_id IS NULL AND project_id = ?;";
 	private static final String GET_ISSUE_TYPE_SQL = "SELECT issue_type FROM issues WHERE issue_id = ?,";
 	private static final String FIND_ISSUE_EPIC_SQL = "SELECT epic_id FROM issues WHERE issue_id = ?;";
 	private static final String GET_EPIC_NAME_BY_ID_SQL = "SELECT epic_name FROM epics WHERE epic_id = ?;";
@@ -457,7 +458,7 @@ public class IssueDAO {
 			throw new IssueDAOException("cannot find issue with that id");
 		}
 		
-		String type = "";
+		String type = FIND_FREE_ISSUES_BY_PROJECT_SQL;
 		Connection connection = DBConnection.getInstance().getConnection();
 		
 		try {
@@ -790,5 +791,32 @@ public class IssueDAO {
 			throw new IssueDAOException(e.getMessage());
 		}
 		
+	}
+
+	public static Set<Issue> getAllFreeIssuesByProject(Project project) throws IssueDAOException {
+		if (project == null) {
+			throw new IssueDAOException("project cannot be null");
+		}
+		
+		int projectId = project.getId();
+		Set<Issue> freeIssues = new HashSet<Issue>();
+		Connection connection = DBConnection.getInstance().getConnection();
+		
+		try {
+			PreparedStatement getFreeIssuesPS = connection.prepareStatement(FIND_FREE_ISSUES_BY_PROJECT_SQL);
+			getFreeIssuesPS.setInt(1, projectId);
+			
+			ResultSet freeIssuesRS = getFreeIssuesPS.executeQuery();
+			
+			while (freeIssuesRS.next()) {
+				int issueId = freeIssuesRS.getInt("issue_id");
+				Issue issue = IssueDAO.getIssueById(issueId);
+				freeIssues.add(issue);
+			}
+		} catch (SQLException e) {
+			throw new IssueDAOException(e.getMessage());
+		}
+		
+		return freeIssues;
 	}
 }

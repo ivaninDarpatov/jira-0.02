@@ -104,10 +104,9 @@ function addIssueToProject(caller, project) {
 }
 
 //add project
-function addProject(caller) {
+function addProject(caller, projectName) {
 	var container = $(caller);
 	var projectNumber = document.querySelectorAll('div.project_box').length + 1;
-	var projectName = "PROJECT-" + projectNumber;
 	var projectId = "project_" + projectNumber;
 	var projectBox = document.createElement("div");
 	projectBox.setAttribute('id', projectId);

@@ -87,12 +87,12 @@
 
 		<div id="container" class="ltr">
 			<h1 id="logo">
-				<a href="./HomePage" title="Powered by Godzilla">Godzilla</a>
+				<a href="./homepage" title="Powered by Godzilla">Godzilla</a>
 			</h1>
 
 			<form id="form" name="form" class="wufoo topLabel page1"
 				accept-charset="UTF-8" autocomplete="off"
-				enctype="multipart/form-data" action="./HomePage" method="POST" >
+				enctype="multipart/form-data" action="./homepage" method="POST" >
 
 				<header id="header" class="info">
 				<h2>Issue Tracking</h2>
@@ -260,7 +260,6 @@
 
 <!----------------------------------------------------------------------------------------------------------------------------------------  -->
 
-
 <!-- Navigation -->
 	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container">
@@ -292,7 +291,7 @@
 							</ul>
 						</div></li>
 					<li><a href="#" id="opener">Create Issue</a></li>
-					<li><a href="#">Backlog</a></li>
+					<li><a href="./backlog">Backlog</a></li>
 					<li><a href="#">Board</a></li>
 					<li><a href="#">User Panel</a></li>
 					<li><a href='#' id='profile_button' class='dropbtn'
@@ -304,7 +303,7 @@
 									${user.email}
 								</a></li>
 								<br>
-								
+								<li><a href="./login">Log Out</a></li>
 							</ul>
 						</div></li>
 				</ul>
@@ -312,8 +311,7 @@
 			<!-- /.navbar-collapse -->
 		</div>
 		<!-- /.container -->
-	</nav>
-
+	</nav> 
 	<!-- Page Content -->
 	<div class="container">
 						
