@@ -8,6 +8,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.godzilla.model.Issue;
+import com.godzilla.model.Project;
+import com.godzilla.model.User;
+import com.godzilla.model.DAO.IssueDAO;
+import com.godzilla.model.DAO.ProjectDAO;
+import com.godzilla.model.DAO.UserDAO;
+import com.godzilla.model.exceptions.IssueDAOException;
+import com.godzilla.model.exceptions.ProjectDAOException;
+import com.godzilla.model.exceptions.UserDAOException;
+
 @Controller
 @RequestMapping(value = "/homepage")
 public class HomePageController {
@@ -28,11 +38,67 @@ public class HomePageController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public String homePage(HttpServletRequest request,HttpServletResponse response,HttpSession Usersession){
+	public String createIssue(HttpServletRequest request){
+		//issue_type , project , priority , status , description , 
+		//linked_issues , link_type , assignee
+		System.err.println("REQUEST: " + request);
 		
 		
+		String summary = request.getParameter("summary");
+		String IssueType = request.getParameter("issue_type");
+		String projectName = request.getParameter("project");
+		String priority = request.getParameter("priority");
+		String status = request.getParameter("status");
+		String description = request.getParameter("description");
+		String linkedIssueName = request.getParameter("linked_issues");
+		String linkType = request.getParameter("link_type");
+		String assigneeEmail = request.getParameter("assignee");
 		
+		System.out.println("Summary: " + summary);
+		System.out.println("IssueType: " + IssueType);
+		System.out.println("projectName: " + projectName);
+		System.out.println("priority: " + priority);
+		System.out.println("status: " + status);
+		System.out.println("description: " + description);
+		System.out.println("linkedIssue: " + linkedIssueName);
+		System.out.println("linkType: " + linkType);
+		System.out.println("assigneeName: " + assigneeEmail);
 		
+		int projectId;
+		Project project = null;
+		
+		int userId;
+		User user = null;
+		
+		int linkedIssueId;
+		Issue linkedIssue = null;
+		
+		try {
+			projectId = ProjectDAO.getProjectIdByName(projectName);
+			project = ProjectDAO.getProjectById(projectId);
+			
+			userId = UserDAO.getUserIdByEmail(assigneeEmail);
+			user = UserDAO.getUserById(userId);
+			
+			linkedIssueId = IssueDAO.getIssueIdByName(linkedIssueName);
+			linkedIssue = IssueDAO.getIssueById(linkedIssueId);
+			
+		} catch (ProjectDAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UserDAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IssueDAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.err.println("Project object: " + project);
+		System.err.println("User object: " + user);
+		System.err.println("Linked Issue object: " + linkedIssue);
+		
+
 		return "HomePage";
 	}
 }

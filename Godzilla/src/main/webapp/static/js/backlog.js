@@ -5,7 +5,7 @@ function addIssueBacklog (caller, issue) {
 	var container = $(caller);
 	var issueNumber = document.querySelectorAll('div.backlog_issue_box').length + 1;
 	//issue info
-	var name = 'ISSUE-' + issue.id;
+	var name = issue.name;
 	var summary = '\t' + issue.summary;
 	//
 	var issueBox = $('<div></div>');
@@ -25,9 +25,9 @@ function addIssueBacklog (caller, issue) {
 
 //load selected issue's information in the right-side box
 function openIssueInformation(issue) {
-	var issueInformation =$('<div></div>');
+	var issueInformation = $('<div></div>');
 	//issue values
-	var name = 'ISSUE-' + issue.id;
+	var name = issue.name;
 	var type = issue.type;
 	var summary = issue.summary;
 	var project = 'PROJECT-1';

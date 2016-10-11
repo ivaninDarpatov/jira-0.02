@@ -22,8 +22,9 @@ import com.godzilla.model.exceptions.UserException;
 
 public class UserDAO {
 	private static final String FIND_USERS_BY_COMPANY_ID_SQL = "SELECT * FROM users WHERE company_id = ?;";
-	private static final int USER_PERMISSIONS = Permissions.USER.ordinal() + 1;
-	private static final int ADMIN_PERMISSIONS = Permissions.ADMINISTRATOR.ordinal() + 1;
+	private static final int MANAGER_PERMISSIONS = Permissions.MANAGER.ordinal() + 1;
+	private static final int PROGRAMMER_PERMISSIONS = Permissions.PROGRAMMER.ordinal() + 1;
+	private static final int TESTER_PERMISSIONS = Permissions.TESTER.ordinal() + 1;
 	private static final String FIND_USER_ID_BY_EMAIL_SQL = "SELECT user_id FROM users WHERE email = ?;";
 	private static final String FIND_USER_BY_EMAIL_PASSWORD_COMPANY_SQL = "SELECT u.user_id FROM users u JOIN companies c ON (c.company_id = u.company_id) WHERE u.email = ? AND u.password = ? AND c.company_name = ?;";
 	private static final String FIND_COMPANY_ID_BY_NAME_SQL = "SELECT company_id FROM companies WHERE company_name = ?;";
@@ -49,7 +50,7 @@ public class UserDAO {
 
 				if (rs.next()) {
 					companyId = rs.getInt("company_id");
-					permissionsId = USER_PERMISSIONS;
+					permissionsId = PROGRAMMER_PERMISSIONS;
 				} else {
 					Company newCompany;
 					
@@ -63,9 +64,9 @@ public class UserDAO {
 					}
 
 					companyId = newCompany.getId();
-					permissionsId = ADMIN_PERMISSIONS;
+					permissionsId = MANAGER_PERMISSIONS;
 					try {
-						toRegister.setPermissions(Permissions.ADMINISTRATOR);
+						toRegister.setPermissions(Permissions.MANAGER);
 					} catch (PermissionException e) {
 						throw new UserException("invalid permissions", e);
 					}
@@ -146,7 +147,7 @@ public class UserDAO {
 			Set<Issue> assignedIssues = IssueDAO.getAllIssuesAssignedTo(userToRemove);
 			Set<Issue> reportedIssues = IssueDAO.getAllReportedIssuesByUser(userToRemove);
 
-			if (userToRemove.isAdministrator()) {
+			if (userToRemove.isManager()) {
 				for (Issue assignedIssue : assignedIssues) {
 					IssueDAO.removeIssue(assignedIssue);
 				}
@@ -198,7 +199,7 @@ public class UserDAO {
 				int permissions = rs.getInt("permissions_id");
 				int companyId = rs.getInt("company_id");
 				String companyName = CompanyDAO.getCompanyNameById(companyId);
-				Permissions userPermissions = permissions == 1 ? Permissions.ADMINISTRATOR : Permissions.USER;
+				Permissions userPermissions = Permissions.getPermissionsById(permissions);
 
 				user = new User(email, password, companyName);
 				user.setId(userId);

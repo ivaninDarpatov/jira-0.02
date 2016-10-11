@@ -171,7 +171,7 @@ public class CompanyDAO {
 			}
 			
 			for (User userToRemove : usersToRemove) {
-				if (userToRemove.isAdministrator()) {
+				if (userToRemove.isManager()) {
 					continue;
 				}
 				UserDAO.removeUser(userToRemove);
@@ -179,7 +179,7 @@ public class CompanyDAO {
 			
 			usersToRemove = UserDAO.getAllUsersByCompany(toRemove);
 			for (User userToRemove : usersToRemove) {
-				if (userToRemove.isAdministrator()) {
+				if (userToRemove.isManager()) {
 					UserDAO.removeUser(userToRemove);
 				}
 			}

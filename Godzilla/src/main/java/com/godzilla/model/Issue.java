@@ -9,11 +9,13 @@ import java.util.Set;
 import com.godzilla.model.enums.IssueLinkType;
 import com.godzilla.model.enums.IssuePriority;
 import com.godzilla.model.enums.IssueState;
+import com.godzilla.model.exceptions.EpicException;
 import com.godzilla.model.exceptions.IssueException;
 
-public abstract class Issue {
+public class Issue {
 	private int id;
 	private String type;
+	private String name;
 	private String summary;
 	private String description;
 	private IssuePriority priority;
@@ -22,10 +24,11 @@ public abstract class Issue {
 	private LocalDateTime dateLastModified;
 	private Map<IssueLinkType, Set<Issue>> linkedIssues;
 
-	public Issue(String summary) throws IssueException {
+	public Issue(String summary,String issueType) throws IssueException {
 		this.setSummary(summary);
 		this.setPriority(IssuePriority.MEDIUM);
 		this.setState(IssueState.TO_DO);
+		this.setType(issueType);
 		this.initializeDates();
 		this.initializeLinkedIssues();
 	}
@@ -121,6 +124,15 @@ public abstract class Issue {
 			throw new IssueException("invalid issue type");
 		}
 	}
+	
+	public void setName(String name) throws IssueException{
+		if (name != null && name.length() > 0) {
+			this.name = name;
+		} else {
+			throw new IssueException("Issue's name cannot be null");
+		}
+	}
+	
 
 	public String getSummary() {
 		return this.summary;
@@ -153,22 +165,9 @@ public abstract class Issue {
 	public String getType() {
 		return this.type;
 	}
-
-	public static String getIssueType(Issue issue) {
-		if (issue instanceof Task) {
-			return "task";
-		}
-		if (issue instanceof Bug) {
-			return "bug";
-		}
-		if (issue instanceof Epic) {
-			return "epic";
-		}
-		if (issue instanceof Story) {
-			return "story";
-		}
-
-		return null;
+	
+	public String getName(){
+		return this.name;
 	}
 
 	@Override

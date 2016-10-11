@@ -28,7 +28,7 @@ public class User {
 			throw new UserException("Invalid password", e);
 		}
 		try {
-			this.setPermissions(Permissions.USER);
+			this.setPermissions(Permissions.PROGRAMMER);
 		} catch (PermissionException e) {
 			throw new UserException("Invalid permissions", e);
 		}
@@ -212,8 +212,8 @@ public class User {
 				"\n]\n";
 	}
 
-	public boolean isAdministrator() {
-		return this.permissions.equals(Permissions.ADMINISTRATOR);
+	public boolean isManager() {
+		return this.permissions.equals(Permissions.MANAGER);
 	}
 	
 	

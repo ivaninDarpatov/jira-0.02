@@ -8,18 +8,18 @@ import com.godzilla.model.exceptions.EpicException;
 import com.godzilla.model.exceptions.IssueException;
 
 public class Epic extends Issue {
-	private String name;
+	private String epicName;
 	private Set<Issue> issues;
 
 	public Epic(String summary,String epicName) throws IssueException, EpicException {
-		super(summary);
-		this.setName(epicName);
+		super(summary,"epic");
+		this.setEpicName(epicName);
 		this.issues = new HashSet<Issue>();
 	}
 
-	public void setName(String name) throws EpicException {
+	public void setEpicName(String name) throws EpicException {
 		if (name != null && name.length() > 0) {
-			this.name = name;
+			this.epicName = name;
 		} else {
 			throw new EpicException("epic's name cannot be null");
 		}
@@ -38,7 +38,7 @@ public class Epic extends Issue {
 	}
 
 	public String getName() {
-		return this.name;
+		return this.epicName;
 	}
 	
 	public Set<Issue> getIssues() {

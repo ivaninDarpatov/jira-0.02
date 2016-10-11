@@ -64,7 +64,7 @@ public class LoginController {
 				} 
 			} catch (UserDAOException | UserException e) {
 				session.setAttribute("error", e.getMessage());
-				return "redirect:login";
+				return "LogInForm";
 			}
 			
 			

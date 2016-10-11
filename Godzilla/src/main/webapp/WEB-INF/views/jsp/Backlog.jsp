@@ -45,6 +45,7 @@ function loadProjectSprints (projectName) {
 	//get map object from session JSON
 	var map = JSON.parse(document.getElementById("projectSprintIssuesMap").value);
 	var sprints = map[projectName];
+	console.log(map);
 	
 	$('#project_name').empty();
 	$('#project_name').append(projectName);

@@ -23,8 +23,6 @@ import org.junit.Test;
 import com.godzilla.model.DBConnection.DBConnection;
 import com.godzilla.model.Issue;
 import com.godzilla.model.Project;
-import com.godzilla.model.Story;
-import com.godzilla.model.Task;
 import com.godzilla.model.User;
 import com.godzilla.model.DAO.IssueDAO;
 import com.godzilla.model.DAO.ProjectDAO;
@@ -62,22 +60,7 @@ public class DAOTest {
 	
 	
 	@Test
-	public void test() {
-		try {
-			int projectId = ProjectDAO.getProjectIdByName("Project 1");
-			Project project = ProjectDAO.getProjectById(projectId);
-			
-			Set<Issue> issues = IssueDAO.getAllFreeIssuesByProject(project);
-			
-			System.out.println(issues);
-			
-		} catch (ProjectDAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IssueDAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void test() throws SQLException {
 		
 	}
 
