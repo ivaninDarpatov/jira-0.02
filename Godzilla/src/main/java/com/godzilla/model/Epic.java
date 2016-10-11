@@ -37,7 +37,7 @@ public class Epic extends Issue {
 		}
 	}
 
-	public String getName() {
+	public String getEpicName() {
 		return this.epicName;
 	}
 	

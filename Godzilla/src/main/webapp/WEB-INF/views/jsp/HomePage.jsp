@@ -52,9 +52,7 @@
 				<a href="./homepage" title="Powered by Godzilla">Godzilla</a>
 			</h1>
 
-			<form id="form" name="form" class="wufoo topLabel page1"
-				accept-charset="UTF-8" autocomplete="off"
-				enctype="multipart/form-data" action="./homepage" method="POST">
+			<form action="./homepage" method="POST">
 				
 				<header id="header" class="info">
 					<h2>Issue Tracking</h2>
@@ -105,7 +103,7 @@
 								onclick="handleInput(this);" onkeyup="handleInput(this);"
 								tabindex="3">
 								<c:forEach items="${companyProjects}" var="project">
-									<option value="${project}">${project.name}</option>
+									<option value="${project.name}">${project.name}</option>
 								</c:forEach>
 							</select>
 						</div>
@@ -183,7 +181,7 @@
 								onkeyup="handleInput(this);" tabindex="7">
 								<c:forEach items="${companyProjects}" var="project">
 									<c:forEach items="${project.issues}" var="issue">
-										<option value="${issue}">${issue.summary}</option>
+										<option value="${issue.name}">${issue.name}</option>
 									</c:forEach>
 								</c:forEach>
 							</select>
@@ -222,7 +220,7 @@
 								onclick="handleInput(this);" onkeyup="handleInput(this);"
 								tabindex="9">
 								<c:forEach items="${companyUsers}" var="user">
-									<option value="${user}">${user.email}</option>
+									<option value="${user.email}">${user.email}</option>
 								</c:forEach>
 							</select>
 						</div>

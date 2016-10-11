@@ -8,13 +8,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.godzilla.model.Epic;
 import com.godzilla.model.Issue;
 import com.godzilla.model.Project;
 import com.godzilla.model.User;
 import com.godzilla.model.DAO.IssueDAO;
 import com.godzilla.model.DAO.ProjectDAO;
 import com.godzilla.model.DAO.UserDAO;
+import com.godzilla.model.enums.IssuePriority;
+import com.godzilla.model.enums.IssueState;
+import com.godzilla.model.exceptions.EpicException;
 import com.godzilla.model.exceptions.IssueDAOException;
+import com.godzilla.model.exceptions.IssueException;
 import com.godzilla.model.exceptions.ProjectDAOException;
 import com.godzilla.model.exceptions.UserDAOException;
 
@@ -45,7 +50,7 @@ public class HomePageController {
 		
 		
 		String summary = request.getParameter("summary");
-		String IssueType = request.getParameter("issue_type");
+		String issueType = request.getParameter("issue_type");
 		String projectName = request.getParameter("project");
 		String priority = request.getParameter("priority");
 		String status = request.getParameter("status");
@@ -55,7 +60,7 @@ public class HomePageController {
 		String assigneeEmail = request.getParameter("assignee");
 		
 		System.out.println("Summary: " + summary);
-		System.out.println("IssueType: " + IssueType);
+		System.out.println("IssueType: " + issueType);
 		System.out.println("projectName: " + projectName);
 		System.out.println("priority: " + priority);
 		System.out.println("status: " + status);
@@ -73,6 +78,11 @@ public class HomePageController {
 		int linkedIssueId;
 		Issue linkedIssue = null;
 		
+		IssuePriority issuePriority = IssuePriority.getPriorityFromString(priority);
+		IssueState issueState = IssueState.getIssueStateFromString(status);
+		
+		Issue issue = null;
+		
 		try {
 			projectId = ProjectDAO.getProjectIdByName(projectName);
 			project = ProjectDAO.getProjectById(projectId);
@@ -83,6 +93,20 @@ public class HomePageController {
 			linkedIssueId = IssueDAO.getIssueIdByName(linkedIssueName);
 			linkedIssue = IssueDAO.getIssueById(linkedIssueId);
 			
+			if(issueType.equalsIgnoreCase("Epic")){
+				issue = new Epic(summary, issueType);
+				
+			}else{
+				issue = new Issue(summary, issueType);
+			}
+			
+			issue.setDescription(description);
+			issue.setPriority(issuePriority);
+			issue.setState(issueState);
+			
+			IssueDAO.createIssue(issue, project, user);
+			
+			
 		} catch (ProjectDAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -92,11 +116,18 @@ public class HomePageController {
 		} catch (IssueDAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (IssueException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (EpicException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		System.err.println("Project object: " + project);
 		System.err.println("User object: " + user);
 		System.err.println("Linked Issue object: " + linkedIssue);
+		System.err.println("Created Issue: " + issue);
 		
 
 		return "HomePage";

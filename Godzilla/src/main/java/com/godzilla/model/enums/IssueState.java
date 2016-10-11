@@ -18,4 +18,17 @@ public enum IssueState {
 		
 		return null;
 	}
+	
+	public static IssueState getIssueStateFromString(String issueStateAsString){
+		switch (issueStateAsString) {
+		case "to do":
+			return IssueState.TO_DO;
+		case "in progress":
+			return IssueState.IN_PROGRESS;
+		case "done":
+			return IssueState.DONE;
+		default:
+			return IssueState.TO_DO;
+		}
+	}
 }

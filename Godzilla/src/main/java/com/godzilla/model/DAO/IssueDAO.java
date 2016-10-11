@@ -43,7 +43,7 @@ public class IssueDAO {
 	private static final String FIND_ISSUES_BY_PROJECT_ID_SQL = "SELECT issue_id FROM issues WHERE project_id = ?;";
 	private static final String IS_EPIC_SQL = "SELECT epic_id FROM epics WHERE epic_id = ?;";
 	private static final String REMOVE_ISSUE_SQL = "DELETE FROM issues WHERE issue_id = ?;";
-	private static final String CREATE_ISSUE_SQL = "INSERT INTO issues VALUES (null, ?, ? ?, ?, ?, ?, ?, ?, ?, 'someDate', 'someDate', null, null);";
+	private static final String CREATE_ISSUE_SQL = "INSERT INTO issues VALUES (null, ?, ? , ?, ?, ?, ?, ?, ?, ?, 'someDate', 'someDate', null, null);";
 	private static final String FIND_ISSUE_BY_REPORTER_SQL = "SELECT issue_id FROM issues WHERE reporter_id = ?;";
 	private static final String FIND_ISSUE_BY_REPORTER_IN_PROJECT_SQL = "SELECT issue_id FROM issues WHERE reporter_id = ? AND project_id = ?;";
 	private static final String FIND_ISSUE_BY_ID_SQL = "SELECT * FROM issues WHERE issue_id = ?;";
@@ -88,8 +88,8 @@ public class IssueDAO {
 			connection.setAutoCommit(false);
 			PreparedStatement insertIntoIssues = connection.prepareStatement(CREATE_ISSUE_SQL, Statement.RETURN_GENERATED_KEYS);
 			insertIntoIssues.setString(1, issueType);
-			insertIntoIssues.setString(2, summary);
-			insertIntoIssues.setString(3, issueName);
+			insertIntoIssues.setString(2, issueName);
+			insertIntoIssues.setString(3, summary);
 			insertIntoIssues.setString(4, description);
 			insertIntoIssues.setInt(5, projectId);
 			insertIntoIssues.setInt(6, stateId);
@@ -119,7 +119,7 @@ public class IssueDAO {
 				PreparedStatement insertIntoEpic = null;
 				insertIntoEpic = connection.prepareStatement(ADD_EPIC_SQL);
 				insertIntoEpic.setInt(1, issueId);
-				insertIntoEpic.setString(2, ((Epic) toCreate).getName());
+				insertIntoEpic.setString(2, ((Epic) toCreate).getEpicName());
 
 				if (insertIntoEpic.executeUpdate() < 1) {
 					throw new IssueDAOException("failed to insert epic properly");
