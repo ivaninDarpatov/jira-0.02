@@ -50,6 +50,7 @@ function loadProjectSprints (projectName) {
 	$('#project_name').append(projectName);
 	$('#sprints_container').empty();
 	$('#issues_container').empty();
+	$('#free_issues').empty();
 	for (var sprintName in sprints) {
 		var issues = sprints[sprintName];
 		if (sprintName.localeCompare('-') != 0) {
@@ -59,6 +60,8 @@ function loadProjectSprints (projectName) {
 			}
 		} else {
 			for (var i = 0; i < issues.length; i++) {
+				$('#free_issues').empty();
+				$('#free_issues').append('Issues');
 				addIssueBacklog('#issues_container', issues[i]);
 			}
 		}
@@ -370,7 +373,7 @@ function loadProjectSprints (projectName) {
 
 				<hr>
 
-				<h4>Issues</h4>
+				<h4 id="free_issues"></h4>
 				<div id='issues_container'>
 
 				</div>
