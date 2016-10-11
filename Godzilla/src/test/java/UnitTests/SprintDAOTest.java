@@ -23,10 +23,10 @@ public class SprintDAOTest {
 	//@Test
 	public void addSprintTest() {
 		try {
-			int projectId = ProjectDAO.getProjectIdByName("project1");
+			int projectId = ProjectDAO.getProjectIdByName("Project 1");
 			Project project = ProjectDAO.getProjectById(projectId);
 			
-			Sprint sprint = new Sprint("sprint1", "goal1");
+			Sprint sprint = new Sprint("Sprint 1", "Goal 1");
 			
 			SprintDAO.addSprint(sprint, project);
 			

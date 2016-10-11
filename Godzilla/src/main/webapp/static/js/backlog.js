@@ -1,11 +1,12 @@
 /*! jQuery v1.11.1 | (c) 2005, 2014 jQuery Foundation, Inc. | jquery.org/license */
 
-function addIssueBacklog (caller) {
+//add issue in selected sprint's issues container (caller)
+function addIssueBacklog (caller, issue) {
 	var container = $(caller);
 	var issueNumber = document.querySelectorAll('div.backlog_issue_box').length + 1;
 	//issue info
-	var name = 'ISSUE-' + issueNumber;
-	var summary = '\tSUMMARY-' + issueNumber;
+	var name = 'ISSUE-' + issue.id;
+	var summary = '\t' + issue.summary;
 	//
 	var issueBox = $('<div></div>');
 	issueBox.attr('class', 'backlog_issue_box');
@@ -13,7 +14,8 @@ function addIssueBacklog (caller) {
 	var bold = $('<b></b>');
 	var addIssue = $('<a></a>');
 	addIssue.attr('href', '#');
-	addIssue.attr('onclick', 'openIssueInformation(\'' + name + '\')');
+	var issueString = JSON.stringify(issue);
+	addIssue.attr('onclick', 'openIssueInformation(' + issueString + ')');
 	addIssue.append(name);
 	bold.append(addIssue);
 	issueBox.append(bold);
@@ -21,21 +23,21 @@ function addIssueBacklog (caller) {
 	container.append(issueBox);
 }
 
-function openIssueInformation(issueName) {
+//load selected issue's information in the right-side box
+function openIssueInformation(issue) {
 	var issueInformation =$('<div></div>');
-	var issueNumber = issueName.substring(issueName.lastIndexOf('-') + 1);
 	//issue values
-	var name = 'ISSUE-' + issueNumber;
-	var type = 'task';
-	var summary = 'SUMMARY-' + issueNumber;
+	var name = 'ISSUE-' + issue.id;
+	var type = issue.type;
+	var summary = issue.summary;
 	var project = 'PROJECT-1';
 	var reporter = 'USER-1';
 	var assignee = 'USER-1';
-	var description = 'DESCRIPTION-' + issueNumber;
-	var dateCreated = '07/10/2016';
-	var dateLastModified = '07/10/2016';
+	var description = issue.description;
+	var dateCreated = issue.dateCreated;
+	var dateLastModified = issue.dateLastModified;
 	//
-	issueInformation.attr('id', issueName.toLowerCase());
+	issueInformation.attr('id', name.toLowerCase());
 	var issueName = $('<h4></h4>');
 	issueName.append(name);
 	
@@ -72,29 +74,29 @@ function openIssueInformation(issueName) {
 	container.append(issueInformation);
 }
 
-function addSprintBacklog (target) {
+//add sprint in the sprints container
+function addSprintBacklog (target, name) {
 	var container = $(target);
 	var sprintNumber = document.querySelectorAll('div.sprints').length + 1;
 	var newSprint = $("<div></div>");
 	newSprint.attr('id', 'sprint_' + sprintNumber);
 	newSprint.attr('class', 'sprints');
-	//sprint info
-	var name = 'SPRINT-' + sprintNumber;
-	//
 	var sprintName = $('<h4></h4>');
 	sprintName.append(name);
 	var containerId = 'sprint_' + sprintNumber + '_issues';
 	var issuesContainer = $('<div></div>');
-	issuesContainer.attr('id', containerId);
-	var addIssue = $('<a></a>');
-	addIssue.attr('href', '#');
-	addIssue.attr('onclick', 'addIssueBacklog("#' + containerId + '")');
-	addIssue.append('add issue');
-	
-	issuesContainer.append(addIssue);
+	issuesContainer.attr('id', containerId)
 	newSprint.append(sprintName);
 	newSprint.append(issuesContainer);
 	
 	container.append(newSprint);
 	
+	return containerId;
+}
+
+//view JSON map as object map (test)
+function viewMap (map) {
+	var string = JSON.stringify(map);
+	var object = JSON.parse(string);
+	console.log(object);
 }

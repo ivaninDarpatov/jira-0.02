@@ -10,7 +10,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>User panel</title>
+	<title></title>
 	
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	
@@ -35,9 +35,6 @@
 		
 	<!-- header functionality javascript -->
 	<script src="js/page_header.js"></script>
-	
-	<!-- page specific javascript -->
-	<script src="js/user_panel.js"></script>
 </head>
 
 <body>
@@ -330,28 +327,10 @@
 	<!-- Page Content -->
 	<div class="container">
 		<div class="row">
-		
-			<!-- selected project name -->
-			<h2 id="project_name"></h2>
 			
 <!-- LEFT SIDE -->
 			<div class="col-md-8">
-				<hr>
-
-				<!-- Assigned Issues for user in selected project -->
-				<div id="assigned_issues_well">
-					<h4>Assigned Issues</h4>
-					<div id="assigned_issues"></div>
-				</div>
-
-				<hr>
-
-				<!-- Reported Issues for user in selected project -->
-				<div id="reported_issues_well">
-					<h4>Reported Issues</h4>
-					<div id="reported_issues"></div>
-				</div>
-				<hr>
+				
 			</div>
 <!-- /LEFT SIDE -->
 
@@ -359,41 +338,9 @@
 			<!-- User projects Sidebar -->
 			<div class="col-md-4">
 			
-				<!-- Projects Well -->
+				<!-- Sidebar Well -->
 				<div class="well">
-					<h4 align=center>Projects you participate in</h4>
-					<div id="projects">
 					
-						<!-- all projects where current user has assigned or reported issues -->
-						<c:forEach items="${userProjects}" var="project" varStatus="loop">
-							<div class='project_box' id='project_${loop.index}'>
-								<c:set var="stringa" value="${assignedIssues}" />
-								<h4>
-									<a href='#'
-										onclick='loadIssues("${project.name}", <c:out value="${assignedIssues}"/>, <c:out value="${reportedIssues}"/>)'
-										id='${project.name}'>
-										${project.name}
-									</a>
-								</h4>
-								
-								<h5 id='project_${loop.index}_assigned'
-									class='assigned_issues_count'>
-									Assigned Issues
-									
-									<!-- show number of assigned issues for current user in this project -->
-									<script>document.write(showDigit('${project.name}', '${assignedIssues}'))</script>
-								</h5>
-								
-								<h5 id='project_${loop.index}_reported'
-									class='reported_issues_count'>
-									Reported Issues
-									
-									<!-- show number of reported issues for current user in this project -->
-									<script>document.write(showDigit('${project.name}', '${reportedIssues}'))</script>
-								</h5>
-							</div>
-						</c:forEach>
-					</div>
 				</div>
 			</div>
 <!-- /RIGHT SIDE -->

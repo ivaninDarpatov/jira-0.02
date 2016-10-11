@@ -92,7 +92,6 @@ public class IssueDAO {
 				if (rs.next()) {
 					issueId = rs.getInt(1);
 					toCreate.setId(issueId);
-					issueType = rs.getString(2);
 					toCreate.setType(issueType);
 				} else {
 					throw new IssueDAOException("could not set id of an issue");

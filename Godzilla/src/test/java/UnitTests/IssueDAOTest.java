@@ -35,7 +35,7 @@ import com.godzilla.model.exceptions.UserException;
 @SuppressWarnings("all")
 public class IssueDAOTest {
 
-	@Test
+	//@Test
 	public void addBugTest(){
 		
 		try {
@@ -77,7 +77,7 @@ public class IssueDAOTest {
 					|| e.getMessage().equals("failed to create issue"));
 		}
 	}
-	@Test
+	//@Test
 	public void addTaskTest(){
 		
 		try {
@@ -118,7 +118,7 @@ public class IssueDAOTest {
 					|| e.getMessage().equals("failed to create issue"));
 		}
 	}
-	@Test
+	//@Test
 	public void addStoryTest(){
 		
 		try {
@@ -165,7 +165,7 @@ public class IssueDAOTest {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void addEpicTest(){
 		
 		try {
@@ -633,9 +633,9 @@ public class IssueDAOTest {
 		}
 	}
 	
-	//@Test
+	@Test
 	public void addIssueToSprint() {
-		int issueId = 9;
+		int issueId = 64;
 		int sprintId = 1;
 		try {
 			Issue issue = IssueDAO.getIssueById(issueId);
