@@ -14,6 +14,49 @@ div.assigned_issue_box, div.reported_issue_box, div.backlog_issue_box, div.board
 	padding-left: 2%;
 }
 
+div#errors_container {
+	text-align: center;
+	
+}
+
+div.tag1
+{
+    color: #EEE;
+    font-size: 15px;
+    font-family: Georgia, Times, serif;
+    display: inline-block;
+    border: 2px solid red;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    background-color: white;
+    padding: 8px;
+    margin: 5px;
+}
+
+div.tag2
+{
+    color: #EEE;
+    font-size: 15px;
+    font-family: Georgia, Times, serif;
+    display: inline-block;
+    border: 2px solid green;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    background-color: white;
+    padding: 8px;
+    margin: 5px;
+}
+.closeButton
+{
+    display:block;
+    float:right;
+    width:27px;
+    height:27px;
+    background:url('http://cdn-sg1.pgimgs.com/images/pg/close-button.png') no-repeat center center;
+}
+
 div.board_issue_box {
 	background-color: 
 }

@@ -7,10 +7,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-	<title>Backlog</title>
+	<title></title>
 	
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	
@@ -24,7 +24,7 @@
 	<link href="css/user_panel.css" rel="stylesheet">
 	
 	
-<!-- javascript files initialization -->
+	<!-- javascript files initialization -->
 	
 	<!-- jQuery JavaScript -->
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -35,15 +35,8 @@
 		
 	<!-- header functionality javascript -->
 	<script src="js/page_header.js"></script>
-		
-	<!-- page-specific javascript -->
-	<script src="js/backlog.js"></script>
-
-<script>
-
-</script>
-
 </head>
+
 <body>
 
 <!-- BEGINNING OF 'ONE-FOR-ALL' PART -->
@@ -56,7 +49,9 @@
 				<a href="./homepage" title="Powered by Godzilla">Godzilla</a>
 			</h1>
 
-			<form action="./homepage" method="POST">
+			<form id="form" name="form" class="wufoo topLabel page1"
+				accept-charset="UTF-8" autocomplete="off"
+				enctype="multipart/form-data" action="./homepage" method="POST">
 				
 				<header id="header" class="info">
 					<h2>Issue Tracking</h2>
@@ -107,7 +102,7 @@
 								onclick="handleInput(this);" onkeyup="handleInput(this);"
 								tabindex="3">
 								<c:forEach items="${companyProjects}" var="project">
-									<option value="${project.name}">${project.name}</option>
+									<option value="${project}">${project.name}</option>
 								</c:forEach>
 							</select>
 						</div>
@@ -185,7 +180,7 @@
 								onkeyup="handleInput(this);" tabindex="7">
 								<c:forEach items="${companyProjects}" var="project">
 									<c:forEach items="${project.issues}" var="issue">
-										<option value="${issue.name}">${issue.name}</option>
+										<option value="${issue}">${issue.summary}</option>
 									</c:forEach>
 								</c:forEach>
 							</select>
@@ -224,7 +219,7 @@
 								onclick="handleInput(this);" onkeyup="handleInput(this);"
 								tabindex="9">
 								<c:forEach items="${companyUsers}" var="user">
-									<option value="${user.email}">${user.email}</option>
+									<option value="${user}">${user.email}</option>
 								</c:forEach>
 							</select>
 						</div>
@@ -241,6 +236,7 @@
 			</form>
 		</div>
 	</div>
+
 
 <!----------------------------------------------------------------------------------------------------------------------------------------  -->
 
@@ -282,7 +278,7 @@
 								<c:forEach items="${companyProjects}" var="project">
 									<br>
 									<li>
-										<a href='#' onclick="loadProjectSprints('${project.name}')">${project.name}</a>
+										<a href='#'>${project.name}</a>
 									</li>
 								</c:forEach>
 							</ul>
@@ -295,10 +291,10 @@
 						<a href="./backlog">Backlog</a>
 					</li>
 					<li>
-						<a href="./board">Board</a>
+						<a href="#">Board</a>
 					</li>
 					<li>
-						<a href="./homepage">User Panel</a>
+						<a href="#">User Panel</a>
 					</li>
 					<li>
 						<a href='#' id='profile_button' class='dropbtn'
@@ -327,39 +323,25 @@
 		<!-- /.container -->
 	</nav>
 <!-- END OF 'ONE-FOR-ALL' PART -->
-<!-- hidden input to hold session attribute -->
-<input id='projectSprintIssuesMap' type="hidden" value='${projectSprintIssuesMap}'/>
+
 	<!-- Page Content -->
 	<div class="container">
-
 		<div class="row">
-			<h2 id="project_name"></h2>
-			<!-- project's issues column -->
+			
 <!-- LEFT SIDE -->
 			<div class="col-md-8">
-				<hr>
-				<div id='sprints_container'>
-
-				</div>
-
-				<hr>
-
-				<h4 id="free_issues"></h4>
-				<div id='issues_container'>
-
-				</div>
+				
 			</div>
 <!-- /LEFT SIDE -->
 
 <!-- RIGHT SIDE -->
-			<!-- User Sidebar Column -->
+			<!-- User projects Sidebar -->
 			<div class="col-md-4">
-
-				<!-- Issue Information Well -->
-				<div id='issue_info_well' class="well">
+			
+				<!-- Sidebar Well -->
+				<div class="well">
 					
 				</div>
-					
 			</div>
 <!-- /RIGHT SIDE -->
 

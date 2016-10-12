@@ -198,6 +198,13 @@ public class User {
 	public Set<Issue> getIssuesAssignedToMe() {
 		return Collections.unmodifiableSet(this.issuesAssignedTo);
 	}
+	
+	public boolean getIsTester(){
+		if(this.permissions.equals(Permissions.TESTER)){
+			return true;
+		}
+		return false;
+	}
 
 	@Override
 	public String toString() {

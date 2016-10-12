@@ -47,6 +47,15 @@ public class HomePageController {
 		//issue_type , project , priority , status , description , 
 		//linked_issues , link_type , assignee
 		System.err.println("REQUEST: " + request);
+		HttpSession session = request.getSession(false);
+		if(session == null){
+			return "redirect:login";
+		} else {
+			if (session.getAttribute("user") == null) {
+				session.invalidate();
+				return "redirect:login";
+			}
+		}
 		
 		
 		String summary = request.getParameter("summary");
@@ -58,6 +67,10 @@ public class HomePageController {
 		String linkedIssueName = request.getParameter("linked_issues");
 		String linkType = request.getParameter("link_type");
 		String assigneeEmail = request.getParameter("assignee");
+		User currentUser = (User) session.getAttribute("user");
+		
+		String currentUserEmail = currentUser.getEmail();
+		System.err.println("Current user: " + currentUserEmail);
 		
 		System.out.println("Summary: " + summary);
 		System.out.println("IssueType: " + issueType);
@@ -72,7 +85,7 @@ public class HomePageController {
 		int projectId;
 		Project project = null;
 		
-		int userId;
+		int currentUserId;
 		User user = null;
 		
 		int linkedIssueId;
@@ -87,8 +100,8 @@ public class HomePageController {
 			projectId = ProjectDAO.getProjectIdByName(projectName);
 			project = ProjectDAO.getProjectById(projectId);
 			
-			userId = UserDAO.getUserIdByEmail(assigneeEmail);
-			user = UserDAO.getUserById(userId);
+			currentUserId = UserDAO.getUserIdByEmail(currentUserEmail);
+			user = UserDAO.getUserById(currentUserId);
 			
 			linkedIssueId = IssueDAO.getIssueIdByName(linkedIssueName);
 			linkedIssue = IssueDAO.getIssueById(linkedIssueId);
@@ -106,23 +119,25 @@ public class HomePageController {
 			
 			IssueDAO.createIssue(issue, project, user);
 			
-			
+			request.setAttribute("succeed", "Succeed: Issue created");
 		} catch (ProjectDAOException e) {
-			// TODO Auto-generated catch block
+			request.setAttribute("issueError", e.getMessage());
 			e.printStackTrace();
 		} catch (UserDAOException e) {
-			// TODO Auto-generated catch block
+			request.setAttribute("issueError", e.getMessage());
 			e.printStackTrace();
 		} catch (IssueDAOException e) {
-			// TODO Auto-generated catch block
+			request.setAttribute("issueError", e.getMessage());
 			e.printStackTrace();
 		} catch (IssueException e) {
-			// TODO Auto-generated catch block
+			request.setAttribute("issueError", e.getMessage());
 			e.printStackTrace();
 		} catch (EpicException e) {
-			// TODO Auto-generated catch block
+			request.setAttribute("issueError", e.getMessage());
 			e.printStackTrace();
 		}
+		
+		System.err.println("----------------------------------" + request.getAttribute("issueError"));
 		
 		System.err.println("Project object: " + project);
 		System.err.println("User object: " + user);

@@ -38,6 +38,13 @@
 	
 	<!-- page specific javascript -->
 	<script src="js/user_panel.js"></script>
+	
+	<script>
+		function closeDiv(target){
+			var div = $(target);
+			div.hide();
+		}
+	</script>
 </head>
 
 <body>
@@ -220,7 +227,9 @@
 								onclick="handleInput(this);" onkeyup="handleInput(this);"
 								tabindex="9">
 								<c:forEach items="${companyUsers}" var="user">
-									<option value="${user.email}">${user.email}</option>
+									<c:if test="${user.isTester == false}">
+										<option value="${user.email}">${user.email}</option>
+									</c:if>
 								</c:forEach>
 							</select>
 						</div>
@@ -328,7 +337,28 @@
 	<!-- Page Content -->
 	<div class="container">
 		<div class="row">
+		<div id="errors_container">
 		
+		<c:set var="errorMessage" value="${issueError}"/>
+		<c:set var="errorLengh" value="${fn:length(errorMessage)}" />
+		
+		<c:set var="succeed" value="${succeed}"></c:set>
+		<c:set var="succeedLengh" value="${fn:length(succeed)}" />
+		
+	 			<c:if test="${(errorLengh) gt 0}">
+					<div id="tag1" class="tag1" style="text-align:center; color:red; font-family:'Arial Black';" id="errors">
+						<a class="closeButton" onclick="closeDiv('#tag1')"></a>
+						<b>${issueError} </b>
+					</div>
+				 </c:if>
+				 <c:if test="${(succeedLengh) gt 0}">
+				 	<div id="tag1" class="tag2" style="text-align:center; color:green; font-family:'Arial Black';" id="errors">
+						<a class="closeButton" onclick="closeDiv('#tag1')"></a>
+						<b>${succeed}</b>
+					</div>
+				 </c:if>
+		</div>
+			
 			<!-- selected project name -->
 			<h2 id="project_name"></h2>
 			
