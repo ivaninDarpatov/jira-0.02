@@ -38,15 +38,15 @@
 		var summary = '\tSUMMARY-' + issueNumber;
 		//
 
-		var issueBox = document.createElement('div');
-		issueBox.setAttribute('class', 'board_issue_box');
-		issueBox.setAttribute('id', issueId);
-		var bold = document.createElement('b');
-		var addIssue = document.createElement('a');
-		addIssue.setAttribute('href', '#');
-		addIssue.setAttribute('onclick', 'openIssueInformation(\'' + name
+		var issueBox = $('<div></div>');
+		issueBox.attr('class', 'board_issue_box');
+		issueBox.attr('id', issueId);
+		var bold = $('<b></b>');
+		var addIssue = $('<a></a>');
+		addIssue.attr('href', '#');
+		addIssue.attr('onclick', 'openIssueInformation(\'' + name
 				+ '\')');
-		addIssue.innerHTML = name;
+		addIssue.append(name);
 		bold.append(addIssue);
 		issueBox.append(bold);
 		issueBox.append(summary);
@@ -57,41 +57,41 @@
 		var container = $(target);
 
 		var name = 'SPRINT';
-		var issuesTable = document.createElement('table');
-		issuesTable.setAttribute('id', 'active_sprint');
-		var sprintName = document.createElement('h4');
-		sprintName.innerHTML = name;
+		var issuesTable = $('<table></table>');
+		issuesTable.attr('id', 'active_sprint');
+		var sprintName = $('<h4></h4>');
+		sprintName.append(name);
 		
-		var headingsRow = document.createElement('tr');
-		var todoHeading = document.createElement('th');
-		todoHeading.innerHTML = 'TO DO';
-		var inprogressHeading = document.createElement('th');
-		inprogressHeading.innerHTML = 'IN PROGRESS';
-		var doneHeading = document.createElement('th');
-		doneHeading.innerHTML = 'DONE';
+		var headingsRow = $('<tr></tr>');
+		var todoHeading = $('<th></th>');
+		todoHeading.append('TO DO');
+		var inprogressHeading = $('<th></th>');
+		inprogressHeading.append('IN PROGRESS');
+		var doneHeading = $('<th></th>');
+		doneHeading.append('DONE');
 		headingsRow.append(todoHeading);
 		headingsRow.append(inprogressHeading);
 		headingsRow.append(doneHeading);
 		
-		var issuesRow = document.createElement('tr');
-		var todoField = document.createElement('td');
-		todoField.setAttribute('id', 'to_do');
+		var issuesRow = $('<tr></tr>');
+		var todoField = $('<td></td>');
+		todoField.attr('id', 'to_do');
 		todoField.setAttribute('class', 'issues_container');
 		
-		var addIssueTodo = document.createElement('a');
-		addIssueTodo.setAttribute('href', '#');
-		addIssueTodo.setAttribute('onclick', 'addIssueBoard(\'#to_do\')');
-		addIssueTodo.innerHTML = 'add issue';
+		var addIssueTodo = $('<a></a>');
+		addIssueTodo.attr('href', '#');
+		addIssueTodo.attr('onclick', 'addIssueBoard(\'#to_do\')');
+		addIssueTodo.append('add issue');
 		todoField.append(addIssueTodo);
 		
-		var inprogressField = document.createElement('td');
-		inprogressField.setAttribute('id', 'in_progress');
-		inprogressField.setAttribute('class', 'issues_container');
+		var inprogressField = $('<td></td>');
+		inprogressField.attr('id', 'in_progress');
+		inprogressField.attr('class', 'issues_container');
 		
-		var addIssueInprogress = document.createElement('a');
-		addIssueInprogress.setAttribute('href', '#');
-		addIssueInprogress.setAttribute('onclick', 'addIssueBoard(\'#in_progress\')');
-		addIssueInprogress.innerHTML = 'add issue';
+		var addIssueInprogress = $('<a></a>');
+		addIssueInprogress.attr('href', '#');
+		addIssueInprogress.attr('onclick', 'addIssueBoard(\'#in_progress\')');
+		addIssueInprogress.append('add issue');
 		inprogressField.append(addIssueInprogress);
 		
 		var doneField = document.createElement('td');

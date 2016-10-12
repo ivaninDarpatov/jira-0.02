@@ -1,5 +1,34 @@
 /*! jQuery v1.11.1 | (c) 2005, 2014 jQuery Foundation, Inc. | jquery.org/license */
 
+//load sprints for selected project
+function loadProjectSprints (projectName) {
+	//get map object from session JSON
+	var map = JSON.parse(document.getElementById("projectSprintIssuesMap").value);
+	var sprints = map[projectName];
+	
+	$('#issue_info_well').empty();
+	$('#project_name').empty();
+	$('#project_name').append(projectName);
+	$('#sprints_container').empty();
+	$('#issues_container').empty();
+	$('#free_issues').empty();
+	for (var sprintName in sprints) {
+		var issues = sprints[sprintName];
+		if (sprintName.localeCompare('-') != 0) {
+			var issuesContainerId = addSprintBacklog('#sprints_container', sprintName);
+			for (var i = 0; i < issues.length; i++) {
+				addIssueBacklog('#' + issuesContainerId + '', issues[i]);
+			}
+		} else {
+			for (var i = 0; i < issues.length; i++) {
+				$('#free_issues').empty();
+				$('#free_issues').append('Issues');
+				addIssueBacklog('#issues_container', issues[i]);
+			}
+		}
+	}
+}
+
 //add issue in selected sprint's issues container (caller)
 function addIssueBacklog (caller, issue) {
 	var container = $(caller);

@@ -292,7 +292,7 @@
 						<a href="./backlog">Backlog</a>
 					</li>
 					<li>
-						<a href="#">Board</a>
+						<a href="./board">Board</a>
 					</li>
 					<li>
 						<a href="#">User Panel</a>

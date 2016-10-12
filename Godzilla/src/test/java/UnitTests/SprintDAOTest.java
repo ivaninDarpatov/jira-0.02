@@ -20,13 +20,13 @@ import com.godzilla.model.exceptions.SprintException;
 @SuppressWarnings("all")
 public class SprintDAOTest {
 
-	//@Test
+	@Test
 	public void addSprintTest() {
 		try {
-			int projectId = ProjectDAO.getProjectIdByName("Project 1");
+			int projectId = ProjectDAO.getProjectIdByName("Project 2");
 			Project project = ProjectDAO.getProjectById(projectId);
 			
-			Sprint sprint = new Sprint("Sprint 1", "Goal 1");
+			Sprint sprint = new Sprint("Sprint 2", "Goal 2");
 			
 			SprintDAO.addSprint(sprint, project);
 			

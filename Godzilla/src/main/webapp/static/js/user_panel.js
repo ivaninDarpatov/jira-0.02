@@ -63,7 +63,7 @@ function addIssue(caller, issue) {
 			+ '_issue_box').length + 1;
 
 	// issue values
-	var name = 'ISSUE-' + issueNumber;
+	var name = issue.name;
 	var type = issue.type;
 	var summary = issue.summary;
 	var project = 'project 1';
@@ -120,7 +120,6 @@ function addIssue(caller, issue) {
 function addProject(target) {
 	var container = $(target);
 	var projectNumber = document.querySelectorAll('div.project_box').length + 1;
-	var projectName = "PROJECT-" + projectNumber;
 	var projectId = "project_" + projectNumber;
 	var projectBox = document.createElement("div");
 	projectBox.setAttribute('id', projectId);

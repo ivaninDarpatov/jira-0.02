@@ -52,24 +52,27 @@ footer {
 }
 
 <!-- board -->
-div.issues_container {
-}
-
-tr, td, th {
+tr {
 	text-align: center;
 	border: 1px solid black;
 	width: 33%;
 }
 
-th {
-	background-color: #e2ffdf;
-}
-
 td {
+	text-align: center;
+	border: 1px solid black;
+	width: 33%;
 	vertical-align: top;
 	height: 400px;
 }
 
-#active_sprint {
+th {
+	background-color: #e2ffdf;
+	text-align: center;
+	border: 1px solid black;
+	width: 33%;
+}
+
+#opened_sprint {
 	width: 100%;
 }

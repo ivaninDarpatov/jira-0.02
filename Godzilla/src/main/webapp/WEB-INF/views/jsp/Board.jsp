@@ -7,10 +7,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-	<title>Backlog</title>
+	<title></title>
 	
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	
@@ -24,7 +24,7 @@
 	<link href="css/user_panel.css" rel="stylesheet">
 	
 	
-<!-- javascript files initialization -->
+	<!-- javascript files initialization -->
 	
 	<!-- jQuery JavaScript -->
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -35,15 +35,139 @@
 		
 	<!-- header functionality javascript -->
 	<script src="js/page_header.js"></script>
-		
-	<!-- page-specific javascript -->
-	<script src="js/backlog.js"></script>
 
 <script>
+	function loadProjectSprints(projectName) {
+		//get map object from session JSON
+		var map = JSON.parse(document.getElementById("projectSprintIssuesMap").value);
+		var sprints = map[projectName];
+		
+		$('#project_name').empty();
+		$('#project_name').append(projectName);
+		
+		$('#project_sprints').empty();
+		$('#to_do').empty();
+		$('#in_progress').empty();
+		$('#done').empty();
+		$('#issue_info_well').empty();
+
+		var sprintsContainer = $('#project_sprints');
+		for (var sprintName in sprints) {
+			var issues = sprints[sprintName];
+			var issuesString = JSON.stringify(issues);
+			if (sprintName.localeCompare('-') != 0) {
+				var sprintNameA = $('<a></a>');
+				sprintNameA.attr('href', '#');
+				sprintNameA.attr('onClick', 'addSprintBoard("#opened_sprint_container", "' + sprintName + '", ' + issuesString + ')');
+				sprintNameA.append(sprintName);
+				sprintsContainer.append(sprintNameA);
+			} 
+		}
+	}
+	
+	function addIssueBoard(caller, issue) {
+		var container = $(caller);
+		var issueNumber = document.querySelectorAll('div.board_issue_box').length + 1;
+		var issueId = caller.substring(1) + '_' + issueNumber;
+
+		//issue info
+		var name = issue.name;
+		var summary = '\t' + issue.summary;
+		//
+
+		var issueBox = $('<div></div>');
+		issueBox.attr('class', 'board_issue_box');
+		issueBox.attr('id', issueId);
+		var bold = $('<b></b>');
+		var addIssue = $('<a></a>');
+		addIssue.attr('href', '#');
+		var issueString = JSON.stringify(issue);
+		addIssue.attr('onclick', 'openIssueInformation(' + issueString + ')');
+		addIssue.append(name);
+		bold.append(addIssue);
+		issueBox.append(bold);
+		issueBox.append(summary);
+		container.append(issueBox);
+	}
+
+	function addSprintBoard(target, sprintName, issues) {
+		var nameContainer = $('#sprint_name');
+		nameContainer.empty();
+		nameContainer.append(sprintName);
+		
+		$('#issue_info_well').empty();
+		
+		//add sprint issues in table
+		for (var i = 0; i < issues.length; i++) {
+			console.log(issues[i]);
+			if (issues[i].state.localeCompare("TO_DO") == 0) {
+				addIssueBoard("#to_do", issues[i]);
+			} else {
+				if (issues[i].state.localeCompare("IN_PROGRESS") == 0) {
+					addIssueBoard("#in_progress", issues[i]);
+				} else {
+					if (issues[i].state.localeCompare("DONE") == 0) {
+						addIssueBoard("#done", issues[i]);
+					}
+				}
+			}
+		}
+	}
+	
+	function openIssueInformation(issue) {
+		var issueInformation = $('<div></div>');
+		//issue values
+		var name = issue.name;
+		var type = issue.type;
+		var summary = issue.summary;
+		var project = 'PROJECT-1';
+		var reporter = 'USER-1';
+		var assignee = 'USER-1';
+		var description = issue.description;
+		var dateCreated = issue.dateCreated;
+		var dateLastModified = issue.dateLastModified;
+		//
+		issueInformation.attr('id', name.toLowerCase());
+		var issueName = $('<h4></h4>');
+		issueName.append(name);
+		
+		var issueType = $('<p></p>');
+		issueType.append('Type: ' + type);
+		var issueSummary = $('<p></p>');
+		issueSummary.append('Summary: ' + summary);
+		var issueProject = $('<p></p>');
+		issueProject.append('Project: ' + project);
+		var issueReporter = $('<p></p>');
+		issueReporter.append('Reporter: ' + reporter);
+		var issueAssignee = $('<p></p>');
+		issueAssignee.append('Assignee: ' + assignee);
+		var issueDescription = $('<p></p>');
+		issueDescription.append('Description: ' + description);
+		var issueCreated = $('<p></p>');
+		issueCreated.append('Created: ' + dateCreated);
+		var issueLastModified = $('<p></p>');
+		issueLastModified.append('Last modified: ' + dateLastModified);
+
+		issueInformation.append(issueName);
+		
+		issueInformation.append(issueType);
+		issueInformation.append(issueSummary);
+		issueInformation.append(issueProject);
+		issueInformation.append(issueReporter);
+		issueInformation.append(issueAssignee);
+		issueInformation.append(issueDescription);
+		issueInformation.append(issueCreated);
+		issueInformation.append(issueLastModified);
+		
+		var container = $('#issue_info_well');
+		container.empty();
+		container.append(issueInformation);
+	}
 
 </script>
-
+	
 </head>
+
 <body>
 
 <!-- BEGINNING OF 'ONE-FOR-ALL' PART -->
@@ -298,7 +422,7 @@
 						<a href="./backlog">Backlog</a>
 					</li>
 					<li>
-						<a href="./board">Board</a>
+						<a href="#">Board</a>
 					</li>
 					<li>
 						<a href="./homepage">User Panel</a>
@@ -330,39 +454,46 @@
 		<!-- /.container -->
 	</nav>
 <!-- END OF 'ONE-FOR-ALL' PART -->
-<!-- hidden input to hold session attribute -->
 <input id='projectSprintIssuesMap' type="hidden" value='${projectSprintIssuesMap}'/>
+
 	<!-- Page Content -->
 	<div class="container">
-
 		<div class="row">
-			<h2 id="project_name"></h2>
-			<!-- project's issues column -->
+			
 <!-- LEFT SIDE -->
 			<div class="col-md-8">
-				<hr>
-				<div id='sprints_container'>
-
+				<h2 id="project_name"></h2>
+				<div id="project_sprints">
+				
 				</div>
-
 				<hr>
-
-				<h4 id="free_issues"></h4>
-				<div id='issues_container'>
-
+				<div id="opened_sprint_container">
+					<table id='opened_sprint'>
+						<h4 id="sprint_name"></h4>
+						<tr class="sprint_table_element">
+							<th class="sprint_table_element">TO DO</th>
+							<th class="sprint_table_element">IN PROGRESS</th>
+							<th class="sprint_table_element">DONE</th>
+						</tr>
+						<tr class="sprint_table_element">
+							<td id="to_do" class="issues_container" class="sprint_table_element"></td>
+							<td id="in_progress" class="issudes_container" class="sprint_table_element"></td>
+							<td id="done" class="issues_container" class="sprint_table_element"></td>
+						</tr>
+					</table>
 				</div>
+				
 			</div>
 <!-- /LEFT SIDE -->
 
 <!-- RIGHT SIDE -->
-			<!-- User Sidebar Column -->
+			<!-- User projects Sidebar -->
 			<div class="col-md-4">
-
-				<!-- Issue Information Well -->
+			
+				<!-- Sidebar Well -->
 				<div id='issue_info_well' class="well">
 					
 				</div>
-					
 			</div>
 <!-- /RIGHT SIDE -->
 
