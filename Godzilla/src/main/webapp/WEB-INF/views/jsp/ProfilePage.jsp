@@ -35,6 +35,10 @@
 		
 	<!-- header functionality javascript -->
 	<script src="js/page_header.js"></script>
+		
+	<!-- profile page javascript -->
+	<script src="js/profile_page.js"></script>
+	
 </head>
 
 <body>
@@ -43,15 +47,13 @@
 
 <!-- Create Issue popUp  -->
 <!----------------------------------------------------------------------------------------------------------------------------------------  -->
-	<div style="display: none;" id="dialog" title="Create Issue">
+<div style="display: none;" id="dialog" title="Create Issue">
 		<div id="container" class="ltr">
 			<h1 id="logo">
 				<a href="./homepage" title="Powered by Godzilla">Godzilla</a>
 			</h1>
 
-			<form id="form" name="form" class="wufoo topLabel page1"
-				accept-charset="UTF-8" autocomplete="off"
-				enctype="multipart/form-data" action="./homepage" method="POST">
+			<form action="./homepage" method="POST">
 				
 				<header id="header" class="info">
 					<h2>Issue Tracking</h2>
@@ -102,7 +104,7 @@
 								onclick="handleInput(this);" onkeyup="handleInput(this);"
 								tabindex="3">
 								<c:forEach items="${companyProjects}" var="project">
-									<option value="${project}">${project.name}</option>
+									<option value="${project.name}">${project.name}</option>
 								</c:forEach>
 							</select>
 						</div>
@@ -180,7 +182,7 @@
 								onkeyup="handleInput(this);" tabindex="7">
 								<c:forEach items="${companyProjects}" var="project">
 									<c:forEach items="${project.issues}" var="issue">
-										<option value="${issue}">${issue.summary}</option>
+										<option value="${issue.name}">${issue.name}</option>
 									</c:forEach>
 								</c:forEach>
 							</select>
@@ -219,7 +221,9 @@
 								onclick="handleInput(this);" onkeyup="handleInput(this);"
 								tabindex="9">
 								<c:forEach items="${companyUsers}" var="user">
-									<option value="${user}">${user.email}</option>
+									<c:if test="${user.isTester == false}">
+ 										<option value="${user.email}">${user.email}</option>
+ 									</c:if>
 								</c:forEach>
 							</select>
 						</div>
@@ -238,98 +242,156 @@
 	</div>
 
 
+
 <!----------------------------------------------------------------------------------------------------------------------------------------  -->
 
-	<!-- Navigation -->
-	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-		<div class="container">
-			<!-- Brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse"
-					data-target="#bs-example-navbar-collapse-1">
-					<span class="sr-only">Toggle navigation</span> 
-					<span class="icon-bar"></span> 
-					<span class="icon-bar"></span> 
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="" style="font-size: 200%;">
-					<b>
-						godzilla |
-						<small style="font-size: 60%;"> 
-							${company.name}
-						</small>
-					</b>
-				</a>
-			</div>
-			<!-- Collect the nav links, forms, and other content for toggling -->
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse--1">
-				<ul class="nav navbar-nav">
-					<li>
-						<a href='#' id='projects_button' class='dropbtn'
-						onclick="toggleShowDiv('#projects_menu')">
-							Projects
-						</a>
-						<div id='projects_menu' class='dropdown_content'>
-							<ul id='projects_menu_ul' class="nav navbar-nav">
-								<li>
-									<a href='#'>Create Project</a>
-								</li>
+<c:import url="Navigation.jsp"/>
 
-								<c:forEach items="${companyProjects}" var="project">
-									<br>
-									<li>
-										<a href='#'>${project.name}</a>
-									</li>
-								</c:forEach>
-							</ul>
-						</div>
-					</li>
-					<li>
-						<a href="#" id="opener">Create Issue</a>
-					</li>
-					<li>
-						<a href="./backlog">Backlog</a>
-					</li>
-					<li>
-						<a href="#">Board</a>
-					</li>
-					<li>
-						<a href="#">User Panel</a>
-					</li>
-					<li>
-						<a href='#' id='profile_button' class='dropbtn'
-							onclick="toggleShowDiv('#profile_menu')">
-							Profile
-						</a>
-						<div id='profile_menu' class='dropdown_content'>
-							<ul id='profile_menu_ul' class="nav navbar-nav">
-								<li>
-									<a href='#'> 
-										<img class="user_thumbnail" src="images/profile_photo.png">
-											${user.email}
-									</a>
-								</li>
-								<br>
-								<li>
-									<a href="./login">Log Out</a>
-								</li>
-							</ul>
-						</div>
-					</li>
-				</ul>
-			</div>
-			<!-- /.navbar-collapse -->
-		</div>
-		<!-- /.container -->
-	</nav>
 <!-- END OF 'ONE-FOR-ALL' PART -->
-
+<input id="userInformation" type="hidden" value='${userJSON}'>
 	<!-- Page Content -->
 	<div class="container">
 		<div class="row">
 			
 <!-- LEFT SIDE -->
 			<div class="col-md-8">
+				<div id="change_avatar" class="profile_edit_box">
+					<h2>Change avatar</h2>
+					<form>
+  						<input type="radio" name="avatar" value="blue"><img height="40" width="40" src="images/profile_photo.png">&nbsp
+  						<input type="radio" name="avatar" value="red"><img height="40" width="40" src="images/profile_photo.png"><br><br>
+  						<input type="radio" name="avatar" value="green"><img height="40" width="40" src="images/profile_photo.png">&nbsp
+  						<input type="radio" name="avatar" value="yellow"><img height="40" width="40" src="images/profile_photo.png"><br><br>
+  						<input type="radio" name="avatar" value="purple"><img height="40" width="40" src="images/profile_photo.png">&nbsp
+  						<input type="radio" name="avatar" value="black"><img height="40" width="40" src="images/profile_photo.png"><br><br>
+
+						<button>DONE</button>
+					</form>
+				</div>
+				<hr>
+				
+				<div id="change_email" class="profile_edit_box">
+					<h2>Change e-mail</h2>
+					<!-- old email, new email, password twice and execute -->
+					
+					<table style="width:80%">
+						<tr>
+							<td class="labels">
+								<label>Current e-mail:</label>
+							</td>
+							<td class="fields">
+								<input type="text" placeholder="Enter your current e-mail"/>
+							</td>
+						</tr>
+						<tr>
+							<td class="labels">
+								<label>New e-mail:</label>
+							</td>
+							<td class="fields">
+								<input type="text" placeholder="Enter your new e-mail"/>
+							</td>							
+						</tr>
+						<tr>
+							<td class="labels">
+								<label>Confirm e-mail:</label>
+							</td>
+							<td class="fields">
+								<input type="text" placeholder="Repeat your new e-mail"/>
+							</td>							
+						</tr>
+						<tr>
+							<td class="labels">
+								<label>Password:</label>
+							</td>
+							<td class="fields">
+								<input type="password" placeholder="Enter your password"/>
+							</td>							
+						</tr>
+						<tr>
+							<td class="labels">
+								<label>Confirm password:</label>
+							</td>
+							<td class="fields">
+								<input type="password" placeholder="Repeat your password"/>
+							</td>							
+						</tr>
+					</table>
+					<br>
+					<button>DONE</button>
+				</div>
+				<hr>
+				
+				<div id="change_password" class="profile_edit_box">
+					<h2>Change password</h2>
+					<!-- old password twice, new password twice and execute -->
+					<table style="width:80%">
+						<tr>
+							<td class="labels">
+								<label>Current password:</label>
+							</td>
+							<td class="fields">
+								<input type="password" placeholder="Enter your current password"/>
+							</td>							
+						</tr>
+						<tr>
+							<td class="labels">
+								<label>Confirm current password:</label>
+							</td>
+							<td class="fields">
+								<input type="password" placeholder="Repeat your current password"/>
+							</td>							
+						</tr>
+						<tr>
+							<td class="labels">
+								<label>New password:</label>
+							</td>
+							<td class="fields">
+								<input type="password" placeholder="Enter your new password"/>
+							</td>							
+						</tr>
+						<tr>
+							<td class="labels">
+								<label>Confirm new password:</label>
+							</td>
+							<td class="fields">
+								<input type="password" placeholder="Repeat your new password"/>
+							</td>							
+						</tr>
+					</table>
+					<br>
+					<button>DONE</button>
+				</div>
+				<hr>
+				
+				<div id="remove_user" class="profile_edit_box">
+					<h2>Delete profile</h2>
+					<!-- password twice and execute -->
+					<table style="width:80%">
+						<tr>
+							<td class="labels">
+								<label>Password:</label>
+							</td>
+							<td class="fields">
+								<input type="password" placeholder="Enter your current password"/>
+							</td>							
+						</tr>
+						<tr>
+							<td class="labels">
+								<label>Confirm password:</label>
+							</td>
+							<td class="fields">
+								<input type="password" placeholder="Repeat your current password"/>
+							</td>							
+						</tr>
+					</table>
+					<br>
+					<button>DONE</button>
+				</div>
+				
+				<!-- (manager functions) //selects a user from the company and manages status (deletes, updates permissions)
+				<div id="update_user" class="profile_edit_box">
+				</div>
+				 -->
 				
 			</div>
 <!-- /LEFT SIDE -->
@@ -337,9 +399,27 @@
 <!-- RIGHT SIDE -->
 			<!-- User projects Sidebar -->
 			<div class="col-md-4">
-			
 				<!-- Sidebar Well -->
 				<div class="well">
+					<table id="user_email_photo">
+						<tr>
+							<th id="user_photo">
+								<img src="images/profile_photo.png" width="50px" height="50px">
+							</th>
+						
+							<th id="user_email">
+								${user.email}
+							</th>
+							
+						</tr>
+					</table>
+					<hr>
+					<div id="user_profile_information">
+					</div>
+				</div>
+				
+				
+				<div id='issue_info_well' class="well">
 					
 				</div>
 			</div>

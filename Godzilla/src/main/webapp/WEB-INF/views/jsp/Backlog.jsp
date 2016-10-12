@@ -224,7 +224,9 @@
 								onclick="handleInput(this);" onkeyup="handleInput(this);"
 								tabindex="9">
 								<c:forEach items="${companyUsers}" var="user">
-									<option value="${user.email}">${user.email}</option>
+									<c:if test="${user.isTester == false}">
+ 										<option value="${user.email}">${user.email}</option>
+ 									</c:if>
 								</c:forEach>
 							</select>
 						</div>
@@ -242,90 +244,11 @@
 		</div>
 	</div>
 
+
+
 <!----------------------------------------------------------------------------------------------------------------------------------------  -->
 
-	<!-- Navigation -->
-	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-		<div class="container">
-			<!-- Brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse"
-					data-target="#bs-example-navbar-collapse-1">
-					<span class="sr-only">Toggle navigation</span> 
-					<span class="icon-bar"></span> 
-					<span class="icon-bar"></span> 
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="" style="font-size: 200%;">
-					<b>
-						godzilla |
-						<small style="font-size: 60%;"> 
-							${company.name}
-						</small>
-					</b>
-				</a>
-			</div>
-			<!-- Collect the nav links, forms, and other content for toggling -->
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse--1">
-				<ul class="nav navbar-nav">
-					<li>
-						<a href='#' id='projects_button' class='dropbtn'
-						onclick="toggleShowDiv('#projects_menu')">
-							Projects
-						</a>
-						<div id='projects_menu' class='dropdown_content'>
-							<ul id='projects_menu_ul' class="nav navbar-nav">
-								<li>
-									<a href='#'>Create Project</a>
-								</li>
-
-								<c:forEach items="${companyProjects}" var="project">
-									<br>
-									<li>
-										<a href='#' onclick="loadProjectSprints('${project.name}')">${project.name}</a>
-									</li>
-								</c:forEach>
-							</ul>
-						</div>
-					</li>
-					<li>
-						<a href="#" id="opener">Create Issue</a>
-					</li>
-					<li>
-						<a href="./backlog">Backlog</a>
-					</li>
-					<li>
-						<a href="./board">Board</a>
-					</li>
-					<li>
-						<a href="./homepage">User Panel</a>
-					</li>
-					<li>
-						<a href='#' id='profile_button' class='dropbtn'
-							onclick="toggleShowDiv('#profile_menu')">
-							Profile
-						</a>
-						<div id='profile_menu' class='dropdown_content'>
-							<ul id='profile_menu_ul' class="nav navbar-nav">
-								<li>
-									<a href='#'> 
-										<img class="user_thumbnail" src="images/profile_photo.png">
-											${user.email}
-									</a>
-								</li>
-								<br>
-								<li>
-									<a href="./login">Log Out</a>
-								</li>
-							</ul>
-						</div>
-					</li>
-				</ul>
-			</div>
-			<!-- /.navbar-collapse -->
-		</div>
-		<!-- /.container -->
-	</nav>
+<c:import url="Navigation.jsp"/>
 <!-- END OF 'ONE-FOR-ALL' PART -->
 <!-- hidden input to hold session attribute -->
 <input id='projectSprintIssuesMap' type="hidden" value='${projectSprintIssuesMap}'/>

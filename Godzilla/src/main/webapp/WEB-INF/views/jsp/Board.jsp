@@ -35,135 +35,12 @@
 		
 	<!-- header functionality javascript -->
 	<script src="js/page_header.js"></script>
+	
+	<!-- board javascript -->
+	<script src="js/board.js"></script>
 
 <script>
-	function loadProjectSprints(projectName) {
-		//get map object from session JSON
-		var map = JSON.parse(document.getElementById("projectSprintIssuesMap").value);
-		var sprints = map[projectName];
-		
-		$('#project_name').empty();
-		$('#project_name').append(projectName);
-		
-		$('#project_sprints').empty();
-		$('#to_do').empty();
-		$('#in_progress').empty();
-		$('#done').empty();
-		$('#issue_info_well').empty();
-
-		var sprintsContainer = $('#project_sprints');
-		for (var sprintName in sprints) {
-			var issues = sprints[sprintName];
-			var issuesString = JSON.stringify(issues);
-			if (sprintName.localeCompare('-') != 0) {
-				var sprintNameA = $('<a></a>');
-				sprintNameA.attr('href', '#');
-				sprintNameA.attr('onClick', 'addSprintBoard("#opened_sprint_container", "' + sprintName + '", ' + issuesString + ')');
-				sprintNameA.append(sprintName);
-				sprintsContainer.append(sprintNameA);
-			} 
-		}
-	}
 	
-	function addIssueBoard(caller, issue) {
-		var container = $(caller);
-		var issueNumber = document.querySelectorAll('div.board_issue_box').length + 1;
-		var issueId = caller.substring(1) + '_' + issueNumber;
-
-		//issue info
-		var name = issue.name;
-		var summary = '\t' + issue.summary;
-		//
-
-		var issueBox = $('<div></div>');
-		issueBox.attr('class', 'board_issue_box');
-		issueBox.attr('id', issueId);
-		var bold = $('<b></b>');
-		var addIssue = $('<a></a>');
-		addIssue.attr('href', '#');
-		var issueString = JSON.stringify(issue);
-		addIssue.attr('onclick', 'openIssueInformation(' + issueString + ')');
-		addIssue.append(name);
-		bold.append(addIssue);
-		issueBox.append(bold);
-		issueBox.append(summary);
-		container.append(issueBox);
-	}
-
-	function addSprintBoard(target, sprintName, issues) {
-		var nameContainer = $('#sprint_name');
-		nameContainer.empty();
-		nameContainer.append(sprintName);
-		
-		$('#issue_info_well').empty();
-		
-		//add sprint issues in table
-		for (var i = 0; i < issues.length; i++) {
-			console.log(issues[i]);
-			if (issues[i].state.localeCompare("TO_DO") == 0) {
-				addIssueBoard("#to_do", issues[i]);
-			} else {
-				if (issues[i].state.localeCompare("IN_PROGRESS") == 0) {
-					addIssueBoard("#in_progress", issues[i]);
-				} else {
-					if (issues[i].state.localeCompare("DONE") == 0) {
-						addIssueBoard("#done", issues[i]);
-					}
-				}
-			}
-		}
-	}
-	
-	function openIssueInformation(issue) {
-		var issueInformation = $('<div></div>');
-		//issue values
-		var name = issue.name;
-		var type = issue.type;
-		var summary = issue.summary;
-		var project = 'PROJECT-1';
-		var reporter = 'USER-1';
-		var assignee = 'USER-1';
-		var description = issue.description;
-		var dateCreated = issue.dateCreated;
-		var dateLastModified = issue.dateLastModified;
-		//
-		issueInformation.attr('id', name.toLowerCase());
-		var issueName = $('<h4></h4>');
-		issueName.append(name);
-		
-		var issueType = $('<p></p>');
-		issueType.append('Type: ' + type);
-		var issueSummary = $('<p></p>');
-		issueSummary.append('Summary: ' + summary);
-		var issueProject = $('<p></p>');
-		issueProject.append('Project: ' + project);
-		var issueReporter = $('<p></p>');
-		issueReporter.append('Reporter: ' + reporter);
-		var issueAssignee = $('<p></p>');
-		issueAssignee.append('Assignee: ' + assignee);
-		var issueDescription = $('<p></p>');
-		issueDescription.append('Description: ' + description);
-		var issueCreated = $('<p></p>');
-		issueCreated.append('Created: ' + dateCreated);
-		var issueLastModified = $('<p></p>');
-		issueLastModified.append('Last modified: ' + dateLastModified);
-
-		issueInformation.append(issueName);
-		
-		issueInformation.append(issueType);
-		issueInformation.append(issueSummary);
-		issueInformation.append(issueProject);
-		issueInformation.append(issueReporter);
-		issueInformation.append(issueAssignee);
-		issueInformation.append(issueDescription);
-		issueInformation.append(issueCreated);
-		issueInformation.append(issueLastModified);
-		
-		var container = $('#issue_info_well');
-		container.empty();
-		container.append(issueInformation);
-	}
-
 </script>
 	
 </head>
@@ -174,7 +51,7 @@
 
 <!-- Create Issue popUp  -->
 <!----------------------------------------------------------------------------------------------------------------------------------------  -->
-	<div style="display: none;" id="dialog" title="Create Issue">
+<div style="display: none;" id="dialog" title="Create Issue">
 		<div id="container" class="ltr">
 			<h1 id="logo">
 				<a href="./homepage" title="Powered by Godzilla">Godzilla</a>
@@ -348,7 +225,9 @@
 								onclick="handleInput(this);" onkeyup="handleInput(this);"
 								tabindex="9">
 								<c:forEach items="${companyUsers}" var="user">
-									<option value="${user.email}">${user.email}</option>
+									<c:if test="${user.isTester == false}">
+ 										<option value="${user.email}">${user.email}</option>
+ 									</c:if>
 								</c:forEach>
 							</select>
 						</div>
@@ -367,90 +246,10 @@
 	</div>
 
 
+
 <!----------------------------------------------------------------------------------------------------------------------------------------  -->
 
-	<!-- Navigation -->
-	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-		<div class="container">
-			<!-- Brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse"
-					data-target="#bs-example-navbar-collapse-1">
-					<span class="sr-only">Toggle navigation</span> 
-					<span class="icon-bar"></span> 
-					<span class="icon-bar"></span> 
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="" style="font-size: 200%;">
-					<b>
-						godzilla |
-						<small style="font-size: 60%;"> 
-							${company.name}
-						</small>
-					</b>
-				</a>
-			</div>
-			<!-- Collect the nav links, forms, and other content for toggling -->
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse--1">
-				<ul class="nav navbar-nav">
-					<li>
-						<a href='#' id='projects_button' class='dropbtn'
-						onclick="toggleShowDiv('#projects_menu')">
-							Projects
-						</a>
-						<div id='projects_menu' class='dropdown_content'>
-							<ul id='projects_menu_ul' class="nav navbar-nav">
-								<li>
-									<a href='#'>Create Project</a>
-								</li>
-
-								<c:forEach items="${companyProjects}" var="project">
-									<br>
-									<li>
-										<a href='#' onclick="loadProjectSprints('${project.name}')">${project.name}</a>
-									</li>
-								</c:forEach>
-							</ul>
-						</div>
-					</li>
-					<li>
-						<a href="#" id="opener">Create Issue</a>
-					</li>
-					<li>
-						<a href="./backlog">Backlog</a>
-					</li>
-					<li>
-						<a href="#">Board</a>
-					</li>
-					<li>
-						<a href="./homepage">User Panel</a>
-					</li>
-					<li>
-						<a href='#' id='profile_button' class='dropbtn'
-							onclick="toggleShowDiv('#profile_menu')">
-							Profile
-						</a>
-						<div id='profile_menu' class='dropdown_content'>
-							<ul id='profile_menu_ul' class="nav navbar-nav">
-								<li>
-									<a href='#'> 
-										<img class="user_thumbnail" src="images/profile_photo.png">
-											${user.email}
-									</a>
-								</li>
-								<br>
-								<li>
-									<a href="./login">Log Out</a>
-								</li>
-							</ul>
-						</div>
-					</li>
-				</ul>
-			</div>
-			<!-- /.navbar-collapse -->
-		</div>
-		<!-- /.container -->
-	</nav>
+<c:import url="Navigation.jsp"/>
 <!-- END OF 'ONE-FOR-ALL' PART -->
 <input id='projectSprintIssuesMap' type="hidden" value='${projectSprintIssuesMap}'/>
 
@@ -474,9 +273,9 @@
 							<th class="sprint_table_element">DONE</th>
 						</tr>
 						<tr class="sprint_table_element">
-							<td id="to_do" class="issues_container" class="sprint_table_element"></td>
-							<td id="in_progress" class="issudes_container" class="sprint_table_element"></td>
-							<td id="done" class="issues_container" class="sprint_table_element"></td>
+							<td id="to_do" class="issues_container, sprint_table_element"></td>
+							<td id="in_progress" class="issudes_container, sprint_table_element"></td>
+							<td id="done" class="issues_container, sprint_table_element"></td>
 						</tr>
 					</table>
 				</div>

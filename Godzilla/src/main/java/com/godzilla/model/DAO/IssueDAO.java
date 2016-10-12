@@ -49,7 +49,7 @@ public class IssueDAO {
 	private static final String FIND_ISSUE_BY_ID_SQL = "SELECT * FROM issues WHERE issue_id = ?;";
 	private static final String FIND_ISSUES_BY_SPRINT_SQL = "SELECT issue_id FROM issues WHERE sprint_id = ?;";
 
-	public static void createIssue(Issue toCreate, Project project, User reporter) throws IssueDAOException {
+	public static void createIssue(Issue toCreate, Project project, User reporter, User assignee) throws IssueDAOException {
 		if (toCreate == null || project == null || reporter == null) {
 			throw new IssueDAOException("cannot create issue, required: project, reporter and issue model");
 		}
@@ -70,13 +70,15 @@ public class IssueDAO {
 
 		String summary = toCreate.getSummary();
 		int issueNumber = project.getIssues().size() + 1;
-		String issueName = project.getName().substring(0, 3).toUpperCase() + issueNumber;
+		
+		String issueName = project.getName().substring(0, 3).toUpperCase() + "-" + issueNumber;
+		
 		String description = toCreate.getDescription();
 		int priorityId = toCreate.getPriority().getValue();
 		int stateId = toCreate.getState().getValue();
 		int projectId = project.getId();
 		int reporterId = reporter.getId();
-		int assigneeId = reporterId;
+		int assigneeId = assignee.getId();
 //		String dateTimeCreated = toCreate.getDateCreated().toLocalDate().toString() + 
 //								" " + 
 //								toCreate.getDateCreated().toLocalTime().toString();

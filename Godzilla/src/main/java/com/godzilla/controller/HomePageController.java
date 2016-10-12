@@ -88,6 +88,9 @@ public class HomePageController {
 		int currentUserId;
 		User user = null;
 		
+		int assigneeId;
+		User assignee = null;
+		
 		int linkedIssueId;
 		Issue linkedIssue = null;
 		
@@ -103,6 +106,9 @@ public class HomePageController {
 			currentUserId = UserDAO.getUserIdByEmail(currentUserEmail);
 			user = UserDAO.getUserById(currentUserId);
 			
+			assigneeId = UserDAO.getUserIdByEmail(assigneeEmail);
+			assignee = UserDAO.getUserById(assigneeId);
+			
 			linkedIssueId = IssueDAO.getIssueIdByName(linkedIssueName);
 			linkedIssue = IssueDAO.getIssueById(linkedIssueId);
 			
@@ -117,7 +123,7 @@ public class HomePageController {
 			issue.setPriority(issuePriority);
 			issue.setState(issueState);
 			
-			IssueDAO.createIssue(issue, project, user);
+			IssueDAO.createIssue(issue, project, user, assignee);
 			
 			request.setAttribute("succeed", "Succeed: Issue created");
 		} catch (ProjectDAOException e) {

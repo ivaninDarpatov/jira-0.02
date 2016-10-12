@@ -8,7 +8,7 @@ body {
 	/* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
 }
 
-div.assigned_issue_box, div.reported_issue_box, div.backlog_issue_box, div.board_issue_box {
+div.assigned_issue_box, div.reported_issue_box, div.backlog_issue_box, div.board_issue_box, div.profile_issue_box {
 	border: 1px solid grey;
 	background-color: #f8fff7;
 	padding-left: 2%;
@@ -56,16 +56,12 @@ div.tag2
     height:27px;
     background:url('http://cdn-sg1.pgimgs.com/images/pg/close-button.png') no-repeat center center;
 }
-
+ 
 div.board_issue_box {
 	background-color: 
 }
 
-#projects_menu {
-	display: none;
-}
-
-#profile_menu {
+#profile_menu, #projects_menu {
 	display: none;
 }
 
@@ -95,13 +91,13 @@ footer {
 }
 
 <!-- board -->
-tr {
+tr.sprint_table_element {
 	text-align: center;
 	border: 1px solid black;
 	width: 33%;
 }
 
-td {
+td.sprint_table_element {
 	text-align: center;
 	border: 1px solid black;
 	width: 33%;
@@ -109,7 +105,7 @@ td {
 	height: 400px;
 }
 
-th {
+th.sprint_table_element {
 	background-color: #e2ffdf;
 	text-align: center;
 	border: 1px solid black;
@@ -119,3 +115,23 @@ th {
 #opened_sprint {
 	width: 100%;
 }
+
+<!-- profile page -->
+#user_photo {
+	text-align: right;
+}
+
+#user_email {
+	font-size: 200%;
+	width: 100%;
+	text-align: center;
+}
+#user_profile_information {
+	padding: 0%;
+}
+
+.labels {
+	text-align: left;
+	width: 50%;
+}
+
