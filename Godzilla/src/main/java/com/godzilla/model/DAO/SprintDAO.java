@@ -21,7 +21,7 @@ public class SprintDAO {
 	private static final String GET_SPRINT_BY_ID_SQL = "SELECT * FROM sprints WHERE sprint_id = ?;";
 	private static final String REMOVE_SPRINT_SQL = "DELETE FROM sprints WHERE sprint_id = ?;";
 	private static final String GET_SPRINTS_BY_PROJECT_ID_SQL = "SELECT * FROM sprints WHERE project_id = ?;";
-	private static final String ADD_SPRINT_SQL = "INSERT INTO sprints VALUES(null, ? , ? , 'someDate' , 'someDate' , ?);";
+	private static final String ADD_SPRINT_SQL = "INSERT INTO sprints VALUES(null, ? , ? , 'someDate' , 'someDate', ?, ?);";
 
 	@SuppressWarnings("unused")
 	public static Sprint getSprintById(int sprintId) throws SprintDAOException {
@@ -36,6 +36,7 @@ public class SprintDAO {
 		LocalDateTime endDate;
 		String name;
 		String goal;
+		boolean isActive;
 		
 		try {
 			PreparedStatement getSprintByIdPS = connection.prepareStatement(GET_SPRINT_BY_ID_SQL);
@@ -46,6 +47,7 @@ public class SprintDAO {
 			if (getSprintByIdRS.next()) {
 				name = getSprintByIdRS.getString("sprint_name");
 				goal = getSprintByIdRS.getString("sprint_goal");
+				isActive = (getSprintByIdRS.getInt("is_active") == 1) ? true : false;
 				result = new Sprint(name, goal);
 //				startingDate = IssueDAO.getLocalDateTimeFromString(getSprintByIdRS.getString("starting_date"));
 //				endDate = IssueDAO.getLocalDateTimeFromString(getSprintByIdRS.getString("end_date"));
@@ -53,6 +55,7 @@ public class SprintDAO {
 //				result.setStartingDate(startingDate);
 //				result.setEndDate(endDate);
 				result.setId(sprintId);
+				result.setIsActive(isActive);
 				
 				issues = IssueDAO.getAllIssuesBySprint(result);
 				
@@ -122,7 +125,9 @@ public class SprintDAO {
 			insertSprint.setString(2, sprintToAdd.getSpintGoal());
 //			insertSprint.setString(3, startingDate);
 //			insertSprint.setString(4, endDate);
-			insertSprint.setInt(3, project.getId());
+			insertSprint.setInt(3, (sprintToAdd.isActive()) ? 1 : 0);
+			insertSprint.setInt(4, project.getId());
+			
 
 			insertSprint.executeUpdate();
 

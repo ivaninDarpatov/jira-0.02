@@ -2,7 +2,6 @@
 
 //load assigned and reported issues for current user in selected project
 function loadIssues(projectName, s_assignedIssues, s_reportedIssues) {
-	console.log(s_assignedIssues);
 	// load project name
 	$("h2#project_name").empty();
 	$("h2#project_name").append(projectName);

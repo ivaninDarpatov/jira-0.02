@@ -39,12 +39,13 @@ public class BacklogController {
 		Set<Project> companyProjects = (Set<Project>) session.getAttribute("companyProjects");
 		//projectName -> (sprintName -> sprintIssues) ((NO SPRINT -> sprintName = "-"))
 		Map<String, Map<String, Set<Issue>>> projectSprintsIssues = new HashMap<>();
-
+		Map<String, Set<Sprint>> projectSprints = new HashMap<String, Set<Sprint>>();
+		
 		try {
 		for(Project project : companyProjects){
 			Map<String, Set<Issue>> sprintIssues = new HashMap<>();
-			Set<Sprint> projectSprints = SprintDAO.getAllSprintsByProject(project);
-			for (Sprint sprint : projectSprints) {
+			Set<Sprint> projectSprintsSet = SprintDAO.getAllSprintsByProject(project);
+			for (Sprint sprint : projectSprintsSet) {
 				Set<Issue> sprintIssuesSet = IssueDAO.getAllIssuesBySprint(sprint);
 				sprintIssues.put(sprint.getName(), sprintIssuesSet);
 			}
@@ -52,11 +53,16 @@ public class BacklogController {
 			Set<Issue> freeIssues = IssueDAO.getAllFreeIssuesByProject(project);
 			sprintIssues.put("-", freeIssues);
 			projectSprintsIssues.put(project.getName(), sprintIssues);
+			
+			projectSprints.put(project.getName(), projectSprintsSet);
 		}
 		
 		Gson jsonMaker = new Gson();
 		String projectIssuesJSON = jsonMaker.toJson(projectSprintsIssues);
 		session.setAttribute("projectSprintIssuesMap", projectIssuesJSON);
+		
+		String projectSprintsJSON = jsonMaker.toJson(projectSprints);
+		session.setAttribute("projectSprintsMap", projectSprintsJSON);
 		
 		} catch (SprintDAOException | IssueDAOException e) {
 			// TODO Auto-generated catch block

@@ -114,12 +114,12 @@
 					
 						<!-- all projects where current user has assigned or reported issues -->
 						<c:forEach items="${userProjects}" var="project" varStatus="loop">
+							<c:set var="projectName" value="${project.name}"/>
 							<div class='project_box' id='project_${loop.index}'>
-								<c:set var="stringa" value="${assignedIssues}" />
 								<h4>
 									<a href='#'
 										onclick='loadIssues("${project.name}", <c:out value="${assignedIssues}"/>, <c:out value="${reportedIssues}"/>)'
-										id='${project.name}'>
+										id='project_name_${loop.index}'>
 										${project.name}
 									</a>
 								</h4>
@@ -140,6 +140,12 @@
 									<script>document.write(showDigit('${project.name}', '${reportedIssues}'))</script>
 								</h5>
 							</div>
+							<!-- open first project info upon startup -->
+							<c:if test="${loop.index == 0}">
+								<script>
+									$('#project_name_0').trigger("click");
+								</script>
+							</c:if>
 						</c:forEach>
 					</div>
 				</div>

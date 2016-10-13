@@ -3,10 +3,12 @@ function loadProjectSprintsBoard(projectName) {
 		var map = JSON.parse(document.getElementById("projectSprintIssuesMap").value);
 		var sprints = map[projectName];
 		
+		var map2 = JSON.parse(document.getElementById("projectSprintsMap").value);
+		var sprints2 = map2[projectName];
+		
 		$('#project_name').empty();
 		$('#project_name').append(projectName);
 		
-		$('#project_sprints').empty();
 		$('#to_do').empty();
 		$('#in_progress').empty();
 		$('#done').empty();
@@ -20,20 +22,16 @@ function loadProjectSprintsBoard(projectName) {
 		$("#create_sprint_board_div").empty();
 		$("#create_sprint_board_div").append(createSprintButton);
 
-		var sprintsContainer = $('#project_sprints');
-		for (var sprintName in sprints) {
-			var issues = sprints[sprintName];
-			var issuesString = JSON.stringify(issues);
-			if (sprintName.localeCompare('-') != 0) {
-				var sprintNameA = $('<a></a>');
-				sprintNameA.attr('href', '#');
-				sprintNameA.attr('onClick', 'addSprintBoard("#opened_sprint_container", "' + sprintName + '", ' + issuesString + ')');
-				sprintNameA.append(sprintName);
-				sprintsContainer.append(sprintNameA);
-			} 
+		
+		for (var i = 0; i < sprints2.length; i++) {
+			if (sprints2[i].isActive) {
+				$("#sprint_name").append(sprints2[i].name);
+				var issues = sprints2[i].issues;
+				var issuesString = JSON.stringify(issues);
+				addSprintBoard('#opened_sprint_container', sprints2[i].name, issues);
+			}
 		}
-	}
-	
+	}	
 	function addIssueBoard(caller, issue) {
 		var container = $(caller);
 		var issueNumber = document.querySelectorAll('div.board_issue_box').length + 1;
@@ -43,7 +41,7 @@ function loadProjectSprintsBoard(projectName) {
 		var name = issue.name;
 		var summary = '\t' + issue.summary;
 		//
-
+		
 		var issueBox = $('<div></div>');
 		issueBox.attr('class', 'board_issue_box');
 		issueBox.attr('id', issueId);
@@ -60,6 +58,7 @@ function loadProjectSprintsBoard(projectName) {
 	}
 
 	function addSprintBoard(target, sprintName, issues) {
+		console.log(issues);
 		var nameContainer = $('#sprint_name');
 		nameContainer.empty();
 		nameContainer.append(sprintName);

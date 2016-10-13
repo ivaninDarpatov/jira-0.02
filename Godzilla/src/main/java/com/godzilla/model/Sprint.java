@@ -13,11 +13,13 @@ public class Sprint {
 	private String sprintGoal;
 	private LocalDateTime startingDate;
 	private LocalDateTime endDate;
+	private boolean isActive;
 	private Set<Issue> issues;
 
 	public Sprint(String name, String sprintGoal) throws SprintException {
 		this.setName(name);
 		this.setSprintGoal(sprintGoal);
+		this.isActive = false;
 		this.issues = new HashSet<Issue>();
 	}
 	
@@ -68,6 +70,10 @@ public class Sprint {
 			throw new SprintException("sprint's id cannot be 0");
 		}
 	}
+	
+	public void setIsActive(boolean isActive) {
+		this.isActive = isActive;
+	}
 
 	public String getName() {
 		return this.name;
@@ -87,6 +93,10 @@ public class Sprint {
 
 	public int getId() {
 		return this.id;
+	}
+	
+	public boolean isActive() {
+		return this.isActive;
 	}
 	
 	public Set<Issue> getIssues() {

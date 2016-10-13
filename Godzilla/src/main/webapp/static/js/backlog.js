@@ -2,9 +2,11 @@
 
 //load sprints for selected project
 function loadProjectSprintsBacklog(projectName) {
-	//get map object from session JSON
+	//get map JSON object from session 
 	var map = JSON.parse(document.getElementById("projectSprintIssuesMap").value);
+	var map2 = JSON.parse(document.getElementById("projectSprintsMap").value);
 	var sprints = map[projectName];
+	var sprints2 = map2[projectName];
 	
 	$('#issue_info_well').empty();
 	$('#project_name').empty();
@@ -12,6 +14,7 @@ function loadProjectSprintsBacklog(projectName) {
 	$('#sprints_container').empty();
 	$('#issues_container').empty();
 	$('#free_issues').empty();
+	$("#free_issues").append("Issues");
 	
 	var createSprintButton = $('<button></button>');
 	createSprintButton.attr('id', 'create_sprint_backlog');
@@ -21,20 +24,36 @@ function loadProjectSprintsBacklog(projectName) {
 	$("#create_sprint_backlog_div").empty();
 	$("#create_sprint_backlog_div").append(createSprintButton);
 	
-	for (var sprintName in sprints) {
-		var issues = sprints[sprintName];
-		if (sprintName.localeCompare('-') != 0) {
-			var issuesContainerId = addSprintBacklog('#sprints_container', sprintName);
-			for (var i = 0; i < issues.length; i++) {
-				addIssueBacklog('#' + issuesContainerId + '', issues[i]);
+	
+	for (var i = 0; i < sprints2.length; i++) {
+		var issuesContainerId;
+		if (sprints2[i].isActive) {
+			issuesContainerId = addSprintBacklog('#sprints_container', sprints2[i], projectName);
+			var sprintIssues = sprints2[i].issues;
+			
+			for (var j = 0; j < sprintIssues.length; j++) {
+				addIssueBacklog("#" + issuesContainerId, sprintIssues[j]);
 			}
-		} else {
-			for (var i = 0; i < issues.length; i++) {
-				$('#free_issues').empty();
-				$('#free_issues').append('Issues');
-				addIssueBacklog('#issues_container', issues[i]);
-			}
+		}		
+	}
+	
+	for (var i = 0; i < sprints2.length; i++) {
+		var issuesContainerId;
+		if (sprints2[i].isActive) {
+			continue;
 		}
+		
+		issuesContainerId = addSprintBacklog('#sprints_container', sprints2[i], projectName);
+		var sprintIssues = sprints2[i].issues;
+		
+		for (var j = 0; j < sprintIssues.length; j++) {
+			addIssueBacklog("#" + issuesContainerId, sprintIssues[j]);
+		}
+	}
+	
+	var freeIssues = sprints["-"];
+	for (var i = 0; i < freeIssues.length; i++) {
+		addIssueBacklog("#issues_container", freeIssues[i]);
 	}
 }
 
@@ -61,15 +80,26 @@ function addIssueBacklog (caller, issue) {
 	container.append(issueBox);
 }
 
-//add sprint in the sprints container
-function addSprintBacklog (target, name) {
+//add sprint in sprints container
+function addSprintBacklog (target, sprint) {
+	var sprintString = JSON.stringify(sprint);
 	var container = $(target);
 	var sprintNumber = document.querySelectorAll('div.sprints').length + 1;
 	var newSprint = $("<div></div>");
 	newSprint.attr('id', 'sprint_' + sprintNumber);
 	newSprint.attr('class', 'sprints');
 	var sprintName = $('<h4></h4>');
-	sprintName.append(name);
+	if (sprint.isActive) {
+		sprintName.append(sprint.name + "  [active]");
+	} else {
+		sprintName.append(sprint.name + "  [inactive]");
+		var activateButton = $("<button></button>");
+		activateButton.append("Make active");
+		sprintName.append("<br><br>");
+		sprintName.append(activateButton);
+		newSprint.append(sprintName);
+	}
+	
 	var containerId = 'sprint_' + sprintNumber + '_issues';
 	var issuesContainer = $('<div></div>');
 	issuesContainer.attr('id', containerId)
@@ -80,6 +110,7 @@ function addSprintBacklog (target, name) {
 	
 	return containerId;
 }
+
 
 //view JSON map as object map (test)
 function viewMap (map) {

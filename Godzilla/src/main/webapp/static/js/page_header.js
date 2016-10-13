@@ -30,8 +30,19 @@ function toggleShowDiv(caller) {
 }
 
 // close dropdowns and dialogs on click-out
+function hasParentClass(child, parent) {
+	var node = child;
+	while (node != document) {
+		if (node.className.includes(parent)) {
+			return true;
+		}
+		node = node.parentNode;
+	}
+	
+	return false;
+}
 window.onclick = function(event) {
-	if (!event.target.matches('.dropbtn')) {
+	if (!hasParentClass(event.target, 'dropbtn')) {
 
 		var dropdowns = document.getElementsByClassName('dropdown_content');
 		var i;
@@ -43,33 +54,23 @@ window.onclick = function(event) {
 			}
 		}
 	}
-//
-//	var eventTarget = event.target;
-//	console.log("START");
-//	while (eventTarget != null) {
-//		eventTarget = eventTarget.parentNode;
-//		console.log(eventTarget);
-//		if (eventTarget.role == "dialog") {
-//			console.log("GOT IT");
-//		}
-//	}
-//	console.log("END");
-//	if (!$(event.target).is(".dialog_box") && !$(event.target).is(".dialog_opener")) {
-//		
-//		var dialogs = document.getElementsByClassName('dialog_box');
-//		var i;
-//		for (i = 0; i < dialogs.length; i++) {
-//			var openDialogId = dialogs[i].id;
-//
-//			$("#" + openDialogId).dialog({
-//				width : 535.6
-//			});
-//			
-//			if ($('#' + openDialogId).dialog('isOpen')) {
-//				$('#' + openDialogId).dialog('close');
-//			}
-//		}
-//	}
+	
+	if (!hasParentClass(event.target, "dialog_box") && !hasParentClass(event.target, "dialog_opener")) {
+		
+		var dialogs = document.getElementsByClassName('dialog_box');
+		var i;
+		for (i = 0; i < dialogs.length; i++) {
+			var openDialogId = dialogs[i].id;
+
+			$("#" + openDialogId).dialog({
+				width : 535.6
+			});
+			
+			if ($('#' + openDialogId).dialog('isOpen')) {
+				$('#' + openDialogId).dialog('close');
+			}
+		}
+	}
 }
 
 // unused function
@@ -105,20 +106,31 @@ function openIssueInformation(issue) {
 	var issueHeader = $('<div></div>');
 	issueHeader.attr('style', 'width:100%; height:60px;');
 	var issueNameDiv = $('<div></div>');
-	issueNameDiv.attr('style', 'float:left; width:50%; height:100%;')
+	issueNameDiv.attr('style', 'float:left; width:70%; height:100%;');
+	
 	var editIssueDiv = $('<div></div>');
 	editIssueDiv.attr('style',
-			'float:left; width:50%; height:100%; text-align:right;')
+			'float:left; width:15%; height:100%; text-align:right;');
+	var deleteIssueDiv = $('<div></div>');
+	deleteIssueDiv.attr('style',
+			'float:left; width:15%; height:100%; text-align:right;');
 
 	var issueName = $('<h4></h4>');
 	issueName.append(name);
+	
 	var editIssue = $('<a></a>');
 	editIssue.attr('href', '#');
+	var deleteIssue = $('<a></a>');
+	deleteIssue.attr('href', '#');
+	
 	var issueString = JSON.stringify(issue);
 	editIssue.attr('onclick', 'editIssue(' + issueString + ')');
 	editIssue.append('Edit');
+	deleteIssue.attr('onclick', 'deleteIssue(' + issueString + ')');
+	deleteIssue.append('Delete');
 
 	issueNameDiv.append(issueName);
+	deleteIssueDiv.append(deleteIssue);
 	editIssueDiv.append(editIssue);
 
 	var paragraphsDiv = $('<div></div>');
@@ -140,6 +152,7 @@ function openIssueInformation(issue) {
 	issueLastModified.append('Last modified: ' + dateLastModified);
 
 	issueHeader.append(issueNameDiv);
+	issueHeader.append(deleteIssueDiv);
 	issueHeader.append(editIssueDiv);
 	issueInformation.append(issueHeader);
 
@@ -168,6 +181,11 @@ function editIssue(issue) {
 	$(function() {
 		$("#edit_issue_dialog").dialog('open');
 	});
+}
+
+//deletes issue
+function deleteIssue(issue) {
+	console.log("will delete in the future");
 }
 
 //open 'create sprint' dialog box
