@@ -21,6 +21,7 @@ import com.godzilla.model.exceptions.UserDAOException;
 import com.godzilla.model.exceptions.UserException;
 
 public class UserDAO {
+	private static final String CHANGE_USER_EMAIL_SQL = "UPDATE users SET email = ? WHERE user_id= ?;";
 	private static final String FIND_USERS_BY_COMPANY_ID_SQL = "SELECT * FROM users WHERE company_id = ?;";
 	private static final int MANAGER_PERMISSIONS = Permissions.MANAGER.ordinal() + 1;
 	private static final int PROGRAMMER_PERMISSIONS = Permissions.PROGRAMMER.ordinal() + 1;
@@ -47,10 +48,13 @@ public class UserDAO {
 				ps.setString(1, companyName);
 
 				ResultSet rs = ps.executeQuery();
+				
+				
 
 				if (rs.next()) {
 					companyId = rs.getInt("company_id");
 					permissionsId = PROGRAMMER_PERMISSIONS;
+					
 				} else {
 					Company newCompany;
 					
@@ -134,6 +138,48 @@ public class UserDAO {
 		}
 
 		return false;
+	}
+	
+	public static void changeEmail(User user,String newEmail) throws UserDAOException{
+		if(user == null || newEmail == null){
+			throw new UserDAOException("Can't find user");
+		}
+		
+		Connection connection = DBConnection.getInstance().getConnection();
+		int id = user.getId();
+		
+		try {
+			PreparedStatement changeEmailPS = connection.prepareStatement(CHANGE_USER_EMAIL_SQL);
+			changeEmailPS.setString(1, newEmail);
+			changeEmailPS.setInt(2, id);
+			
+			if(changeEmailPS.executeUpdate() != 1){
+				throw new UserDAOException("email was not changed");
+			}
+		} catch (SQLException e) {
+			throw new UserDAOException(e.getMessage());
+		}
+	}
+	
+	public static void changePassword(User user,String newPassword) throws UserDAOException{
+		if(user == null || newPassword == null){
+			throw new UserDAOException("Can't find user");
+		}
+		
+		Connection connection = DBConnection.getInstance().getConnection();
+		int id = user.getId();
+		
+		try {
+			PreparedStatement changeEmailPS = connection.prepareStatement("UPDATE users SET password= ? WHERE user_id= ?;");
+			changeEmailPS.setString(1, newPassword);
+			changeEmailPS.setInt(2, id);
+			
+			if(changeEmailPS.executeUpdate() != 1){
+				throw new UserDAOException("email was not changed");
+			}
+		} catch (SQLException e) {
+			throw new UserDAOException(e.getMessage());
+		}
 	}
 
 	public static void removeUser(User userToRemove) throws UserDAOException {

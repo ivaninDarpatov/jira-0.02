@@ -49,9 +49,9 @@ public class UserDAOTest {
 		}
 	}
 	
-	//@Test
+	@Test
 	public void removeUser(){
-		int userId = 10;
+		int userId = 47;
 		try {
 			User user = UserDAO.getUserById(userId);
 			UserDAO.removeUser(user);

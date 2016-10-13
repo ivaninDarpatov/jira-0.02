@@ -13,6 +13,7 @@ import com.godzilla.model.Company;
 import com.godzilla.model.Issue;
 import com.godzilla.model.Project;
 import com.godzilla.model.Sprint;
+import com.godzilla.model.exceptions.CompanyDAOException;
 import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.ProjectDAOException;
 import com.godzilla.model.exceptions.ProjectException;
@@ -112,6 +113,28 @@ public class ProjectDAO {
 
 		}
 		return result;
+	}
+	
+	public static boolean isThereProjectWithThatNameInCompany(String projectName,String companyName) throws ProjectDAOException{
+		
+		try {
+			int companyId = CompanyDAO.getIdOfCompanyWithName(companyName);
+			Company company = CompanyDAO.getCompanyById(companyId);
+			Set<Project> projectsByCompany = ProjectDAO.getAllProjectsByCompany(company);
+			
+			for(Project project : projectsByCompany){
+				if(project.getName().equals(projectName)){
+					return true;
+				}
+			}
+			
+		} catch (ProjectDAOException e) {
+			throw new ProjectDAOException(e.getMessage());
+		} catch (CompanyDAOException e) {
+			throw new ProjectDAOException(e.getMessage());
+		}
+		
+		return false;
 	}
 
 	public static Project getProjectById(int projectId) throws ProjectDAOException {

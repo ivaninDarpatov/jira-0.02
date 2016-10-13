@@ -91,7 +91,7 @@ public class User {
 		return false;
 	}
 
-	private static boolean validatePassword(String password) {
+	public static boolean validatePassword(String password) {
 		if (password == null) {
 			return false;
 		}
@@ -123,7 +123,7 @@ public class User {
 		}
 	}
 
-	private void setEmail(String email) throws EmailException {
+	public void setEmail(String email) throws EmailException {
 		if (email != null && email.length() > 0) {
 			if (User.validateEmail(email)) {
 				this.email = email;

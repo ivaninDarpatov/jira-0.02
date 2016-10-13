@@ -16,7 +16,7 @@ div.assigned_issue_box, div.reported_issue_box, div.backlog_issue_box, div.board
 
 div#errors_container {
 	text-align: center;
-	
+	width: 100%;
 }
 
 div.tag1
@@ -32,6 +32,7 @@ div.tag1
     background-color: white;
     padding: 8px;
     margin: 5px;
+    display:block;
 }
 
 div.tag2
@@ -47,6 +48,7 @@ div.tag2
     background-color: white;
     padding: 8px;
     margin: 5px;
+    display:block;
 }
 .closeButton
 {

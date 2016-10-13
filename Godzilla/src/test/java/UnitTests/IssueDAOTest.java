@@ -39,16 +39,13 @@ public class IssueDAOTest {
 		try {
 			int projectId = ProjectDAO.getProjectIdByName("Project 1");
 			Project project = ProjectDAO.getProjectById(projectId);
-
+			
 			int reporterId = UserDAO.getUserIdByEmail("user_1@abv.bg");
 			User reporter = UserDAO.getUserById(reporterId);
-			
-			int assigneeId = UserDAO.getUserIdByEmail("user_1@abv.bg");
-			User assignee = UserDAO.getUserById(assigneeId);
 		
 			Issue issue = new Issue("story summary","story");
 			
-			IssueDAO.createIssue(issue, project, reporter, assignee);
+			IssueDAO.createIssue(issue, project, reporter);
 			
 			Assert.assertTrue(issue.getId() > 0);
 		} catch (IssueException e) {
@@ -95,7 +92,7 @@ public class IssueDAOTest {
 		
 			Issue issue = new Epic("epic summary","Epic 1");
 			
-			IssueDAO.createIssue(issue, project, reporter, reporter);
+			IssueDAO.createIssue(issue, project, reporter);
 			
 			Assert.assertTrue(issue.getId() > 0);
 		} catch (IssueException e) {
@@ -148,7 +145,7 @@ public class IssueDAOTest {
 		
 			Issue issue = new Issue("Story summary","story");
 			
-			IssueDAO.createIssue(issue, project, reporter, reporter);
+			IssueDAO.createIssue(issue, project, reporter);
 			Assert.assertTrue(issue.getId() > 0);
 			int issueId = issue.getId();
 			IssueDAO.removeIssue(issue);
@@ -261,8 +258,8 @@ public class IssueDAOTest {
 			Issue issue1 = new Issue("Bug1","bug");
 			Issue issue2 = new Issue("Bug2","bug");
 			
-			IssueDAO.createIssue(issue1, project, reporter, reporter);
-			IssueDAO.createIssue(issue2, project, reporter, reporter);
+			IssueDAO.createIssue(issue1, project, reporter);
+			IssueDAO.createIssue(issue2, project, reporter);
 			
 			Assert.assertTrue(issue1.getId() > 0);
 			Assert.assertTrue(issue2.getId() > 0);
@@ -321,8 +318,8 @@ public class IssueDAOTest {
 			Issue issue1 = new Issue("Bug1","bug");
 			Issue issue2 = new Issue("Bug2","bug");
 			
-			IssueDAO.createIssue(issue1, project, reporter, reporter);
-			IssueDAO.createIssue(issue2, project, reporter, reporter);
+			IssueDAO.createIssue(issue1, project, reporter);
+			IssueDAO.createIssue(issue2, project, reporter);
 			
 			Assert.assertTrue(issue1.getId() > 0);
 			System.err.println(issue1.getId());

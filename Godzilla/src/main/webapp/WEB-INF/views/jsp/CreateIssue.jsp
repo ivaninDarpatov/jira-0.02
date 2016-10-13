@@ -52,7 +52,7 @@ $(document).ready(function(){
 				<a href="./homepage" title="Powered by Godzilla">Godzilla</a>
 			</h1>
 
-			<form action="./homepage" method="POST">
+			<form action="./createIssue" method="POST">
 				
 				<header id="header" class="info">
 					<h2>Issue Tracking</h2>

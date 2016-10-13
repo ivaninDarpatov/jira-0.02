@@ -48,8 +48,11 @@ public class RegisterController {
 				userToReg = new User(email, password, companyName);
 				UserDAO.registerUser(userToReg);
 				
+				userToReg = UserDAO.getUserById(userToReg.getId());
+				
 				int companyId = CompanyDAO.getIdOfCompanyWithName(companyName);
 				company = CompanyDAO.getCompanyById(companyId);
+			
 				
 				session.setAttribute("company", company);
 				session.setAttribute("user", userToReg);

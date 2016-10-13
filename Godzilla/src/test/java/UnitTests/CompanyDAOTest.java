@@ -22,7 +22,7 @@ public class CompanyDAOTest {
 	//@Test
 	public void registerCompany(){
 		try {
-			Company company = new Company("kompaniq");
+			Company company = new Company("Company 1");
 			CompanyDAO.createNewCompany(company);
 			int companyId = company.getId();
 			Assert.assertTrue(companyId > 0);
@@ -36,7 +36,7 @@ public class CompanyDAOTest {
 		
 	}
 	
-	//@Test
+	@Test
 	public void removeCompany(){
 		int companyId = 9;
 		try {
