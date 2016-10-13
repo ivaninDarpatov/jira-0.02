@@ -30,7 +30,7 @@ function loadIssues(projectName, s_assignedIssues, s_reportedIssues) {
 function showDigit(projectName, issues) {
 	var issuesObject = JSON.parse(issues);
 	var issuesCount = issuesObject[projectName].length;
-
+	
 	return issuesCount;
 }
 

@@ -11,6 +11,14 @@ function loadProjectSprintsBoard(projectName) {
 		$('#in_progress').empty();
 		$('#done').empty();
 		$('#issue_info_well').empty();
+		
+		var createSprintButton = $('<button></button>');
+		createSprintButton.attr('id', 'create_sprint_board');
+		createSprintButton.attr('class', 'dialog_opener');
+		createSprintButton.attr('onclick', 'createSprint()');
+		createSprintButton.append("Create Sprint");
+		$("#create_sprint_board_div").empty();
+		$("#create_sprint_board_div").append(createSprintButton);
 
 		var sprintsContainer = $('#project_sprints');
 		for (var sprintName in sprints) {

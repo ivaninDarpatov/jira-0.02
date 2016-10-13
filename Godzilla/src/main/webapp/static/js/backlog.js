@@ -12,6 +12,15 @@ function loadProjectSprintsBacklog(projectName) {
 	$('#sprints_container').empty();
 	$('#issues_container').empty();
 	$('#free_issues').empty();
+	
+	var createSprintButton = $('<button></button>');
+	createSprintButton.attr('id', 'create_sprint_backlog');
+	createSprintButton.attr('class', 'dialog_opener');
+	createSprintButton.attr('onclick', 'createSprint()');
+	createSprintButton.append("Create Sprint");
+	$("#create_sprint_backlog_div").empty();
+	$("#create_sprint_backlog_div").append(createSprintButton);
+	
 	for (var sprintName in sprints) {
 		var issues = sprints[sprintName];
 		if (sprintName.localeCompare('-') != 0) {

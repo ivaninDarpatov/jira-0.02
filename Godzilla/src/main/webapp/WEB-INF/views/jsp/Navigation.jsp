@@ -11,7 +11,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Navigation bar</title>
 	
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	
@@ -42,32 +42,6 @@
 	<script src="js/user_panel.js"></script>
 	<script src="js/board.js"></script>
 	<script src="js/profile_page.js"></script>
-	
-	<script>
-	function selectProjectNameDispatcher(path, projectName) {
-		//get opened page's name
-		var pageNameStart = path.lastIndexOf('/') + 1;
-		var pageNameEnd = path.lastIndexOf('.jsp');
-		var pageName = path.substring(pageNameStart, pageNameEnd);
-		
-		switch (pageName) {
-		case 'Board':
-			loadProjectSprintsBoard(projectName);
-			break;
-		case 'Backlog':
-			loadProjectSprintsBacklog(projectName);
-			break;
-		case 'HomePage':
-			var s_assignedIssues = document.getElementById("assignedIssues").value;
-			var s_reportedIssues = document.getElementById("reportedIssues").value;
-			var assignedIssues = JSON.parse(s_assignedIssues);
-			var reportedIssues = JSON.parse(s_reportedIssues);
-			loadIssues(projectName, assignedIssues, reportedIssues);
-		case 'ProfilePage':
-			return;
-		}
-	}
-	</script>
 </head>
 <body>
 <!-- hidden input to hold session attr -->
@@ -109,7 +83,7 @@
 							<ul id='projects_menu_ul' class="nav navbar-nav">
 								<c:if test="${user.permissions == 'MANAGER'}">
 									<li>
-										<a href='#'>Create Project</a>
+										<a href='#' id="create_project" class="dialog_opener">Create Project</a>
 									</li>
 									<br>
 								</c:if>
@@ -127,7 +101,7 @@
 						</div>
 					</li>
 					<li>
-						<a href="#" id="opener">Create Issue</a>
+						<a href="#" id="create_issue" class="dialog_opener">Create Issue</a>
 					</li>
 					<li>
 						<a href="./backlog">Backlog</a>
@@ -164,5 +138,11 @@
 		</div>
 		<!-- /.container -->
 	</nav>
+	
+<c:import url="CreateIssue.jsp"/>
+<c:import url="CreateProject.jsp"/>
+<c:import url="CreateSprint.jsp"/>
+<c:import url="EditIssue.jsp"/>
+
 </body>
 </html>

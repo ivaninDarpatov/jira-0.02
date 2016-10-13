@@ -55,8 +55,7 @@ public class HomePageController {
 				session.invalidate();
 				return "redirect:login";
 			}
-		}
-		
+		}	
 		
 		String summary = request.getParameter("summary");
 		String issueType = request.getParameter("issue_type");
@@ -70,17 +69,6 @@ public class HomePageController {
 		User currentUser = (User) session.getAttribute("user");
 		
 		String currentUserEmail = currentUser.getEmail();
-		System.err.println("Current user: " + currentUserEmail);
-		
-		System.out.println("Summary: " + summary);
-		System.out.println("IssueType: " + issueType);
-		System.out.println("projectName: " + projectName);
-		System.out.println("priority: " + priority);
-		System.out.println("status: " + status);
-		System.out.println("description: " + description);
-		System.out.println("linkedIssue: " + linkedIssueName);
-		System.out.println("linkType: " + linkType);
-		System.out.println("assigneeName: " + assigneeEmail);
 		
 		int projectId;
 		Project project = null;
@@ -142,13 +130,6 @@ public class HomePageController {
 			request.setAttribute("issueError", e.getMessage());
 			e.printStackTrace();
 		}
-		
-		System.err.println("----------------------------------" + request.getAttribute("issueError"));
-		
-		System.err.println("Project object: " + project);
-		System.err.println("User object: " + user);
-		System.err.println("Linked Issue object: " + linkedIssue);
-		System.err.println("Created Issue: " + issue);
 		
 
 		return "HomePage";

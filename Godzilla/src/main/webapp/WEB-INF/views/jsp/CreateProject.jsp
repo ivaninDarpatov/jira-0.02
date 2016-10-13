@@ -10,7 +10,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title>Backlog</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Create Project dialog</title>
 	
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	
@@ -22,7 +23,7 @@
 	
 	<!-- Custom CSS -->
 	<link href="css/user_panel.css" rel="stylesheet">
-	
+		
 	
 <!-- javascript files initialization -->
 	
@@ -35,78 +36,43 @@
 		
 	<!-- header functionality javascript -->
 	<script src="js/page_header.js"></script>
-		
-	<!-- page-specific javascript -->
-	<script src="js/backlog.js"></script>
-
-<script>
-
-</script>
-
+	
 </head>
 <body>
+	<div style="display: none;" id="project_dialog" class="dialog_box" title="Create Project">
+		<div id="container" class="ltr">
+			<h1 id="logo">
+				<a href="./homepage" title="Powered by Godzilla">Godzilla</a>
+			</h1>
 
-<c:import url="Navigation.jsp"/>
+			<form action="./homepage" method="POST">
+				
+				<header id="header" class="info">
+					<h2>Project Tracking</h2>
+					<div></div>
+				</header>
+				<ul>
+					<li id="fo2li1" class="notranslate      ">
+						<label class="desc" id="title1" for="Field1"> Project name 
+							<span id="req_1" class="req">*</span>
+						</label>
+							<div>
+								<input id="project_name" name="project_name" type="text"
+									class="field text medium" value="" maxlength="255" tabindex="1"
+									required />
+							</div>
+					</li>
 
-<!-- hidden input to hold session attribute -->
-<input id='projectSprintIssuesMap' type="hidden" value='${projectSprintIssuesMap}'/>
-	<!-- Page Content -->
-	<div class="container">
+					<li class="buttons ">
+						<div>
+							<input type="hidden" name="currentPage" id="currentPage" /> 
+							<input id="saveForm" name="saveForm" class="btTxt submit" type="submit" value="Submit" />
+						</div>
+					</li>
 
-		<div class="row">
-			<h2 id="project_name"></h2>
-			<!-- project's issues column -->
-<!-- LEFT SIDE -->
-			<div class="col-md-8">
-				<div id="create_sprint_backlog_div">
-				</div>
-				<hr>
-				<div id='sprints_container'>
-
-				</div>
-
-				<hr>
-
-				<h4 id="free_issues"></h4>
-				<div id='issues_container'>
-
-				</div>
-			</div>
-<!-- /LEFT SIDE -->
-
-<!-- RIGHT SIDE -->
-			<!-- User Sidebar Column -->
-			<div class="col-md-4">
-
-				<!-- Issue Information Well -->
-				<div id='issue_info_well' class="well">
-					
-				</div>
-					
-			</div>
-<!-- /RIGHT SIDE -->
-
+				</ul>
+			</form>
 		</div>
-		<!-- /.row -->
-
-		<hr>
-
-		<!-- Footer -->
-		<footer>
-			<div class="row">
-				<div class="col-lg-12">
-					<p>
-						Copyright &copy; Godzilla 2016
-					</p>
-				</div>
-				<!-- /.col-lg-12 -->
-			</div>
-			<!-- /.row -->
-		</footer>
-
 	</div>
-	<!-- /.container -->
-
-
 </body>
 </html>

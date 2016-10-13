@@ -98,7 +98,9 @@ public class LoginController {
 				Gson jsonMaker = new Gson();
 				String assignedIssuesJSON = jsonMaker.toJson(assignedIssuesByProject);
 				String reportedIssuesJSON = jsonMaker.toJson(reportedIssuesByProject);
-
+				String userJSON = jsonMaker.toJson(userToLogIn);
+				
+				session.setAttribute("userJSON", userJSON);
 				session.setAttribute("assignedIssues", assignedIssuesJSON);
 				session.setAttribute("reportedIssues", reportedIssuesJSON);
 				session.setAttribute("user", userToLogIn);

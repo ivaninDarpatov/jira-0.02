@@ -11,7 +11,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Create Issue dialog</title>
+<title>Edit Issue dialog</title>
 	
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	
@@ -37,7 +37,6 @@
 	<!-- header functionality javascript -->
 	<script src="js/page_header.js"></script>
 	
-
 <script>
 //remove textarea preset first row
 $(document).ready(function(){
@@ -46,7 +45,7 @@ $(document).ready(function(){
 </script>
 </head>
 <body>
-	<div style="display: none;" id="issue_dialog" class="dialog_box" title="Create Issue">
+	<div style="display: none;" id="edit_issue_dialog" class="dialog_box" title="Create Issue">
 		<div id="container" class="ltr">
 			<h1 id="logo">
 				<a href="./homepage" title="Powered by Godzilla">Godzilla</a>
@@ -217,12 +216,12 @@ $(document).ready(function(){
 						</div>
 					</li>
 
-					<li class="buttons ">
+					<!-- <li class="buttons ">
 						<div>
 							<input type="hidden" name="currentPage" id="currentPage" /> 
 							<input id="saveForm" name="saveForm" class="btTxt submit" type="submit" value="Submit" />
 						</div>
-					</li>
+					</li> -->
 
 				</ul>
 			</form>

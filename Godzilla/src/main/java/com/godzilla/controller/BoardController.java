@@ -25,11 +25,15 @@ import com.google.gson.Gson;
 public class BoardController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String board(HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
 		if (request.getSession(false) == null) {
 			return "redirect:login";
+		}if (session.getAttribute("user") == null) {
+			session.invalidate();
+			return "redirect:login";
 		}
-		HttpSession session = request.getSession();
 		
+		session = request.getSession();
 		
 		Set<Project> companyProjects = (Set<Project>) session.getAttribute("companyProjects");
 		//projectName -> (sprintName -> sprintIssues) ((NO SPRINT -> sprintName = "-"))
