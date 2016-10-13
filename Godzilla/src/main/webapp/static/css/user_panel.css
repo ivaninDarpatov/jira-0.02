@@ -24,7 +24,6 @@ div.tag1
     color: #EEE;
     font-size: 15px;
     font-family: Georgia, Times, serif;
-    display: inline-block;
     border: 2px solid red;
     border-radius: 4px;
     -webkit-border-radius: 4px;
@@ -32,7 +31,7 @@ div.tag1
     background-color: white;
     padding: 8px;
     margin: 5px;
-    display:block;
+    display: block;
 }
 
 div.tag2
@@ -40,7 +39,6 @@ div.tag2
     color: #EEE;
     font-size: 15px;
     font-family: Georgia, Times, serif;
-    display: inline-block;
     border: 2px solid green;
     border-radius: 4px;
     -webkit-border-radius: 4px;
@@ -48,7 +46,7 @@ div.tag2
     background-color: white;
     padding: 8px;
     margin: 5px;
-    display:block;
+    display: block;
 }
 .closeButton
 {

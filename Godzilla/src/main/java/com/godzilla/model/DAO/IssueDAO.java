@@ -22,7 +22,7 @@ import com.godzilla.model.exceptions.IssueException;
 public class IssueDAO {
 	private static final String SELECT_ISSUE_ID_BY_NAME_SQL = "SELECT issue_id from issues WHERE issue_name = ?;";
 	private static final String FIND_FREE_ISSUES_BY_PROJECT_SQL = "SELECT issue_id FROM issues WHERE sprint_id IS NULL AND project_id = ?;";
-	private static final String GET_ISSUE_TYPE_SQL = "SELECT issue_type FROM issues WHERE issue_id = ?,";
+	private static final String GET_ISSUE_TYPE_SQL = "SELECT issue_type FROM issues WHERE issue_id = ?;";
 	private static final String FIND_ISSUE_EPIC_SQL = "SELECT epic_id FROM issues WHERE issue_id = ?;";
 	private static final String GET_EPIC_NAME_BY_ID_SQL = "SELECT epic_name FROM epics WHERE epic_id = ?;";
 	private static final String ASSIGN_ISSUE_SQL = "UPDATE issues SET assignee_id = ? WHERE issue_id = ?;";

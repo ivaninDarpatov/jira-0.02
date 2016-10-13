@@ -111,6 +111,7 @@ function openIssueInformation(issue) {
 	var editIssueDiv = $('<div></div>');
 	editIssueDiv.attr('style',
 			'float:left; width:15%; height:100%; text-align:right;');
+	
 	var deleteIssueDiv = $('<div></div>');
 	deleteIssueDiv.attr('style',
 			'float:left; width:15%; height:100%; text-align:right;');
@@ -122,8 +123,9 @@ function openIssueInformation(issue) {
 	editIssue.attr('href', '#');
 	var deleteIssue = $('<a></a>');
 	deleteIssue.attr('href', '#');
-	
 	var issueString = JSON.stringify(issue);
+	deleteIssue.attr('onclick', 'deleteIssue(' + issueString + ')');
+	
 	editIssue.attr('onclick', 'editIssue(' + issueString + ')');
 	editIssue.append('Edit');
 	deleteIssue.attr('onclick', 'deleteIssue(' + issueString + ')');
@@ -185,7 +187,13 @@ function editIssue(issue) {
 
 //deletes issue
 function deleteIssue(issue) {
-	console.log("will delete in the future");
+	if (!confirm('Are you sure you want to delete this ' + issue.type + '')) {
+		return;
+	}
+	
+	var issueId = issue.id;
+	document.getElementById("delete_issue_id").value = issueId;
+	$("#delete_issue_button").trigger("click");
 }
 
 //open 'create sprint' dialog box

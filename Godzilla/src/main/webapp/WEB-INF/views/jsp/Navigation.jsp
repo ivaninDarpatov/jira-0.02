@@ -53,6 +53,12 @@
 	<input id="userInformation" type="hidden" value='${userJSON}'>
 	<input id="assignedIssues" type="hidden" value='${assignedIssues}'>
 	<input id="reportedIssues" type="hidden" value='${reportedIssues}'>
+	
+	<!-- hidden delete issue form -->
+	<form style="display: none;" action="./deleteissue" method="GET">
+		<input name="issue_id" type="text" id="delete_issue_id"/>
+		<input type="submit" id="delete_issue_button">
+	</form>
 
 	<!-- Navigation -->
 	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
