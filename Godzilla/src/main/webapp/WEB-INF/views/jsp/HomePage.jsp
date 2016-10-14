@@ -43,8 +43,10 @@
 		function closeDiv(target){
 			var div = $(target);
 			div.hide();
-		}
+		}		
 	</script>
+	
+	
 </head>
 
 <body>

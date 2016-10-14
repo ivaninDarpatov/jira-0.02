@@ -1,5 +1,7 @@
 package com.godzilla.model.DAO;
 
+import static org.mockito.Matchers.intThat;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,6 +20,9 @@ import com.godzilla.model.exceptions.SprintDAOException;
 import com.godzilla.model.exceptions.SprintException;
 
 public class SprintDAO {
+	private static final String MAKE_SPRINT_ACTIVE_SQL = "UPDATE sprints SET is_active = 1 WHERE sprint_id = ?;";
+	private static final String MAKE_PROJECT_SPRINT_INACTIVE_SQL = "UPDATE sprints SET is_active = 0 WHERE project_id = ?;";
+	private static final String GET_SPRINT_PROJECT_SQL = "SELECT project_id FROM sprints WHERE sprint_id = ?;";
 	private static final String FIND_SPRINT_ID_BY_NAME_SQL = "SELECT sprint_id FROM sprints WHERE sprint_name = ?;";
 	private static final String GET_SPRINT_BY_ID_SQL = "SELECT * FROM sprints WHERE sprint_id = ?;";
 	private static final String REMOVE_SPRINT_SQL = "DELETE FROM sprints WHERE sprint_id = ?;";
@@ -199,5 +204,43 @@ public class SprintDAO {
 		}
 		
 		return 0;
+	}
+
+	public static void makeActive(Sprint sprint) throws SprintDAOException {
+		if (sprint == null) {
+			throw new SprintDAOException("can't find sprint to make active");
+		}
+		
+		Connection connection = DBConnection.getInstance().getConnection();
+		int sprintId = sprint.getId();
+		
+		try {
+			PreparedStatement ps = connection.prepareStatement(GET_SPRINT_PROJECT_SQL);
+			ps.setInt(1, sprintId);
+
+			int projectId;
+			
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) { 
+				projectId = rs.getInt(1);
+				ps = connection.prepareStatement(MAKE_PROJECT_SPRINT_INACTIVE_SQL);
+				ps.setInt(1, projectId);
+				
+				if (ps.executeUpdate() < 1) {
+					throw new SprintDAOException("couldnt find active sprint");
+				}
+				
+				ps = connection.prepareStatement(MAKE_SPRINT_ACTIVE_SQL);
+				ps.setInt(1, sprintId);
+				if (ps.executeUpdate() < 1) {
+					throw new SprintDAOException("failed to make sprint active");
+				}
+			} else {
+				throw new SprintDAOException("couldnt find sprint's project");
+			}
+		} catch (SQLException e) {
+			throw new SprintDAOException(e.getMessage());
+		}
+		
 	}
 }

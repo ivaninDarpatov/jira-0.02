@@ -84,6 +84,8 @@
 		value='${projectSprintIssuesMap}' />
 	<input id='projectSprintsMap' type="hidden"
 		value='${projectSprintsMap}' />
+	<input id='currentUser' type="hidden"
+		value='${userJSON}' />
 	<!-- Page Content -->
 	<div class="container">
 
