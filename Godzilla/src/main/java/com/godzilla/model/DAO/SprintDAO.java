@@ -18,6 +18,7 @@ import com.godzilla.model.exceptions.SprintDAOException;
 import com.godzilla.model.exceptions.SprintException;
 
 public class SprintDAO {
+	private static final String FIND_SPRINT_ID_BY_NAME_SQL = "SELECT sprint_id FROM sprints WHERE sprint_name = ?;";
 	private static final String GET_SPRINT_BY_ID_SQL = "SELECT * FROM sprints WHERE sprint_id = ?;";
 	private static final String REMOVE_SPRINT_SQL = "DELETE FROM sprints WHERE sprint_id = ?;";
 	private static final String GET_SPRINTS_BY_PROJECT_ID_SQL = "SELECT * FROM sprints WHERE project_id = ?;";
@@ -175,5 +176,28 @@ public class SprintDAO {
 			throw new SprintDAOException("issues failure", e);
 		}
 
+	}
+	
+	public static int getSprintIdByName(String sprintName) throws SprintDAOException {
+		if (sprintName == null || sprintName.length() == 0) {
+			throw new SprintDAOException("Sprint name cannot be empty or null");
+		}
+		
+		Connection connection = DBConnection.getInstance().getConnection();
+		
+		try {
+			PreparedStatement ps = connection.prepareStatement(FIND_SPRINT_ID_BY_NAME_SQL);
+			ps.setString(1, sprintName);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			if (rs.next()) {
+				return rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			throw new SprintDAOException(e.getMessage());
+		}
+		
+		return 0;
 	}
 }

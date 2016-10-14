@@ -89,6 +89,7 @@ function addIssueToProject(caller, project) {
 
 // load selected issue's information in the right-side box
 function openIssueInformation(issue) {
+	console.log(issue);
 	var issueInformation = $('<div></div>');
 	// issue values
 	var name = issue.name;

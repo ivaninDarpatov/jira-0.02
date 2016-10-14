@@ -42,6 +42,7 @@ function loadSprintsFilters(projectName) {
 	var map = document.getElementById("projectSprintsMap").value;
 	var mapObj = JSON.parse(map);
 	var sprints = mapObj[projectName];
+	$("#sprints_select").empty();
 	for (var i = 0; i < sprints.length; i++) {
 		var option = $("<option></option>");
 		option.append(sprints[i].name);
@@ -51,6 +52,8 @@ function loadSprintsFilters(projectName) {
 </script>
 </head>
 <body>
+	<input id='projectSprintsMap' type="hidden"
+		value='${projectSprintsMap}' />
 	<c:import url="Navigation.jsp" />
 	<!-- Page Content -->
 	<div class="container">
@@ -62,6 +65,18 @@ function loadSprintsFilters(projectName) {
 			<div class="col-md-8">
 				<div id="search_result">
 					<div class="issue_box">
+					<!-- TODO with javascript -->
+						<c:forEach items="${filterResultIssues}" var="issue" varStatus="loop">
+							<div class="filter_issue_box">
+								<b class="issue_name">
+									<a href="#" id="issue_${issue.id}" onclick='openIssueInformation()'>
+										${issue.name}
+									</a>
+								</b>
+								&nbsp
+								${issue.summary}
+							</div>
+						</c:forEach>
 					</div>
 				</div>
 			</div>
@@ -77,7 +92,8 @@ function loadSprintsFilters(projectName) {
 						<table>
 							<tr>
 								<th><label>Issue state</label></th>
-								<th><select>
+								<th><select name="issue_state">
+										<option selected="selected">TO DO</option>
 										<option>TO DO</option>
 										<option>IN PROGRESS</option>
 										<option>DONE</option>
@@ -85,7 +101,8 @@ function loadSprintsFilters(projectName) {
 							</tr>
 							<tr>
 								<th><label>In Project</label></th>
-								<th><select>
+								<th><select name="project_name">
+										<option selected="selected">Project 1</option>
 										<c:forEach items="${companyProjects}" var="project" varStatus="loop">
 											<option onclick="loadSprintsFilters('${project.name}')" id="project_name_${loop.index}">${project.name}</option>
 										</c:forEach>
@@ -93,11 +110,14 @@ function loadSprintsFilters(projectName) {
 							</tr>
 							<tr>
 								<th><label>In sprint</label></th>
-								<th><select id="sprints_select"></select></th>
+								<th><select id="sprints_select" name="sprint_name">
+										<option selected="selected">Sprint 1</option>
+								</select></th>
 							</tr>
 							<tr>
 								<th><label>Reported by</label></th>
-								<th><select>
+								<th><select name="reporter">
+										<option selected="selected">user_1@abv.bg</option>
 									<c:forEach items="${companyUsers}" var="user">
 										<option>${user.email}</option>
 									</c:forEach>
@@ -105,7 +125,8 @@ function loadSprintsFilters(projectName) {
 							</tr>
 							<tr>
 								<th><label>Assigned to</label></th>
-								<th><select>
+								<th><select name="assignee">
+										<option selected="selected">user_1@abv.bg</option>
 									<c:forEach items="${companyUsers}" var="user">
 										<option>${user.email}</option>
 									</c:forEach>

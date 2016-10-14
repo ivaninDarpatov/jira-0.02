@@ -20,6 +20,7 @@ import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.IssueException;
 
 public class IssueDAO {
+	private static final String FIND_ISSUES_BY_STATE_SQL = "SELECT issue_id FROM issues WHERE state_id = ?;";
 	private static final String SELECT_ISSUE_ID_BY_NAME_SQL = "SELECT issue_id from issues WHERE issue_name = ?;";
 	private static final String FIND_FREE_ISSUES_BY_PROJECT_SQL = "SELECT issue_id FROM issues WHERE sprint_id IS NULL AND project_id = ?;";
 	private static final String GET_ISSUE_TYPE_SQL = "SELECT issue_type FROM issues WHERE issue_id = ?;";
@@ -49,17 +50,18 @@ public class IssueDAO {
 	private static final String FIND_ISSUE_BY_ID_SQL = "SELECT * FROM issues WHERE issue_id = ?;";
 	private static final String FIND_ISSUES_BY_SPRINT_SQL = "SELECT issue_id FROM issues WHERE sprint_id = ?;";
 
-	public static void createIssue(Issue toCreate, Project project, User reporter, User assignee) throws IssueDAOException {
+	public static void createIssue(Issue toCreate, Project project, User reporter, User assignee)
+			throws IssueDAOException {
 		if (toCreate == null || project == null || reporter == null) {
 			throw new IssueDAOException("cannot create issue, required: project, reporter and issue model");
 		}
-		
+
 		if (reporter.getPermissions().equals(Permissions.TESTER) && !toCreate.getType().equals("bug")) {
 			throw new IssueDAOException("testers can only report bugs");
 		}
-		
-		if (reporter.getPermissions().equals(Permissions.PROGRAMMER) &&
-				(toCreate.getType().equals("epic") || toCreate.getType().equals("bug"))) {
+
+		if (reporter.getPermissions().equals(Permissions.PROGRAMMER)
+				&& (toCreate.getType().equals("epic") || toCreate.getType().equals("bug"))) {
 			throw new IssueDAOException("programmers can only report tasks and stories");
 		}
 
@@ -70,25 +72,28 @@ public class IssueDAO {
 
 		String summary = toCreate.getSummary();
 		int issueNumber = project.getIssues().size() + 1;
-		
+
 		String issueName = project.getName().substring(0, 3).toUpperCase() + "-" + issueNumber;
-		
+
 		String description = toCreate.getDescription();
 		int priorityId = toCreate.getPriority().getValue();
 		int stateId = toCreate.getState().getValue();
 		int projectId = project.getId();
 		int reporterId = reporter.getId();
 		int assigneeId = assignee.getId();
-//		String dateTimeCreated = toCreate.getDateCreated().toLocalDate().toString() + 
-//								" " + 
-//								toCreate.getDateCreated().toLocalTime().toString();
-//		String dateTimeLastModified = toCreate.getDateLastModified().toLocalDate().toString() + 
-//									" " + 
-//									toCreate.getDateLastModified().toLocalTime().toString();
+		// String dateTimeCreated =
+		// toCreate.getDateCreated().toLocalDate().toString() +
+		// " " +
+		// toCreate.getDateCreated().toLocalTime().toString();
+		// String dateTimeLastModified =
+		// toCreate.getDateLastModified().toLocalDate().toString() +
+		// " " +
+		// toCreate.getDateLastModified().toLocalTime().toString();
 
 		try {
 			connection.setAutoCommit(false);
-			PreparedStatement insertIntoIssues = connection.prepareStatement(CREATE_ISSUE_SQL, Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement insertIntoIssues = connection.prepareStatement(CREATE_ISSUE_SQL,
+					Statement.RETURN_GENERATED_KEYS);
 			insertIntoIssues.setString(1, issueType);
 			insertIntoIssues.setString(2, issueName);
 			insertIntoIssues.setString(3, summary);
@@ -98,9 +103,8 @@ public class IssueDAO {
 			insertIntoIssues.setInt(7, priorityId);
 			insertIntoIssues.setInt(8, reporterId);
 			insertIntoIssues.setInt(9, assigneeId);
-//			insertIntoIssues.setString(8, dateTimeCreated);
-//			insertIntoIssues.setString(9, dateTimeLastModified);
-
+			// insertIntoIssues.setString(8, dateTimeCreated);
+			// insertIntoIssues.setString(9, dateTimeLastModified);
 
 			if (insertIntoIssues.executeUpdate() > 0) {
 				ResultSet rs = insertIntoIssues.getGeneratedKeys();
@@ -126,13 +130,13 @@ public class IssueDAO {
 				if (insertIntoEpic.executeUpdate() < 1) {
 					throw new IssueDAOException("failed to insert epic properly");
 				}
-				
+
 				PreparedStatement addIssueToEpicPS = connection.prepareStatement(ADD_ISSUE_TO_EPIC_SQL);
 				addIssueToEpicPS.setInt(1, issueId);
 				addIssueToEpicPS.setInt(2, issueId);
 				addIssueToEpicPS.executeUpdate();
 			}
-			
+
 			connection.commit();
 		} catch (SQLException e) {
 			try {
@@ -143,7 +147,7 @@ public class IssueDAO {
 			throw new IssueDAOException(e.getMessage());
 		} catch (IssueException e) {
 			throw new IssueDAOException("couldn't set issue's id", e);
-		}  finally {
+		} finally {
 			try {
 				connection.setAutoCommit(true);
 			} catch (SQLException e) {
@@ -201,11 +205,13 @@ public class IssueDAO {
 				String description = rs.getString("description");
 				int priorityId = rs.getInt("priority");
 				int stateId = rs.getInt("state_id");
-//				LocalDateTime dateCreated = getLocalDateTimeFromString(rs.getString("date_created"));
-//				LocalDateTime dateLastModified = getLocalDateTimeFromString(rs.getString("date_last_modified"));
+				// LocalDateTime dateCreated =
+				// getLocalDateTimeFromString(rs.getString("date_created"));
+				// LocalDateTime dateLastModified =
+				// getLocalDateTimeFromString(rs.getString("date_last_modified"));
 				IssuePriority priority = IssuePriority.getTypeById(priorityId);
 				IssueState state = IssueState.getTypeById(stateId);
-				
+
 				if (issueType.equals("epic")) {
 					String epicName = IssueDAO.getEpicNameById(issueId);
 					issue = new Epic(summary, epicName);
@@ -218,14 +224,14 @@ public class IssueDAO {
 				} else {
 					issue = new Issue(summary, issueType);
 				}
-				
+
 				issue.setName(issueName);
 				issue.setDescription(description);
 				issue.setPriority(priority);
 				issue.setState(state);
-//				issue.setDateCreated(dateCreated);
-//				issue.setDateLastModified(dateLastModified);
-				
+				// issue.setDateCreated(dateCreated);
+				// issue.setDateLastModified(dateLastModified);
+
 				issue.setId(issueId);
 				issue.setType(issueType);
 			}
@@ -240,28 +246,28 @@ public class IssueDAO {
 
 		return issue;
 	}
-	
-	public static int getIssueIdByName(String issueName) throws IssueDAOException{
-		if(issueName == null || issueName.length() == 0){
+
+	public static int getIssueIdByName(String issueName) throws IssueDAOException {
+		if (issueName == null || issueName.length() == 0) {
 			throw new IssueDAOException("name cannot be null or empty");
 		}
-		
+
 		Connection connection = DBConnection.getInstance().getConnection();
-		
+
 		int issueId = 0;
-		
+
 		try {
 			PreparedStatement selectIdByNamePS = connection.prepareStatement(SELECT_ISSUE_ID_BY_NAME_SQL);
 			selectIdByNamePS.setString(1, issueName);
-			
+
 			ResultSet rs = selectIdByNamePS.executeQuery();
-			
-			if(rs.next()){
+
+			if (rs.next()) {
 				issueId = rs.getInt(1);
-			}else{
+			} else {
 				throw new IssueDAOException("Cannot find issue with that name");
 			}
-			
+
 			return issueId;
 		} catch (SQLException e) {
 			throw new IssueDAOException(e.getMessage());
@@ -272,14 +278,14 @@ public class IssueDAO {
 		if (epicId < 1) {
 			throw new IssueDAOException("issue id cannot be 0");
 		}
-		
+
 		String epicName = GET_ISSUE_TYPE_SQL;
 		Connection connection = DBConnection.getInstance().getConnection();
-		
+
 		try {
 			PreparedStatement getEpicNameByIdPS = connection.prepareStatement(GET_EPIC_NAME_BY_ID_SQL);
 			getEpicNameByIdPS.setInt(1, epicId);
-			
+
 			ResultSet getEpicNameByIdRS = getEpicNameByIdPS.executeQuery();
 			if (getEpicNameByIdRS.next()) {
 				epicName = getEpicNameByIdRS.getString("epic_name");
@@ -287,7 +293,7 @@ public class IssueDAO {
 		} catch (SQLException e) {
 			throw new IssueDAOException(e.getMessage());
 		}
-		
+
 		return epicName;
 	}
 
@@ -297,7 +303,7 @@ public class IssueDAO {
 		}
 
 		int epicId = epic.getId();
-		
+
 		Set<Issue> result = new HashSet<Issue>();
 
 		Connection connection = DBConnection.getInstance().getConnection();
@@ -339,7 +345,7 @@ public class IssueDAO {
 				final String DELETE_EPIC_SQL = "DELETE FROM epics WHERE epic_id = ?;";
 				PreparedStatement ps = connection.prepareStatement(DELETE_EPIC_SQL);
 				ps.setInt(1, issueId);
-				
+
 				if (ps.executeUpdate() < 1) {
 					throw new IssueDAOException("failed to remove " + issueType);
 				}
@@ -379,7 +385,7 @@ public class IssueDAO {
 		if (toRemove == null) {
 			throw new IssueDAOException("can't find issue to set free");
 		}
-		if(!issueIsInEpic(toRemove)){
+		if (!issueIsInEpic(toRemove)) {
 			throw new IssueDAOException("Issue is not in epic");
 		}
 
@@ -402,14 +408,14 @@ public class IssueDAO {
 		if (toRemove == null) {
 			throw new IssueDAOException("invalid issue to remove");
 		}
-		
+
 		int issueId = toRemove.getId();
 		Connection connection = DBConnection.getInstance().getConnection();
-		
+
 		try {
 			PreparedStatement getIssueEpicPS = connection.prepareStatement(FIND_ISSUE_EPIC_SQL);
 			getIssueEpicPS.setInt(1, issueId);
-			
+
 			ResultSet rs = getIssueEpicPS.executeQuery();
 
 			if (rs.next()) {
@@ -418,7 +424,7 @@ public class IssueDAO {
 		} catch (SQLException e) {
 			throw new IssueDAOException(e.getMessage());
 		}
-		
+
 		return false;
 	}
 
@@ -430,7 +436,7 @@ public class IssueDAO {
 		Set<Issue> reportedByThatUser = new HashSet<Issue>();
 		Connection connection = DBConnection.getInstance().getConnection();
 		int reporterId = reporter.getId();
-		
+
 		try {
 			PreparedStatement ps = connection.prepareStatement(FIND_ISSUE_BY_REPORTER_SQL);
 
@@ -450,7 +456,7 @@ public class IssueDAO {
 
 		return reportedByThatUser;
 	}
-	
+
 	public static Set<Issue> getAllReportedIssuesByUser(User reporter, Project project) throws IssueDAOException {
 		if (reporter == null) {
 			throw new IssueDAOException("couldn't find user");
@@ -460,7 +466,7 @@ public class IssueDAO {
 		Connection connection = DBConnection.getInstance().getConnection();
 		int reporterId = reporter.getId();
 		int projectId = project.getId();
-		
+
 		try {
 			PreparedStatement ps = connection.prepareStatement(FIND_ISSUE_BY_REPORTER_IN_PROJECT_SQL);
 
@@ -486,14 +492,14 @@ public class IssueDAO {
 		if (issueId < 1) {
 			throw new IssueDAOException("cannot find issue with that id");
 		}
-		
+
 		String type = FIND_FREE_ISSUES_BY_PROJECT_SQL;
 		Connection connection = DBConnection.getInstance().getConnection();
-		
+
 		try {
 			PreparedStatement getTypePS = connection.prepareStatement(GET_ISSUE_TYPE_SQL);
 			getTypePS.setInt(1, issueId);
-			
+
 			ResultSet getTypeRS = getTypePS.executeQuery();
 			if (getTypeRS.next()) {
 				type = getTypeRS.getString("issue_type");
@@ -501,11 +507,10 @@ public class IssueDAO {
 		} catch (SQLException e) {
 			throw new IssueDAOException(e.getMessage());
 		}
-		
+
 		return type;
 
 	}
-
 
 	private static boolean isEpic(int issueId) throws IssueDAOException {
 		if (issueId < 1) {
@@ -534,7 +539,7 @@ public class IssueDAO {
 		if (issueToSetFree == null) {
 			throw new IssueDAOException("can't find issue to set free");
 		}
-		if(!isIssueInSprint(issueToSetFree)){
+		if (!isIssueInSprint(issueToSetFree)) {
 			throw new IssueDAOException("Issue is not in sprint");
 		}
 
@@ -552,28 +557,28 @@ public class IssueDAO {
 			throw new IssueDAOException(e.getMessage());
 		}
 	}
-	
-	private static boolean isIssueInSprint(Issue issue) throws IssueDAOException{
-		if(issue == null){
+
+	private static boolean isIssueInSprint(Issue issue) throws IssueDAOException {
+		if (issue == null) {
 			throw new IssueDAOException("issue cannot be null");
 		}
-		
+
 		Connection connection = DBConnection.getInstance().getConnection();
-		
+
 		PreparedStatement getIssueSprint;
 		try {
 			getIssueSprint = connection.prepareStatement(GET_SPRINT_ID_FOR_ISSUE_SQL);
 			getIssueSprint.setInt(1, issue.getId());
-			
+
 			ResultSet rs = getIssueSprint.executeQuery();
-			
-			if(rs.next()){
+
+			if (rs.next()) {
 				return !(rs.getInt(1) == 0);
 			}
 		} catch (SQLException e) {
 			throw new IssueDAOException(e.getMessage());
 		}
-		
+
 		return false;
 	}
 
@@ -605,29 +610,29 @@ public class IssueDAO {
 
 		return result;
 	}
-	
+
 	public static void assignIssue(Issue toAssign, User assignee) throws IssueDAOException {
 		if (toAssign == null || assignee == null) {
 			throw new IssueDAOException("issue to assign and assignee must not be null");
 		}
 
 		if (assignee.getPermissions().equals(Permissions.TESTER)) {
-			throw new IssueDAOException("testers cannot be assigned issues");			
+			throw new IssueDAOException("testers cannot be assigned issues");
 		}
-		
+
 		if (toAssign.getType().equals("epic")) {
 			throw new IssueDAOException("epics cannot be reassigned");
 		}
-		
+
 		Connection connection = DBConnection.getInstance().getConnection();
 		int issueId = toAssign.getId();
 		int assigneeId = assignee.getId();
-		
+
 		try {
 			PreparedStatement assignIssuePS = connection.prepareStatement(ASSIGN_ISSUE_SQL);
 			assignIssuePS.setInt(1, assigneeId);
 			assignIssuePS.setInt(2, issueId);
-			
+
 			if (assignIssuePS.executeUpdate() < 1) {
 				throw new IssueDAOException("failed to assign issue");
 			}
@@ -738,7 +743,7 @@ public class IssueDAO {
 
 		return assignedToUser;
 	}
-	
+
 	public static Set<Issue> getAllIssuesAssignedTo(User assignee, Project project) throws IssueDAOException {
 		if (assignee == null) {
 			throw new IssueDAOException("couldn't find user");
@@ -768,83 +773,83 @@ public class IssueDAO {
 
 		return assignedToUser;
 	}
-	
+
 	static LocalDateTime getLocalDateTimeFromString(String dateTime) throws IssueDAOException {
 		if (dateTime == null) {
 			throw new IssueDAOException("cannot convert null value to LocalDateTime");
 		}
 		System.err.println(dateTime);
 		LocalDateTime result;
-	
+
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:SS.nnn");
 		result = LocalDateTime.parse(dateTime, formatter);
-		
+
 		return result;
 	}
-	
+
 	public static void addIssueToEpic(Issue issue, Epic epic) throws IssueDAOException {
 		if (epic == null || issue == null) {
 			throw new IssueDAOException("epic and issue cannot be null");
 		}
-		
+
 		int epicId = epic.getId();
 		int issueId = issue.getId();
 		Connection connection = DBConnection.getInstance().getConnection();
-		
+
 		try {
 			PreparedStatement addIssueToEpicPS = connection.prepareStatement(ADD_ISSUE_TO_EPIC_SQL);
 			addIssueToEpicPS.setInt(1, epicId);
 			addIssueToEpicPS.setInt(2, issueId);
-			
-			if(addIssueToEpicPS.executeUpdate() < 1){
+
+			if (addIssueToEpicPS.executeUpdate() < 1) {
 				throw new IssueDAOException("Failed to add issue in epic");
 			}
-			
+
 		} catch (SQLException e) {
 			throw new IssueDAOException(e.getMessage());
 		}
-		
+
 	}
-	
-	public static void addIssueToSprint(Issue issue,Sprint sprint) throws IssueDAOException{
+
+	public static void addIssueToSprint(Issue issue, Sprint sprint) throws IssueDAOException {
 		if (sprint == null || issue == null) {
 			throw new IssueDAOException("sprint and issue cannot be null");
 		}
-		
+
 		int sprintId = sprint.getId();
 		int issueId = issue.getId();
 		Connection connection = DBConnection.getInstance().getConnection();
-		
+
 		try {
 			PreparedStatement addIssueToEpicPS = connection.prepareStatement(ADD_ISSUE_TO_SPRINT_SQL);
 			addIssueToEpicPS.setInt(1, sprintId);
 			addIssueToEpicPS.setInt(2, issueId);
-			
-			if(addIssueToEpicPS.executeUpdate() < 1){
+
+			if (addIssueToEpicPS.executeUpdate() < 1) {
 				throw new IssueDAOException("Failed to add issue in epic");
 			}
-			
+
 		} catch (SQLException e) {
 			throw new IssueDAOException(e.getMessage());
 		}
-		
+
 	}
 
 	public static Set<Issue> getAllFreeIssuesByProject(Project project) throws IssueDAOException {
 		if (project == null) {
 			throw new IssueDAOException("project cannot be null");
 		}
-		
+
 		int projectId = project.getId();
 		Set<Issue> freeIssues = new HashSet<Issue>();
 		Connection connection = DBConnection.getInstance().getConnection();
-		
+
 		try {
 			PreparedStatement getFreeIssuesPS = connection.prepareStatement(FIND_FREE_ISSUES_BY_PROJECT_SQL);
 			getFreeIssuesPS.setInt(1, projectId);
-			
+
 			ResultSet freeIssuesRS = getFreeIssuesPS.executeQuery();
-			
+
 			while (freeIssuesRS.next()) {
 				int issueId = freeIssuesRS.getInt("issue_id");
 				Issue issue = IssueDAO.getIssueById(issueId);
@@ -853,7 +858,81 @@ public class IssueDAO {
 		} catch (SQLException e) {
 			throw new IssueDAOException(e.getMessage());
 		}
-		
+
 		return freeIssues;
+	}
+
+	public static Set<Issue> getAllIssuesFilteredBy(String issueState, String projectName, String sprintName,
+			String reporterEmail, String assigneeEmail) throws IssueDAOException {
+		Set<Issue> result = new HashSet<Issue>();
+		Set<Issue> byState = new HashSet<Issue>();
+		Set<Issue> byProject = new HashSet<Issue>();
+		Set<Issue> bySprint = new HashSet<Issue>();
+		Set<Issue> byReporter = new HashSet<Issue>();
+		Set<Issue> byAssignee = new HashSet<Issue>();
+		
+		try {
+			IssueState state = null;
+			if (issueState != null && issueState.length() > 0) {
+				state = IssueState.getIssueStateFromString(issueState.toLowerCase());
+				byState = IssueDAO.getAllIssuesByState(state);
+			}
+			Project project = null;
+			if (projectName != null && projectName.length() > 0) {
+				project = ProjectDAO.getProjectById(ProjectDAO.getProjectIdByName(projectName));
+				byProject = IssueDAO.getAllIssuesByProject(project);
+			}
+			Sprint sprint = null;
+			if (sprintName != null && sprintName.length() > 0) {
+				sprint = SprintDAO.getSprintById(SprintDAO.getSprintIdByName(sprintName));
+				bySprint = IssueDAO.getAllIssuesBySprint(sprint);
+			}
+			User reporter = null;
+			if (reporterEmail != null && reporterEmail.length() > 0) {
+				reporter = UserDAO.getUserById(UserDAO.getUserIdByEmail(reporterEmail));
+				byReporter = IssueDAO.getAllReportedIssuesByUser(reporter);
+			}
+			User assignee = null;
+			if (assigneeEmail != null && assigneeEmail.length() > 0) {
+				assignee = UserDAO.getUserById(UserDAO.getUserIdByEmail(assigneeEmail));
+				byAssignee = IssueDAO.getAllIssuesAssignedTo(assignee);
+			}
+
+			result.addAll(byState);
+			result.addAll(byProject);
+			result.addAll(bySprint);
+			result.addAll(byReporter);
+			result.addAll(byAssignee);
+			
+		} catch (Exception e) {
+			throw new IssueDAOException(e.getMessage());
+		}
+		return result;
+	}
+
+	public static Set<Issue> getAllIssuesByState(IssueState state) throws IssueDAOException {
+		if (state == null) {
+			throw new IssueDAOException("issue state cannot be null");
+		}
+		
+		Set<Issue> result = new HashSet<Issue>();
+
+		Connection connection = DBConnection.getInstance().getConnection();
+		int stateId = state.ordinal() + 1;
+		try {
+			PreparedStatement ps = connection.prepareStatement(FIND_ISSUES_BY_STATE_SQL);
+			ps.setInt(1, stateId);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				int issueId = rs.getInt(1);
+				result.add(IssueDAO.getIssueById(issueId));
+			}
+		} catch (SQLException e) {
+			throw new IssueDAOException(e.getMessage());
+		}
+		
+		return result;
 	}
 }

@@ -8,7 +8,7 @@ body {
 	/* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
 }
 
-div.assigned_issue_box, div.reported_issue_box, div.backlog_issue_box, div.board_issue_box, div.profile_issue_box {
+div.assigned_issue_box, div.reported_issue_box, div.backlog_issue_box, div.board_issue_box, div.profile_issue_box, div.filter_issue_box {
 	border: 1px solid grey;
 	background-color: #f8fff7;
 	padding-left: 2%;
