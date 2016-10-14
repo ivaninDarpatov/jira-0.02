@@ -10,7 +10,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title></title>
+<title>Godzilla Board</title>
+<script>
+		function closeDiv(target){
+			var div = $(target);
+			div.hide();
+		}
+	</script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 
@@ -56,6 +62,30 @@
 	<input id='projectSprintsMap' type="hidden"
 		value='${projectSprintsMap}' />
 
+	<c:set var="errorMessage" value="${sessionScope.issueError}" />
+	<c:set var="errorLengh" value="${fn:length(errorMessage)}" />
+	<c:remove var="issueError" scope="session" />
+
+	<c:set var="succeed" value="${sessionScope.succeed}"></c:set>
+	<c:set var="succeedLengh" value="${fn:length(succeed)}" />
+	<c:remove var="succeed" scope="session" />
+	<div id="errors_container">
+		<c:if test="${(errorLengh) gt 0}">
+			<div id="tag1" class="tag1"
+				style="text-align: center; color: red; font-family: 'Arial Black';"
+				id="errors">
+				<a class="closeButton" onclick="closeDiv('#tag1')"></a> <b>${(errorMessage)}
+				</b>
+			</div>
+		</c:if>
+		<c:if test="${(succeedLengh) gt 0}">
+			<div id="tag1" class="tag2"
+				style="text-align: center; color: green; font-family: 'Arial Black';"
+				id="errors">
+				<a class="closeButton" onclick="closeDiv('#tag1')"></a> <b>${(succeed)}</b>
+			</div>
+		</c:if>
+	</div>	
 	<!-- Page Content -->
 	<div class="container">
 		<div class="row">

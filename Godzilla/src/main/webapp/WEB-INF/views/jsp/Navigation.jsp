@@ -142,11 +142,11 @@
 		<!-- /.navbar-collapse -->
 	</div>
 	<!-- /.container --> </nav>
-
+	
+	
 	<c:import url="CreateIssue.jsp" />
 	<c:import url="CreateProject.jsp" />
 	<c:import url="CreateSprint.jsp" />
-	<c:import url="EditIssue.jsp" />
 
 </body>
 </html>

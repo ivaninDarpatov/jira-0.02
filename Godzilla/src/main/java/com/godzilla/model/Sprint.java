@@ -1,5 +1,6 @@
 package com.godzilla.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,8 +12,8 @@ public class Sprint {
 	private int id;
 	private String name;
 	private String sprintGoal;
-	private LocalDateTime startingDate;
-	private LocalDateTime endDate;
+	private LocalDate startingDate;
+	private LocalDate endDate;
 	private boolean isActive;
 	private Set<Issue> issues;
 
@@ -47,7 +48,7 @@ public class Sprint {
 		}
 	}
 
-	public void setStartingDate(LocalDateTime startingDate) throws SprintException {
+	public void setStartingDate(LocalDate startingDate) throws SprintException {
 		if (startingDate != null) {
 			this.startingDate = startingDate;
 		} else {
@@ -55,7 +56,7 @@ public class Sprint {
 		}
 	}
 
-	public void setEndDate(LocalDateTime endDate) throws SprintException {
+	public void setEndDate(LocalDate endDate) throws SprintException {
 		if (endDate != null) {
 			this.endDate = endDate;
 		} else {
@@ -83,11 +84,11 @@ public class Sprint {
 		return this.sprintGoal;
 	}
 	
-	public LocalDateTime getStartingDate() {
+	public LocalDate getStartingDate() {
 		return this.startingDate;
 	}
 	
-	public LocalDateTime getEndDate() {
+	public LocalDate getEndDate() {
 		return this.endDate;
 	}
 

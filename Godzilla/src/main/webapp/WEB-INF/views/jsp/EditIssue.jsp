@@ -35,7 +35,8 @@
 	<script src="js/bootstrap.min.js"></script>
 		
 	<!-- header functionality javascript -->
-	<script src="js/page_header.js"></script>
+	<script src="js/page_header.js"></script>	
+
 	
 <script>
 //remove textarea preset first row
@@ -43,9 +44,12 @@ $(document).ready(function(){
     $('textarea').val("");
 });
 </script>
+
+
 </head>
 <body>
-	<div style="display: none;" id="edit_issue_dialog" class="dialog_box" title="Create Issue">
+	<div style="display: none;" id="edit_dialog" class="dialog_box"
+		title="Edit Issue">
 		<div id="container" class="ltr">
 			<h1 id="logo">
 				<a href="./homepage" title="Powered by Godzilla">Godzilla</a>

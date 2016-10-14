@@ -122,12 +122,13 @@ function openIssueInformation(issue) {
 	
 	var editIssue = $('<a></a>');
 	editIssue.attr('href', '#');
+	editIssue.attr('id','edit_issue_button')
 	var deleteIssue = $('<a></a>');
 	deleteIssue.attr('href', '#');
 	var issueString = JSON.stringify(issue);
 	deleteIssue.attr('onclick', 'deleteIssue(' + issueString + ')');
 	
-	editIssue.attr('onclick', 'editIssue(' + issueString + ')');
+	editIssue.attr('onclick', 'editIssue()');
 	editIssue.append('Edit');
 	deleteIssue.attr('onclick', 'deleteIssue(' + issueString + ')');
 	deleteIssue.append('Delete');
@@ -172,18 +173,6 @@ function openIssueInformation(issue) {
 	var container = $('#issue_info_well');
 	container.empty();
 	container.append(issueInformation);
-}
-
-//open 'edit issue' dialog box
-function editIssue(issue) {
-	$("#edit_issue_dialog").dialog({
-		autoOpen : false,
-		width : 535.6
-	});
-	
-	$(function() {
-		$("#edit_issue_dialog").dialog('open');
-	});
 }
 
 //deletes issue
@@ -240,6 +229,20 @@ $(function() {
 		$("#project_dialog").dialog('open');
 	});
 })
+
+//edit issue
+function editIssue(){
+$(function() {
+	console.log("starting");
+	$("#edit_dialog").dialog({
+		autoOpen : false,
+		width : 535.6
+	});
+
+		$("#edit_dialog").dialog('open');
+		console.log("after open");
+})}
+
 
 // open 'create issue' dialog box
 $(function() {

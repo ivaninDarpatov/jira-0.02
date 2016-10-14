@@ -22,7 +22,7 @@ public class SprintDAO {
 	private static final String GET_SPRINT_BY_ID_SQL = "SELECT * FROM sprints WHERE sprint_id = ?;";
 	private static final String REMOVE_SPRINT_SQL = "DELETE FROM sprints WHERE sprint_id = ?;";
 	private static final String GET_SPRINTS_BY_PROJECT_ID_SQL = "SELECT * FROM sprints WHERE project_id = ?;";
-	private static final String ADD_SPRINT_SQL = "INSERT INTO sprints VALUES(null, ? , ? , 'someDate' , 'someDate', ?, ?);";
+	private static final String ADD_SPRINT_SQL = "INSERT INTO sprints VALUES(null, ? , ? , ? , ? , ?, ?);";
 
 	@SuppressWarnings("unused")
 	public static Sprint getSprintById(int sprintId) throws SprintDAOException {
@@ -124,10 +124,10 @@ public class SprintDAO {
 			
 			insertSprint.setString(1, sprintToAdd.getName());
 			insertSprint.setString(2, sprintToAdd.getSpintGoal());
-//			insertSprint.setString(3, startingDate);
-//			insertSprint.setString(4, endDate);
-			insertSprint.setInt(3, (sprintToAdd.isActive()) ? 1 : 0);
-			insertSprint.setInt(4, project.getId());
+			insertSprint.setString(3, sprintToAdd.getStartingDate().toString());
+			insertSprint.setString(4, sprintToAdd.getEndDate().toString());
+			insertSprint.setInt(5, (sprintToAdd.isActive()) ? 1 : 0);
+			insertSprint.setInt(6, project.getId());
 			
 
 			insertSprint.executeUpdate();

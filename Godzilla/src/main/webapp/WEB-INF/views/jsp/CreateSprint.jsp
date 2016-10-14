@@ -51,7 +51,7 @@ $(document).ready(function(){
 				<a href="./homepage" title="Powered by Godzilla">Godzilla</a>
 			</h1>
 
-			<form action="./homepage" method="POST">
+			<form action="./createSprint" method="POST">
 				
 				<header id="header" class="info">
 					<h2>Sprint Tracking</h2>
@@ -88,7 +88,7 @@ $(document).ready(function(){
 						</label>
 						<div>
 							<textarea id="description" name="description"
-								class="field textarea medium" spellcheck="true" rows="10">
+								class="field textarea medium" spellcheck="true" rows="10" required>
 							</textarea>
 						</div>
 					</li>
@@ -98,7 +98,7 @@ $(document).ready(function(){
 							<span id="req_2" class="req">*</span>
 						</label>
 							<div>
-								<input id="start_date" name="start_date" type="text"
+								<input id="start_date" name="start_date" type="date"
 									class="field text medium" value="" maxlength="255" tabindex="1"
 									required />
 							</div>
@@ -109,7 +109,7 @@ $(document).ready(function(){
 							<span id="req_2" class="req">*</span>
 						</label>
 							<div>
-								<input id="end_date" name="end_date" type="text"
+								<input id="end_date" name="end_date" type="date"
 									class="field text medium" value="" maxlength="255" tabindex="1"
 									required />
 							</div>

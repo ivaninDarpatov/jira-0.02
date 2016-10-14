@@ -31,6 +31,10 @@
 	}
 </script>
 
+
+
+	
+
 <!-- javascript files initialization -->
 
 <!-- jQuery JavaScript -->
@@ -46,11 +50,19 @@
 <!-- profile page javascript -->
 <script src="js/profile_page.js"></script>
 
+
+
 </head>
 
 <body>
 
+	<!-- ------------------------------------------------------------------------- -->
+	
+	<!-- -------------------------------------------------------------------------- -->
+
 	<c:import url="Navigation.jsp" />
+	<c:import url="EditIssue.jsp" />
+	
 
 	<c:set var="errorMessage" value="${sessionScope.issueError}" />
 	<c:set var="errorLengh" value="${fn:length(errorMessage)}" />
@@ -77,6 +89,10 @@
 		</c:if>
 
 	</div>
+	
+	<!-- --------------------------------------------------------------------------- -->
+	
+	<!-- ---------------------------------------------------------------------------- -->
 
 	<!-- hidden input to hold session attribute -->
 	<input id="userInformation" type="hidden" value="${userJSON}">
@@ -246,10 +262,8 @@
 			</div>
 			<!-- /.row -->
 		</footer>
-
 	</div>
 	<!-- /.container -->
-
 
 </body>
 </html>

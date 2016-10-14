@@ -59,7 +59,7 @@
 	<div class="container">
 		<div class="row">
  		
- 		<c:set var="errorMessage" value="${sessionScope.issueError}" />
+ 	<c:set var="errorMessage" value="${sessionScope.issueError}" />
 	<c:set var="errorLengh" value="${fn:length(errorMessage)}" />
 	<c:remove var="issueError" scope="session" />
 
