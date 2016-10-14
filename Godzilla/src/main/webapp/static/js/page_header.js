@@ -55,7 +55,9 @@ window.onclick = function(event) {
 		}
 	}
 	
-	if (!hasParentClass(event.target, "dialog_box") && !hasParentClass(event.target, "dialog_opener")) {
+	if (!hasParentClass(event.target, "dialog_box") 
+			&& !hasParentClass(event.target, "dialog_opener")
+			&& !$(event.target).is('select')) {
 		
 		var dialogs = document.getElementsByClassName('dialog_box');
 		var i;
@@ -122,7 +124,8 @@ function openIssueInformation(issue) {
 	
 	var editIssue = $('<a></a>');
 	editIssue.attr('href', '#');
-	editIssue.attr('id','edit_issue_button')
+	editIssue.attr('id','edit_issue_button');
+	editIssue.attr('class','dialog_opener');
 	var deleteIssue = $('<a></a>');
 	deleteIssue.attr('href', '#');
 	var issueString = JSON.stringify(issue);
