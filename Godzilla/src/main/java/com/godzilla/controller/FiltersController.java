@@ -41,13 +41,18 @@ public class FiltersController {
 		String sprintName = request.getParameter("sprint_name");
 		String assigneeEmail = request.getParameter("assignee");
 		String reporterEmail = request.getParameter("reporter");
+		String companyName = request.getParameter("company_name");
+		System.err.println(projectName + '\n' + issueState + '\n' + sprintName + '\n' + assigneeEmail + '\n' + 
+							reporterEmail + '\n' + companyName + '\n');
 		
 		try {
-			Set<Issue> result = IssueDAO.getAllIssuesFilteredBy(issueState, projectName, sprintName, reporterEmail, assigneeEmail);
+			String result = IssueDAO.getAllIssuesFilteredByJSON(issueState, projectName, sprintName, 
+											reporterEmail, assigneeEmail, companyName);
 			
-			Gson jsonMaker = new Gson();
-			String resultJSON = jsonMaker.toJson(result);
 			session.setAttribute("filterResultIssues", result);
+			session.setAttribute("succeed", "Showing issues in: Project #" + projectName +
+											", State #" + issueState + ", Sprint #" + sprintName +
+											", Reporter #" + reporterEmail + ", Assignee #" + assigneeEmail);
 		} catch (IssueDAOException e) {
 			session.setAttribute("error", e.getMessage());
 		}

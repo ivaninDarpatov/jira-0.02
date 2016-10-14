@@ -37,21 +37,11 @@
 <!-- header functionality javascript -->
 <script src="js/page_header.js"></script>
 
-<script>
-function loadSprintsFilters(projectName) {
-	var map = document.getElementById("projectSprintsMap").value;
-	var mapObj = JSON.parse(map);
-	var sprints = mapObj[projectName];
-	$("#sprints_select").empty();
-	for (var i = 0; i < sprints.length; i++) {
-		var option = $("<option></option>");
-		option.append(sprints[i].name);
-		$("#sprints_select").append(option);
-	}
-}
-</script>
+<!-- page specific javascript -->
+<script src="js/filters.js"></script>
 </head>
 <body>
+	<input id="filterResult" type="hidden" value='${filterResultIssues}' />
 	<input id='projectSprintsMap' type="hidden"
 		value='${projectSprintsMap}' />
 	<c:import url="Navigation.jsp" />
@@ -59,107 +49,107 @@ function loadSprintsFilters(projectName) {
 	<div class="container">
 
 		<div class="row">
-			<h2 id="project_name"></h2>
-			<!-- search results column -->
-			<!-- LEFT SIDE -->
-			<div class="col-md-8">
-				<div id="search_result">
-					<div class="issue_box">
-					<!-- TODO with javascript -->
-						<c:forEach items="${filterResultIssues}" var="issue" varStatus="loop">
-							<div class="filter_issue_box">
-								<b class="issue_name">
-									<a href="#" id="issue_${issue.id}" onclick='openIssueInformation()'>
-										${issue.name}
-									</a>
-								</b>
-								&nbsp
-								${issue.summary}
-							</div>
-						</c:forEach>
+
+			<c:set var="succeed" value="${sessionScope.succeed}"></c:set>
+			<c:set var="succeedLengh" value="${fn:length(succeed)}" />
+			<c:remove var="succeed" scope="session" />
+			<div id="errors_container">
+				<c:if test="${(succeedLengh) gt 0}">
+					<div id="tag1" class="tag2"
+						style="text-align: center; color: green; font-family: 'Arial Black';"
+						id="errors">
+						<a class="closeButton" onclick="closeDiv('#tag1')"></a> <b>${(succeed)}</b>
+					</div>
+				</c:if>
+			</div>
+				
+				
+				<h2 id="project_name"></h2>
+				<!-- search results column -->
+				<!-- LEFT SIDE -->
+				<div class="col-md-8">
+					<div id="search_result">
+						<div class="issue_box">
+							<!-- TODO with javascript -->
+						</div>
 					</div>
 				</div>
-			</div>
-			<!-- /LEFT SIDE -->
+				<!-- /LEFT SIDE -->
 
-			<!-- RIGHT SIDE -->
-			<!-- Search Well Column -->
-			<div class="col-md-4">
+				<!-- RIGHT SIDE -->
+				<!-- Search Well Column -->
+				<div class="col-md-4">
 
-				<!-- Issue Information Well -->
-				<div id='filter_search' class="well">
-					<form action="./filters" method="POST">
-						<table>
-							<tr>
-								<th><label>Issue state</label></th>
-								<th><select name="issue_state">
-										<option selected="selected">TO DO</option>
-										<option>TO DO</option>
-										<option>IN PROGRESS</option>
-										<option>DONE</option>
-								</select></th>
-							</tr>
-							<tr>
-								<th><label>In Project</label></th>
-								<th><select name="project_name">
-										<option selected="selected">Project 1</option>
-										<c:forEach items="${companyProjects}" var="project" varStatus="loop">
-											<option onclick="loadSprintsFilters('${project.name}')" id="project_name_${loop.index}">${project.name}</option>
-										</c:forEach>
-								</select></th>
-							</tr>
-							<tr>
-								<th><label>In sprint</label></th>
-								<th><select id="sprints_select" name="sprint_name">
-										<option selected="selected">Sprint 1</option>
-								</select></th>
-							</tr>
-							<tr>
-								<th><label>Reported by</label></th>
-								<th><select name="reporter">
-										<option selected="selected">user_1@abv.bg</option>
-									<c:forEach items="${companyUsers}" var="user">
-										<option>${user.email}</option>
-									</c:forEach>
-								</select></th>
-							</tr>
-							<tr>
-								<th><label>Assigned to</label></th>
-								<th><select name="assignee">
-										<option selected="selected">user_1@abv.bg</option>
-									<c:forEach items="${companyUsers}" var="user">
-										<option>${user.email}</option>
-									</c:forEach>
-								</select></th>
-							</tr>
-						</table>
-						<input type="submit" value="Search" />
-					</form>
+					<!-- Issue Information Well -->
+					<div id='filter_search' class="well">
+						<form action="./filters" method="POST">
+							<input type="hidden" value="${company.name}" name="company_name">
+							<table>
+								<tr>
+									<th><label>Issue state</label></th>
+									<th><select name="issue_state">
+											<option>TO DO</option>
+											<option>IN PROGRESS</option>
+											<option>DONE</option>
+									</select></th>
+								</tr>
+								<tr>
+									<th><label>In Project</label></th>
+									<th><select name="project_name">
+											<c:forEach items="${companyProjects}" var="project"
+												varStatus="loop">
+												<option onclick="loadSprintsFilters('${project.name}')"
+													id="project_name_${loop.index}">${project.name}</option>
+											</c:forEach>
+									</select></th>
+								</tr>
+								<tr>
+									<th><label>In sprint</label></th>
+									<th><select id="sprints_select" name="sprint_name">
+									</select></th>
+								</tr>
+								<tr>
+									<th><label>Reported by</label></th>
+									<th><select name="reporter">
+											<c:forEach items="${companyUsers}" var="user">
+												<option>${user.email}</option>
+											</c:forEach>
+									</select></th>
+								</tr>
+								<tr>
+									<th><label>Assigned to</label></th>
+									<th><select name="assignee">
+											<c:forEach items="${companyUsers}" var="user">
+												<option>${user.email}</option>
+											</c:forEach>
+									</select></th>
+								</tr>
+							</table>
+							<input type="submit" value="Search" />
+						</form>
+					</div>
+
+					<!-- Issue Information Well -->
+					<div id='issue_info_well' class="well"></div>
 				</div>
+				<!-- /RIGHT SIDE -->
 
-				<!-- Issue Information Well -->
-				<div id='issue_info_well' class="well"></div>
 			</div>
-			<!-- /RIGHT SIDE -->
+			<!-- /.row -->
+
+			<hr>
+
+			<!-- Footer -->
+			<footer>
+			<div class="row">
+				<div class="col-lg-12">
+					<p>Copyright &copy; Godzilla 2016</p>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<!-- /.row --> </footer>
 
 		</div>
-		<!-- /.row -->
-
-		<hr>
-
-		<!-- Footer -->
-		<footer>
-		<div class="row">
-			<div class="col-lg-12">
-				<p>Copyright &copy; Godzilla 2016</p>
-			</div>
-			<!-- /.col-lg-12 -->
-		</div>
-		<!-- /.row --> </footer>
-
-	</div>
-	<!-- /.container -->
-
-
+		<!-- /.container -->
 </body>
 </html>

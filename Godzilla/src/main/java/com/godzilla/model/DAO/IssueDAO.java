@@ -18,6 +18,7 @@ import com.godzilla.model.enums.Permissions;
 import com.godzilla.model.exceptions.EpicException;
 import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.IssueException;
+import com.google.gson.Gson;
 
 public class IssueDAO {
 	private static final String FIND_ISSUES_BY_STATE_SQL = "SELECT issue_id FROM issues WHERE state_id = ?;";
@@ -865,12 +866,13 @@ public class IssueDAO {
 	public static Set<Issue> getAllIssuesFilteredBy(String issueState, String projectName, String sprintName,
 			String reporterEmail, String assigneeEmail) throws IssueDAOException {
 		Set<Issue> result = new HashSet<Issue>();
+
 		Set<Issue> byState = new HashSet<Issue>();
 		Set<Issue> byProject = new HashSet<Issue>();
 		Set<Issue> bySprint = new HashSet<Issue>();
 		Set<Issue> byReporter = new HashSet<Issue>();
 		Set<Issue> byAssignee = new HashSet<Issue>();
-		
+
 		try {
 			IssueState state = null;
 			if (issueState != null && issueState.length() > 0) {
@@ -903,11 +905,88 @@ public class IssueDAO {
 			result.addAll(bySprint);
 			result.addAll(byReporter);
 			result.addAll(byAssignee);
-			
+
 		} catch (Exception e) {
 			throw new IssueDAOException(e.getMessage());
 		}
 		return result;
+	}
+
+	public static String getAllIssuesFilteredByJSON(String issueState, String projectName, String sprintName,
+			String reporterEmail, String assigneeEmail, String companyName) throws IssueDAOException {
+		/*
+		  	imperia online
+			TO DO
+			null
+			user_6@abv.bg
+			user_6@abv.bg
+			imperiaOnline*/
+		
+		
+		String JSON = "";
+		try {
+			Company company = CompanyDAO.getCompanyById(CompanyDAO.getIdOfCompanyWithName(companyName));
+			Set<Project> companyProjects = ProjectDAO.getAllProjectsByCompany(company);
+			Set<Issue> companyIssues = new HashSet<Issue>();
+			for (Project project : companyProjects) {
+				companyIssues.addAll(IssueDAO.getAllIssuesByProject(project));
+			}
+
+			Set<Issue> result = new HashSet<Issue>();
+			Set<String> resultJSON = new HashSet<String>();
+
+			Set<Issue> byState = companyIssues;
+			Set<Issue> byProject = companyIssues;
+			Set<Issue> bySprint = companyIssues;
+			Set<Issue> byReporter = companyIssues;
+			Set<Issue> byAssignee = companyIssues;
+
+			IssueState state = null;
+			if (issueState != null && issueState.length() > 0) {
+				state = IssueState.getIssueStateFromString(issueState.toLowerCase());
+				byState = IssueDAO.getAllIssuesByState(state);
+			}
+			Project project = null;
+			if (projectName != null && projectName.length() > 0) {
+				project = ProjectDAO.getProjectById(ProjectDAO.getProjectIdByName(projectName));
+				byProject = IssueDAO.getAllIssuesByProject(project);
+			}
+			Sprint sprint = null;
+			if (sprintName != null && sprintName.length() > 0) {
+				sprint = SprintDAO.getSprintById(SprintDAO.getSprintIdByName(sprintName));
+				bySprint = IssueDAO.getAllIssuesBySprint(sprint);
+			}
+			User reporter = null;
+			if (reporterEmail != null && reporterEmail.length() > 0) {
+				reporter = UserDAO.getUserById(UserDAO.getUserIdByEmail(reporterEmail));
+				byReporter = IssueDAO.getAllReportedIssuesByUser(reporter);
+			}
+			User assignee = null;
+			if (assigneeEmail != null && assigneeEmail.length() > 0) {
+				assignee = UserDAO.getUserById(UserDAO.getUserIdByEmail(assigneeEmail));
+				byAssignee = IssueDAO.getAllIssuesAssignedTo(assignee);
+			}
+			
+			companyIssues.retainAll(byState);
+			companyIssues.retainAll(byProject);
+			companyIssues.retainAll(bySprint);
+			companyIssues.retainAll(byReporter);
+			companyIssues.retainAll(byAssignee);
+
+			result = companyIssues;
+
+			Gson jsonMaker = new Gson();
+
+			for (Issue issue : result) {
+				String issueJSON = jsonMaker.toJson(issue);
+				resultJSON.add(issueJSON);
+			}
+
+			JSON = jsonMaker.toJson(result);
+		} catch (Exception e) {
+			throw new IssueDAOException(e.getMessage());
+		}
+		return JSON;
 	}
 
 	public static Set<Issue> getAllIssuesByState(IssueState state) throws IssueDAOException {
@@ -915,6 +994,7 @@ public class IssueDAO {
 			throw new IssueDAOException("issue state cannot be null");
 		}
 		
+
 		Set<Issue> result = new HashSet<Issue>();
 
 		Connection connection = DBConnection.getInstance().getConnection();
@@ -922,9 +1002,9 @@ public class IssueDAO {
 		try {
 			PreparedStatement ps = connection.prepareStatement(FIND_ISSUES_BY_STATE_SQL);
 			ps.setInt(1, stateId);
-			
+
 			ResultSet rs = ps.executeQuery();
-			
+
 			while (rs.next()) {
 				int issueId = rs.getInt(1);
 				result.add(IssueDAO.getIssueById(issueId));
@@ -932,7 +1012,7 @@ public class IssueDAO {
 		} catch (SQLException e) {
 			throw new IssueDAOException(e.getMessage());
 		}
-		
+
 		return result;
 	}
 }

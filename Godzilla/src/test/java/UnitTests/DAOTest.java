@@ -61,7 +61,14 @@ public class DAOTest {
 	
 	@Test
 	public void test() throws SQLException {
-		
+		try {
+			System.out.println(
+					IssueDAO.getAllIssuesFilteredByJSON(
+							"IN PROGRESS", "imperia online", null, 
+							"user_6@abv.bg", "user_6@abv.bg", "imperiaOnline"));
+		} catch (IssueDAOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
