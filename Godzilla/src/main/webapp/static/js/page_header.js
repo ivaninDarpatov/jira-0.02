@@ -131,7 +131,7 @@ function openIssueInformation(issue) {
 	var issueString = JSON.stringify(issue);
 	deleteIssue.attr('onclick', 'deleteIssue(' + issueString + ')');
 	
-	editIssue.attr('onclick', 'editIssue()');
+	editIssue.attr('onclick', 'editIssue(' + issueString + ')');
 	editIssue.append('Edit');
 	deleteIssue.attr('onclick', 'deleteIssue(' + issueString + ')');
 	deleteIssue.append('Delete');
@@ -234,13 +234,27 @@ $(function() {
 })
 
 //edit issue
-function editIssue(){
+function editIssue(issue){
+	console.log(issue);
+	var issueId = issue.id;
+	var projectSummary = issue.summary;
+	var issuePriority = issue.priority;
+	var issueStatus = issue.state;
+	var issueDescription = issue.description;
+	
+	
+	$("#hiddenId").val(issueId);
+	$("#edit_summary").val(projectSummary);
+	$('#edit_priority').val(issuePriority);
+	$("#edit_status").val(issueStatus);
+	$("#edit_description").val(issueDescription);
 $(function() {
 	console.log("starting");
 	$("#edit_dialog").dialog({
 		autoOpen : false,
 		width : 535.6
 	});
+	
 
 		$("#edit_dialog").dialog('open');
 		console.log("after open");

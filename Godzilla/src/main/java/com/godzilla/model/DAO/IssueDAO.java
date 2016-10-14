@@ -21,6 +21,7 @@ import com.godzilla.model.exceptions.IssueException;
 import com.google.gson.Gson;
 
 public class IssueDAO {
+	private static final String EDIT_ISSUE_SQL = "UPDATE issues SET summary= ?, description= ?, state_id= ?, priority=? WHERE issue_id=?;";
 	private static final String FIND_ISSUES_BY_STATE_SQL = "SELECT issue_id FROM issues WHERE state_id = ?;";
 	private static final String SELECT_ISSUE_ID_BY_NAME_SQL = "SELECT issue_id from issues WHERE issue_name = ?;";
 	private static final String FIND_FREE_ISSUES_BY_PROJECT_SQL = "SELECT issue_id FROM issues WHERE sprint_id IS NULL AND project_id = ?;";
@@ -246,6 +247,38 @@ public class IssueDAO {
 		}
 
 		return issue;
+	}
+	
+	public static void editIssue(Issue issue) throws IssueDAOException{
+		if(issue == null){
+			throw new IssueDAOException("Issue cannot be null");
+		}
+		
+		Connection connection = DBConnection.getInstance().getConnection();
+		
+		int issueId = issue.getId();
+		String summary = issue.getSummary();
+		IssuePriority priority = issue.getPriority();
+		int priorityId = priority.getValue();
+		IssueState state = issue.getState();
+		int stateId = issue.getState().getValue();
+		String description = issue.getDescription();
+		
+		
+		try {
+			PreparedStatement editIssuePS = connection.prepareStatement(EDIT_ISSUE_SQL);
+			editIssuePS.setString(1, summary);
+			editIssuePS.setString(2, description);
+			editIssuePS.setInt(3, stateId);
+			editIssuePS.setInt(4, priorityId);
+			editIssuePS.setInt(5, issueId);
+			
+			if(editIssuePS.executeUpdate() != 1){
+				throw new IssueDAOException("Could not edit issue");
+			}
+		} catch (SQLException e) {
+			throw new IssueDAOException(e.getMessage());
+		}
 	}
 
 	public static int getIssueIdByName(String issueName) throws IssueDAOException {
