@@ -131,7 +131,7 @@
 					<div id='profile_menu' class='dropdown_content'>
 						<ul id='profile_menu_ul' class="nav navbar-nav">
 							<li><a href='./profilepage'> <img class="user_thumbnail"
-									src="images/profile_photo.png"> ${user.email}
+									src="images/ninja_avatar/${user.ninjaColor}.jpg"> ${user.email}
 							</a></li>
 							<br>
 							<li><a href="./login">Log Out</a></li>

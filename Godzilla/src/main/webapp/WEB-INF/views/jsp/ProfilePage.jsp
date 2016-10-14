@@ -104,19 +104,19 @@
 			<div class="col-md-8">
 				<div id="change_avatar" class="profile_edit_box">
 					<h2>Change avatar</h2>
-					<form>
+					<form action="./changeAvatar" method="POST">
 						<input type="radio" name="avatar" value="blue"><img
-							height="40" width="40" src="images/profile_photo.png">&nbsp
+							height="40" width="40" src="images/ninja_avatar/blue.jpg">&nbsp
 						<input type="radio" name="avatar" value="red"><img
-							height="40" width="40" src="images/profile_photo.png"><br>
+							height="40" width="40" src="images/ninja_avatar/red.jpg"><br>
 						<br> <input type="radio" name="avatar" value="green"><img
-							height="40" width="40" src="images/profile_photo.png">&nbsp
+							height="40" width="40" src="images/ninja_avatar/green.jpg">&nbsp
 						<input type="radio" name="avatar" value="yellow"><img
-							height="40" width="40" src="images/profile_photo.png"><br>
+							height="40" width="40" src="images/ninja_avatar/yellow.jpg"><br>
 						<br> <input type="radio" name="avatar" value="purple"><img
-							height="40" width="40" src="images/profile_photo.png">&nbsp
-						<input type="radio" name="avatar" value="black"><img
-							height="40" width="40" src="images/profile_photo.png"><br>
+							height="40" width="40" src="images/ninja_avatar/purple.jpg">&nbsp
+						<input type="radio" name="avatar" value="orange"><img
+							height="40" width="40" src="images/ninja_avatar/orange.jpg"><br>
 						<br>
 
 						<button>DONE</button>
@@ -231,7 +231,7 @@
 				<div class="well">
 					<table id="user_email_photo">
 						<tr>
-							<th id="user_photo"><img src="images/profile_photo.png"
+							<th id="user_photo"><img src="images/ninja_avatar/${user.ninjaColor}.jpg"
 								width="50px" height="50px"></th>
 
 							<th id="user_email">${user.email}</th>

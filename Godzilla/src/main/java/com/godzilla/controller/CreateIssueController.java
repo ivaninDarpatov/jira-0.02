@@ -47,8 +47,8 @@ public class CreateIssueController {
 		String priority = request.getParameter("priority");
 		String status = request.getParameter("status");
 		String description = request.getParameter("description");
-		String linkedIssueName = request.getParameter("linked_issues");
-		String linkType = request.getParameter("link_type");
+//		String linkedIssueName = request.getParameter("linked_issues");
+//		String linkType = request.getParameter("link_type");
 		String assigneeEmail = request.getParameter("assignee");
 		User currentUser = (User) session.getAttribute("user");
 
@@ -81,8 +81,8 @@ public class CreateIssueController {
 			assigneeId = UserDAO.getUserIdByEmail(assigneeEmail);
 			assignee = UserDAO.getUserById(assigneeId);
 
-			linkedIssueId = IssueDAO.getIssueIdByName(linkedIssueName);
-			linkedIssue = IssueDAO.getIssueById(linkedIssueId);
+//			linkedIssueId = IssueDAO.getIssueIdByName(linkedIssueName);
+//			linkedIssue = IssueDAO.getIssueById(linkedIssueId);
 
 			if (issueType.equalsIgnoreCase("Epic")) {
 				issue = new Epic(summary, issueType);

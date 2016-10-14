@@ -15,6 +15,7 @@ public class User {
 	private String company;
 	private Set<Issue> issuesAssignedTo;
 	private Set<Issue> issuesReportedBy;
+	private String ninjaColor;
 
 	public User(String email, String password) throws UserException {
 		try {
@@ -35,6 +36,7 @@ public class User {
 
 		issuesAssignedTo = new HashSet<Issue>();
 		issuesReportedBy = new HashSet<Issue>();
+		this.setNinjaColor("orange");
 	}
 
 	public User(String email, String password, String company) throws UserException {
@@ -162,6 +164,26 @@ public class User {
 			throw new CompanyException("company's name cannot be null");
 		}
 	}
+	
+	public void setNinjaColor(String ninjaColor) throws UserException {
+		if (ninjaColor != null) {
+			Set<String> ninjaColors = new HashSet<String>();
+			ninjaColors.add("red");
+			ninjaColors.add("blue");
+			ninjaColors.add("green");
+			ninjaColors.add("yellow");
+			ninjaColors.add("purple");
+			ninjaColors.add("orange");
+			if (!ninjaColors.contains(ninjaColor)) {
+				this.ninjaColor = "";
+			} else {
+				this.ninjaColor = ninjaColor;
+			}
+			
+		} else {
+			throw new UserException("ninjaColor cannot be null");
+		}
+	}
 
 	public void setId(int userId) throws UserException {
 		if (userId > 0) {
@@ -189,6 +211,10 @@ public class User {
 
 	public String getCompany() {
 		return this.company;
+	}
+	
+	public String getNinjaColor() {
+		return this.ninjaColor;
 	}
 	
 	public Set<Issue> getIssuesReportedBy() {
