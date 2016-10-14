@@ -187,7 +187,27 @@ function editIssue(issue) {
 
 //deletes issue
 function deleteIssue(issue) {
-	if (!confirm('Are you sure you want to delete this ' + issue.type + '')) {
+	var user = document.getElementById("user").value;
+	user = JSON.parse(user);
+	var reportedIssues = user.issuesReportedBy;
+	var isIssueReportedByMe = false;
+	if (user.permissions != "MANAGER") {
+		for (var i = 0; i < reportedIssues.length; i++) {
+			if (reportedIssues[i].id == issue.id) {
+				isIssueReportedByMe = true;
+				break;
+			}
+		}
+	} else {
+		isIssueReportedByMe = true;
+	}
+	
+	if (!isIssueReportedByMe) {
+		alert("You cannot delete issues you have not reported!");
+		return;
+	}
+	
+	if (!confirm('Are you sure you want to delete ' + issue.type + ' ' + issue.name + '')) {
 		return;
 	}
 	

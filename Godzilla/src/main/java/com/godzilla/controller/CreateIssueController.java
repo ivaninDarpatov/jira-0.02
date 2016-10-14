@@ -97,7 +97,11 @@ public class CreateIssueController {
 
 			IssueDAO.createIssue(issue, project, user, assignee);
 
+			//update current user with the new issue
+			user = UserDAO.getUserById(currentUserId);
 			session.setAttribute("succeed", "Succeed: Issue created");
+			
+			
 		} catch (ProjectDAOException e) {
 			session.setAttribute("issueError", e.getMessage());
 			e.printStackTrace();

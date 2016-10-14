@@ -32,6 +32,10 @@ public class ProfilePageController {
 			return "redirect:login";
 		}
 		
+		Gson jsonMaker = new Gson();
+		String userJSON = jsonMaker.toJson(session.getAttribute("user"));
+		session.setAttribute("userJSON", userJSON);
+		
 		return "ProfilePage";
 	}
 }

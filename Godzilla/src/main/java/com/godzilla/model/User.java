@@ -191,11 +191,11 @@ public class User {
 		return this.company;
 	}
 	
-	public Set<Issue> getIssuesReportedByMe() {
+	public Set<Issue> getIssuesReportedBy() {
 		return Collections.unmodifiableSet(this.issuesReportedBy);
 	}
 	
-	public Set<Issue> getIssuesAssignedToMe() {
+	public Set<Issue> getIssuesAssignedTo() {
 		return Collections.unmodifiableSet(this.issuesAssignedTo);
 	}
 	

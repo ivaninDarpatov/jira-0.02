@@ -40,9 +40,6 @@
 <!-- page-specific javascript -->
 <script src="js/backlog.js"></script>
 
-<script>
-	
-</script>
 
 </head>
 <body>

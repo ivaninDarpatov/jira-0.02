@@ -46,6 +46,11 @@
 </head>
 <body>
 	<!-- hidden input to hold session attr -->
+	
+	<input id='companyUsers' type="hidden"
+		value='${companyUsers}' />
+	<input id='user' type="hidden"
+		value='${userJSON}' />
 	<input id='projectSprintIssuesMap' type="hidden"
 		value='${projectSprintIssuesMap}' />
 	<input id='projectSprintsMap' type="hidden"
@@ -119,6 +124,7 @@
 						Issue</a></li>
 				<li><a href="./backlog">Backlog</a></li>
 				<li><a href="./board">Board</a></li>
+				<li><a href="./filters">Filters</a></li>
 				<li><a href="./homepage">User Panel</a></li>
 				<li><a href='#' id='profile_button' class='dropbtn'
 					onclick="toggleShowDiv('#profile_menu')"> Profile </a>

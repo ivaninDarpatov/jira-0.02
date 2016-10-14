@@ -62,6 +62,9 @@ public class BoardController {
 		
 		String projectSprintsJSON = jsonMaker.toJson(projectSprints);
 		session.setAttribute("projectSprintsMap", projectSprintsJSON);
+
+		String userJSON = jsonMaker.toJson(session.getAttribute("user"));
+		session.setAttribute("userJSON", userJSON);
 		
 		} catch (SprintDAOException | IssueDAOException e) {
 			// TODO Auto-generated catch block

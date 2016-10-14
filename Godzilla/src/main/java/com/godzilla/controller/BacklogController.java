@@ -58,11 +58,13 @@ public class BacklogController {
 		}
 		
 		Gson jsonMaker = new Gson();
+		String userJSON = jsonMaker.toJson(session.getAttribute("user"));
 		String projectIssuesJSON = jsonMaker.toJson(projectSprintsIssues);
 		session.setAttribute("projectSprintIssuesMap", projectIssuesJSON);
 		
 		String projectSprintsJSON = jsonMaker.toJson(projectSprints);
 		session.setAttribute("projectSprintsMap", projectSprintsJSON);
+		session.setAttribute("userJSON", userJSON);
 		
 		} catch (SprintDAOException | IssueDAOException e) {
 			// TODO Auto-generated catch block
