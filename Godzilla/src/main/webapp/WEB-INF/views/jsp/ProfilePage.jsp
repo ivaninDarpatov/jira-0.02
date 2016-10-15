@@ -61,7 +61,6 @@
 	<!-- -------------------------------------------------------------------------- -->
 
 	<c:import url="Navigation.jsp" />
-	<c:import url="EditIssue.jsp" />
 	
 
 	<c:set var="errorMessage" value="${sessionScope.issueError}" />
