@@ -261,7 +261,7 @@ public class IssueDAO {
 		IssuePriority priority = issue.getPriority();
 		int priorityId = priority.getValue();
 		IssueState state = issue.getState();
-		int stateId = issue.getState().getValue();
+		int stateId = state.getValue();
 		String description = issue.getDescription();
 		
 		

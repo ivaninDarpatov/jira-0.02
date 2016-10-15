@@ -24,15 +24,15 @@ public enum IssuePriority {
 	
 	public static IssuePriority getPriorityFromString(String priorityAsString){
 		switch (priorityAsString) {
-		case "verry_low":
+		case "VERY_LOW":
 			return IssuePriority.VERY_LOW;
-		case "low":
+		case "LOW":
 			return IssuePriority.LOW;
-		case "medium":
+		case "MEDIUM":
 			return IssuePriority.MEDIUM;
-		case "high":
+		case "HIGH":
 			return IssuePriority.HIGH;
-		case "verry_high":
+		case "VERY_HIGH":
 			return IssuePriority.VERY_HIGH;
 		default:
 			return IssuePriority.MEDIUM;

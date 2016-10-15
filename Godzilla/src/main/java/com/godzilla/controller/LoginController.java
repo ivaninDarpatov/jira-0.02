@@ -111,22 +111,16 @@ public class LoginController {
 				
 			} catch (CompanyDAOException e) {
 				builder.append(e.getMessage());
+				e.printStackTrace();
 			} catch (UserDAOException e) {
 				errorMessage = e.getMessage();
 				request.setAttribute("error", errorMessage);
 			} catch (CompanyException e) {
 				builder.append(e.getMessage());
+				e.printStackTrace();
 			} catch (IssueDAOException e) {
-				//todo
 				e.printStackTrace();
 			}
-			
-//			response.sendRedirect("../HomePage");
-			
-//			response.sendRedirect(request.getContextPath() + "/HomePage");
-			
-//			response.getWriter().println("<html> <body> <h1>" + builder.toString() + "</h1> </body> </html>");
-
 			
 			return "redirect:homepage";
 		}

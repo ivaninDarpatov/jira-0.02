@@ -21,11 +21,11 @@ public enum IssueState {
 	
 	public static IssueState getIssueStateFromString(String issueStateAsString){
 		switch (issueStateAsString) {
-		case "to do":
+		case "TO_DO":
 			return IssueState.TO_DO;
-		case "in progress":
+		case "IN_PROGRESS":
 			return IssueState.IN_PROGRESS;
-		case "done":
+		case "DONE":
 			return IssueState.DONE;
 		default:
 			return IssueState.TO_DO;

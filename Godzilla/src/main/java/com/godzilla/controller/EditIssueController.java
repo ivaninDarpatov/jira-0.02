@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.godzilla.model.Issue;
 import com.godzilla.model.User;
-import com.godzilla.model.DAO.CompanyDAO;
 import com.godzilla.model.DAO.IssueDAO;
 import com.godzilla.model.DAO.UserDAO;
 import com.godzilla.model.enums.IssuePriority;
@@ -40,37 +39,46 @@ public class EditIssueController {
 		String priority = request.getParameter("priority");
 		String state = request.getParameter("status");
 		String description = request.getParameter("description");
+		String assigneeEmail = request.getParameter("assignee");
 		
 		try {
-			Issue issueToEdit = IssueDAO.getIssueById(Integer.parseInt(issueId));
+			int issueToEditId = Integer.parseInt(issueId);
+			Issue issueToEdit = IssueDAO.getIssueById(issueToEditId);
+			
 			issueToEdit.setPriority(IssuePriority.getPriorityFromString(priority));
+			
 			issueToEdit.setState(IssueState.getIssueStateFromString(state));
+			
 			issueToEdit.setSummary(summary);
 			issueToEdit.setDescription(description);
 			
 			IssueDAO.editIssue(issueToEdit);
 			
-			session.setAttribute("succeed", "Succeed: Issue edited");
 			issueToEdit = IssueDAO.getIssueById(Integer.parseInt(issueId));
-			//added
+			
 			User currentUser = (User) session.getAttribute("user");
 			int userId = currentUser.getId();
+			
+			int assigneeId = UserDAO.getUserIdByEmail(assigneeEmail);
+			User assignee = (User) UserDAO.getUserById(assigneeId);
+			
+			IssueDAO.assignIssue(issueToEdit, assignee);
 			
 			currentUser = UserDAO.getUserById(userId);
 			Gson jsonMaker = new Gson();
 			String userJSON = jsonMaker.toJson(currentUser);
 			
+			session.setAttribute("succeed", "Succeed: Issue edited");
 			session.setAttribute("user", currentUser);
 			session.setAttribute("userJSON", userJSON);
-			//
-			//TODO: method getAllProjectByUser
+			
+			
 		} catch (NumberFormatException | IssueDAOException e) {
 			session.setAttribute("issueError", e.getMessage());
 		} catch (IssueException e) {
 			session.setAttribute("issueError", e.getMessage());
 		} catch (UserDAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			session.setAttribute("issueError", e.getMessage());
 		}
 		return "redirect:profilepage";
 	}
