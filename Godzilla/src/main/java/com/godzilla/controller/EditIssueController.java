@@ -8,13 +8,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.godzilla.model.Issue;
+import com.godzilla.model.Sprint;
 import com.godzilla.model.User;
 import com.godzilla.model.DAO.IssueDAO;
+import com.godzilla.model.DAO.SprintDAO;
 import com.godzilla.model.DAO.UserDAO;
 import com.godzilla.model.enums.IssuePriority;
 import com.godzilla.model.enums.IssueState;
 import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.IssueException;
+import com.godzilla.model.exceptions.SprintDAOException;
 import com.godzilla.model.exceptions.UserDAOException;
 import com.google.gson.Gson;
 
@@ -38,6 +41,7 @@ public class EditIssueController {
 		String summary = request.getParameter("summary");
 		String priority = request.getParameter("priority");
 		String state = request.getParameter("status");
+		String sprintName = request.getParameter("sprint");
 		String description = request.getParameter("description");
 		String assigneeEmail = request.getParameter("assignee");
 		
@@ -53,6 +57,15 @@ public class EditIssueController {
 			issueToEdit.setDescription(description);
 			
 			IssueDAO.editIssue(issueToEdit);
+			
+			//put issue in sprint
+			if (sprintName.equals("NONE")) {
+				IssueDAO.removeFromSprint(issueToEdit);
+			} else {
+				Sprint sprint = SprintDAO.getSprintById(SprintDAO.getSprintIdByName(sprintName));
+				IssueDAO.addIssueToSprint(issueToEdit, sprint);
+			}
+			//
 			
 			issueToEdit = IssueDAO.getIssueById(Integer.parseInt(issueId));
 			
@@ -79,7 +92,9 @@ public class EditIssueController {
 			session.setAttribute("issueError", e.getMessage());
 		} catch (UserDAOException e) {
 			session.setAttribute("issueError", e.getMessage());
+		} catch (SprintDAOException e) {
+			session.setAttribute("issueError", e.getMessage());
 		}
-		return "redirect:profilepage";
+		return "redirect:homepage";
 	}
 }

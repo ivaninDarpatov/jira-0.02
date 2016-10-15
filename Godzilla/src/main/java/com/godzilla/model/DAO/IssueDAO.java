@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -20,8 +21,9 @@ import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.IssueException;
 import com.google.gson.Gson;
 
+
 public class IssueDAO {
-	private static final String EDIT_ISSUE_SQL = "UPDATE issues SET summary= ?, description= ?, state_id= ?, priority=? WHERE issue_id=?;";
+	private static final String EDIT_ISSUE_SQL = "UPDATE issues SET summary= ?, description= ?, state_id= ?, priority=?, date_last_modified=NOW() WHERE issue_id=?;";
 	private static final String FIND_ISSUES_BY_STATE_SQL = "SELECT issue_id FROM issues WHERE state_id = ?;";
 	private static final String SELECT_ISSUE_ID_BY_NAME_SQL = "SELECT issue_id from issues WHERE issue_name = ?;";
 	private static final String FIND_FREE_ISSUES_BY_PROJECT_SQL = "SELECT issue_id FROM issues WHERE sprint_id IS NULL AND project_id = ?;";
@@ -46,7 +48,7 @@ public class IssueDAO {
 	private static final String FIND_ISSUES_BY_PROJECT_ID_SQL = "SELECT issue_id FROM issues WHERE project_id = ?;";
 	private static final String IS_EPIC_SQL = "SELECT epic_id FROM epics WHERE epic_id = ?;";
 	private static final String REMOVE_ISSUE_SQL = "DELETE FROM issues WHERE issue_id = ?;";
-	private static final String CREATE_ISSUE_SQL = "INSERT INTO issues VALUES (null, ?, ? , ?, ?, ?, ?, ?, ?, ?, 'someDate', 'someDate', null, null);";
+	private static final String CREATE_ISSUE_SQL = "INSERT INTO issues VALUES (null, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, null, null);";
 	private static final String FIND_ISSUE_BY_REPORTER_SQL = "SELECT issue_id FROM issues WHERE reporter_id = ?;";
 	private static final String FIND_ISSUE_BY_REPORTER_IN_PROJECT_SQL = "SELECT issue_id FROM issues WHERE reporter_id = ? AND project_id = ?;";
 	private static final String FIND_ISSUE_BY_ID_SQL = "SELECT * FROM issues WHERE issue_id = ?;";
@@ -86,6 +88,8 @@ public class IssueDAO {
 		int projectId = project.getId();
 		int reporterId = reporter.getId();
 		int assigneeId = assignee.getId();
+		LocalDateTime dateCreated = LocalDateTime.now();
+		LocalDateTime dateLastModified = LocalDateTime.now();
 		// String dateTimeCreated =
 		// toCreate.getDateCreated().toLocalDate().toString() +
 		// " " +
@@ -108,6 +112,8 @@ public class IssueDAO {
 			insertIntoIssues.setInt(7, priorityId);
 			insertIntoIssues.setInt(8, reporterId);
 			insertIntoIssues.setInt(9, assigneeId);
+			insertIntoIssues.setTimestamp(10, Timestamp.valueOf(dateCreated));
+			insertIntoIssues.setTimestamp(11, Timestamp.valueOf(dateLastModified));
 			// insertIntoIssues.setString(8, dateTimeCreated);
 			// insertIntoIssues.setString(9, dateTimeLastModified);
 
@@ -210,7 +216,8 @@ public class IssueDAO {
 				String description = rs.getString("description");
 				int priorityId = rs.getInt("priority");
 				int stateId = rs.getInt("state_id");
-				// LocalDateTime dateCreated =
+				LocalDateTime dateCreated = rs.getTimestamp("date_created").toLocalDateTime();
+				LocalDateTime dateLastModified = rs.getTimestamp("date_last_modified").toLocalDateTime();
 				// getLocalDateTimeFromString(rs.getString("date_created"));
 				// LocalDateTime dateLastModified =
 				// getLocalDateTimeFromString(rs.getString("date_last_modified"));
@@ -234,18 +241,21 @@ public class IssueDAO {
 				issue.setDescription(description);
 				issue.setPriority(priority);
 				issue.setState(state);
-				// issue.setDateCreated(dateCreated);
-				// issue.setDateLastModified(dateLastModified);
+				issue.setDateCreated(dateCreated);
+				issue.setDateLastModified(dateLastModified);
 
 				issue.setId(issueId);
 				issue.setType(issueType);
 			}
 
 		} catch (SQLException e) {
+			e.printStackTrace();
 			throw new IssueDAOException(e.getMessage());
 		} catch (IssueException e) {
+			e.printStackTrace();
 			throw new IssueDAOException("could not create issue", e);
 		} catch (EpicException e) {
+			e.printStackTrace();
 			throw new IssueDAOException("failed to create epic", e);
 		}
 

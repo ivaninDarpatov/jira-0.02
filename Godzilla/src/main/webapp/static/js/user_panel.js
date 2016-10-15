@@ -129,8 +129,12 @@ function addIssue(caller, issue) {
 
 	
 	var description = issue.description;
-	var dateCreated = issue.dateCreated;
-	var dateLastModified = issue.dateLastModified;
+	var dateCreated = issue.dateCreated.time.hour + ':' + issue.dateCreated.time.minute + ' '
+						+ issue.dateCreated.date.day + '/' + issue.dateCreated.date.month + '/'
+						+ issue.dateCreated.date.year;
+	var dateLastModified = issue.dateLastModified.time.hour + ':' + issue.dateLastModified.time.minute + ' '
+							+ issue.dateLastModified.date.day + '/' + issue.dateLastModified.date.month + '/'
+							+ issue.dateLastModified.date.year;
 	
 
 	var issueBox = document.createElement("div");
