@@ -1,5 +1,16 @@
 /*! jQuery v1.11.1 | (c) 2005, 2014 jQuery Foundation, Inc. | jquery.org/license */
 
+
+	//deletes project
+	function deleteProject(projectId) {
+		console.log("IIIIIIIIIIIIIIIIIIii")
+		if (confirm("Are you sure you want to delete this project?")) {
+			
+			document.getElementById("delete_project_id").value = projectId;
+			$("#delete_project_button").trigger("click");
+		}
+	}
+
 //load assigned and reported issues for current user in selected project
 function loadIssues(projectName, s_assignedIssues, s_reportedIssues) {
 	// load project name
@@ -141,11 +152,4 @@ function addProject(target) {
 	menu.append(menuProject);
 }
 
-//deletes project
-function deleteProject(projectId) {
-	if (confirm("Are you sure you want to delete this project?")) {
-		
-		document.getElementById("delete_project_id").value = projectId;
-		$("#delete_project_button").trigger("click");
-	}
-}
+
