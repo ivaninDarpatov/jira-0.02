@@ -140,3 +140,12 @@ function addProject(target) {
 	menu.append(document.createElement("br"));
 	menu.append(menuProject);
 }
+
+//deletes project
+function deleteProject(projectId) {
+	if (confirm("Are you sure you want to delete this project?")) {
+		
+		document.getElementById("delete_project_id").value = projectId;
+		$("#delete_project_button").trigger("click");
+	}
+}

@@ -57,6 +57,11 @@
 <input id="assignedIssues" type="hidden" value="${assignedIssues}">
 <input id="reportedIssues" type="hidden" value="${reportedIssues}">
 
+<!-- hidden delete project form -->
+	<form style="display: none;" action="./deleteproject" method="GET">
+		<input name="project_id" type="text" id="delete_project_id"/>
+		<input type="submit" id="delete_project_button">
+	</form>
 	<!-- Page Content -->
 	<div class="container">
 		<div class="row">
@@ -122,13 +127,22 @@
 						<c:forEach items="${userProjects}" var="project" varStatus="loop">
 							<c:set var="projectName" value="${project.name}"/>
 							<div class='project_box' id='project_${loop.index}'>
-								<h4>
-									<a href='#'
-										onclick='loadIssues("${project.name}", <c:out value="${assignedIssues}"/>, <c:out value="${reportedIssues}"/>)'
-										id='project_name_${loop.index}'>
-										${project.name}
-									</a>
-								</h4>
+								<div style="display:inline-block; width:100%;">
+									<div style="width:80%; float:left;">
+										<h4>
+											<a href='#'
+												onclick='loadIssues("${project.name}", <c:out value="${assignedIssues}"/>, <c:out value="${reportedIssues}"/>)'
+												id='project_name_${loop.index}'>
+												${project.name}
+											</a>
+										</h4>
+									</div>
+									<div style="width:20%; float:left; text-align:right;">
+										<c:if test="${user.permissions == 'MANAGER'}">
+											<button onclick="deleteProject('${project.id}')">Delete</button>
+										</c:if>
+									</div>
+								</div>
 								
 								<h5 id='project_${loop.index}_assigned'
 									class='assigned_issues_count'>

@@ -75,20 +75,6 @@ window.onclick = function(event) {
 	}
 }
 
-// unused function
-function addIssueToProject(caller, project) {
-	var issueType = caller.substring(1, 9);
-	var projectNumber = project.substring(project.lastIndexOf("_") + 1);
-	var idToApplyChanges = 'project_' + projectNumber + '_' + issueType;
-	var element = document.getElementById(idToApplyChanges);
-	var elementHTML = element.innerHTML;
-	var oldValue = elementHTML.substring(elementHTML.lastIndexOf(' ') + 1);
-	var newValue = parseInt(oldValue) + 1;
-
-	var result = elementHTML.replace(oldValue, newValue);
-	element.innerHTML = result;
-}
-
 // load selected issue's information in the right-side box
 function openIssueInformation(issue) {
 	console.log(issue);
