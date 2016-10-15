@@ -65,7 +65,7 @@ window.onclick = function(event) {
 			var openDialogId = dialogs[i].id;
 
 			$("#" + openDialogId).dialog({
-				width : 535.6
+				width : 535.6,
 			});
 			
 			if ($('#' + openDialogId).dialog('isOpen')) {
@@ -122,12 +122,10 @@ function openIssueInformation(issue) {
 	var issueName = $('<h4></h4>');
 	issueName.append(name);
 	
-	var editIssue = $('<a></a>');
-	editIssue.attr('href', '#');
+	var editIssue = $('<button></button>');
 	editIssue.attr('id','edit_issue_button');
 	editIssue.attr('class','dialog_opener');
-	var deleteIssue = $('<a></a>');
-	deleteIssue.attr('href', '#');
+	var deleteIssue = $('<button></button>');
 	var issueString = JSON.stringify(issue);
 	deleteIssue.attr('onclick', 'deleteIssue(' + issueString + ')');
 	
@@ -213,7 +211,7 @@ function deleteIssue(issue) {
 function createSprint() {
 	$("#sprint_dialog").dialog({
 		autoOpen : false,
-		width : 535.6
+		width : 535.6,
 	});
 	
 	$(function() {
@@ -225,7 +223,7 @@ function createSprint() {
 $(function() {
 	$("#project_dialog").dialog({
 		autoOpen : false,
-		width : 535.6
+		width : 535.6,
 	});
 
 	$("#create_project").click(function() {
@@ -252,7 +250,7 @@ $(function() {
 	console.log("starting");
 	$("#edit_dialog").dialog({
 		autoOpen : false,
-		width : 535.6
+		width : 535.6,
 	});
 	
 
@@ -265,7 +263,7 @@ $(function() {
 $(function() {
 	$("#issue_dialog").dialog({
 		autoOpen : false,
-		width : 535.6
+		width : 535.6,
 	});
 
 	$("#create_issue").click(function() {

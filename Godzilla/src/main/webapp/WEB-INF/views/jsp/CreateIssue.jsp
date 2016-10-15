@@ -146,42 +146,6 @@
 							</textarea>
 						</div></li>
 
-					
-					<li id="fo2li114" class="      ">
-						<label class="desc notranslate" id="title114" for="Field114">
-							Linked Issue </label>
-						<div>
-							<select id="linked_issues" name="linked_issues"
-								class="field select medium" tabindex="7">
-								<c:forEach items="${companyProjects}" var="project">
-									<c:forEach items="${project.issues}" var="issue">
-										<option value="${issue.name}">${issue.name}</option>
-									</c:forEach>
-								</c:forEach>
-							</select>
-						</div></li>
-
-					<li id="fo2li114" class="      "><label
-						class="desc notranslate" id="title114" for="Field114">
-							Link Type </label>
-						<div>
-							<select id="link_type" name="link_type"
-								class="field select medium" tabindex="8">
-
-								<option value="IS BLOCKED BY">IS BLOCKED BY</option>
-								<option value="BLOCKS">BLOCKS</option>
-								<option value="IS CAUSED BY">IS CAUSED BY</option>
-								<option value="CAUSES">CAUSES</option>
-								<option value="IS CLONED BY">IS CLONED BY</option>
-								<option value="CLONES">CLONES</option>
-								<option value="IS DUPLICATED BY">IS DUPLICATED BY</option>
-								<option value="DUPLICATES">DUPLICATES</option>
-								<option value="RELATES TO">RELATES TO</option>
-							</select>
-						</div>
-					</li>
-
-
 					<li id="fo2li102" class="      "><label
 						class="desc notranslate" id="title102" for="Field102">
 							Assign to </label>
