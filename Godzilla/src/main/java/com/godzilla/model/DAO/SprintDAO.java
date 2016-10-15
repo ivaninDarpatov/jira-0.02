@@ -1,6 +1,5 @@
 package com.godzilla.model.DAO;
 
-import static org.mockito.Matchers.intThat;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,6 +19,7 @@ import com.godzilla.model.exceptions.SprintDAOException;
 import com.godzilla.model.exceptions.SprintException;
 
 public class SprintDAO {
+	private static final String MAKE_SPRINT_INACTIVE_SQL = "UPDATE sprints SET is_active = 0 WHERE sprint_id = ?;";
 	private static final String MAKE_SPRINT_ACTIVE_SQL = "UPDATE sprints SET is_active = 1 WHERE sprint_id = ?;";
 	private static final String MAKE_PROJECT_SPRINT_INACTIVE_SQL = "UPDATE sprints SET is_active = 0 WHERE project_id = ?;";
 	private static final String GET_SPRINT_PROJECT_SQL = "SELECT project_id FROM sprints WHERE sprint_id = ?;";
@@ -242,5 +242,25 @@ public class SprintDAO {
 			throw new SprintDAOException(e.getMessage());
 		}
 		
+	}
+
+	public static void makeInactive(Sprint sprint) throws SprintDAOException {
+		if (sprint == null) {
+			throw new SprintDAOException("can't find sprint to make inactive");
+		}
+		
+		Connection connection = DBConnection.getInstance().getConnection();
+		int sprintId = sprint.getId();
+		
+		try {
+			PreparedStatement ps = connection.prepareStatement(MAKE_SPRINT_INACTIVE_SQL);
+			ps.setInt(1, sprintId);
+
+			if (ps.executeUpdate() < 1) {
+				throw new SprintDAOException("failed to make sprint inactive");
+			}
+		} catch (SQLException e) {
+			throw new SprintDAOException(e.getMessage());
+		}
 	}
 }

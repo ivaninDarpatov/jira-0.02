@@ -96,6 +96,27 @@ function addSprintBacklog(target, sprint) {
 	var sprintName = $('<h4></h4>');
 	if (sprint.isActive) {
 		sprintName.append(sprint.name + "  [active]");
+		if (user.permissions == "MANAGER") {
+			var deactivateForm = $('<form></form>');
+			deactivateForm.attr('action', './makeSprintInactive');
+			deactivateForm.attr('method', 'POST');
+			var deactivateField = $('<input/>');
+			deactivateField.attr('type', 'hidden');
+			var sprintString = JSON.stringify(sprint);
+			deactivateField.attr('value', sprintString);
+			deactivateField.attr('name', 'deactivate');
+			deactivateForm.append(deactivateField);
+
+			var deactivateButton = $("<input/>");
+			console.log(deactivateForm);
+			deactivateButton.attr('type', 'submit');
+			deactivateButton.attr('value', 'Make inactive');
+			deactivateForm.append(deactivateButton)
+
+			sprintName.append("<br><br>");
+			sprintName.append(deactivateForm);
+			newSprint.append(sprintName);
+		}
 	} else {
 		sprintName.append(sprint.name + "  [inactive]");
 		if (user.permissions == "MANAGER") {

@@ -14,14 +14,8 @@ function loadProjectSprintsBoard(projectName) {
 		$('#done').empty();
 		$('#issue_info_well').empty();
 		
-		var createSprintButton = $('<button></button>');
-		createSprintButton.attr('id', 'create_sprint_board');
-		createSprintButton.attr('class', 'dialog_opener');
-		createSprintButton.attr('onclick', 'createSprint()');
-		createSprintButton.append("Create Sprint");
-		$("#create_sprint_board_div").empty();
-		$("#create_sprint_board_div").append(createSprintButton);
-
+		
+		var active = false;
 		
 		for (var i = 0; i < sprints2.length; i++) {
 			if (sprints2[i].isActive) {
@@ -29,7 +23,15 @@ function loadProjectSprintsBoard(projectName) {
 				var issues = sprints2[i].issues;
 				var issuesString = JSON.stringify(issues);
 				addSprintBoard('#opened_sprint_container', sprints2[i].name, issues);
+				active = true;
+				break;
 			}
+		}
+		
+		if (!active) {
+			var container = $('#active_sprint_name');
+			container.empty();
+			container.append("This project has no active sprints");
 		}
 	}	
 	function addIssueBoard(caller, issue) {
@@ -58,8 +60,7 @@ function loadProjectSprintsBoard(projectName) {
 	}
 
 	function addSprintBoard(target, sprintName, issues) {
-		console.log(issues);
-		var nameContainer = $('#sprint_name');
+		var nameContainer = $('#active_sprint_name');
 		nameContainer.empty();
 		nameContainer.append(sprintName);
 		
@@ -67,6 +68,7 @@ function loadProjectSprintsBoard(projectName) {
 		
 		//add sprint issues in table
 		for (var i = 0; i < issues.length; i++) {
+			var issueContainerId = '#' + issues[i].state.toLowerCase();
 			if (issues[i].state.localeCompare("TO_DO") == 0) {
 				addIssueBoard("#to_do", issues[i]);
 			} else {

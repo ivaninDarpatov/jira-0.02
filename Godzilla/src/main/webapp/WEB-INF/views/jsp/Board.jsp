@@ -46,9 +46,6 @@
 <!-- board javascript -->
 <script src="js/board.js"></script>
 
-<script>
-	
-</script>
 
 </head>
 
@@ -93,12 +90,11 @@
 			<!-- LEFT SIDE -->
 			<div class="col-md-8">
 				<h2 id="project_name"></h2>
-				<div id="create_sprint_board_div"></div>
-				<br>
+				<hr>
 					<h2>Active Sprint</h2>
 				<hr>
 				<div id="opened_sprint_container">
-						<h4 id="sprint_name"></h4>
+						<h4 id="active_sprint_name"></h4>
 					<table id='opened_sprint'>
 						<tr class="sprint_table_element">
 							<th class="sprint_table_element">TO DO</th>
