@@ -77,13 +77,61 @@ function addIssue(caller, issue) {
 	var name = issue.name;
 	var type = issue.type;
 	var summary = issue.summary;
-	var project = 'project 1';
-	var reporter = 'user 1';
-	var assignee = 'user 1';
+	
+	var companyProjects = document.getElementById('companyProjects').value;
+	var projects = JSON.parse(companyProjects);
+	var project;
+	
+	
+	for (var i = 0; i < projects.length; i++) {
+		
+		var projectIssues = projects[i].issues;
+		
+		for (var j = 0; j < projectIssues.length; j++) {
+			
+			if (projectIssues[j].id == issue.id) {
+				project = projects[i].name;
+				break;
+			}
+		}
+	}
+	
+	var companyUsers = document.getElementById('companyUsersJSON').value;
+	var users = JSON.parse(companyUsers);
+	var reporter;
+	var assignee;
+	
+	for(var userCount = 0; userCount < users.length; userCount++){
+		
+		var userIssuesR = users[userCount].issuesReportedBy;
+		
+		for(var issueCount = 0; issueCount < userIssuesR.length; issueCount++){
+			
+			if(userIssuesR[issueCount].id == issue.id){
+				reporter = users[userCount].email;
+				break;
+			}
+		}
+		
+		var userIssuesA = users[userCount].issuesAssignedTo;
+		
+		for(var issueCount = 0; issueCount < userIssuesA.length; issueCount++){
+			
+			if(userIssuesA[issueCount].id == issue.id){
+				assignee = users[userCount].email;
+				break;
+			}
+		}
+	}
+	
+
+	
+
+	
 	var description = issue.description;
 	var dateCreated = issue.dateCreated;
 	var dateLastModified = issue.dateLastModified;
-	//
+	
 
 	var issueBox = document.createElement("div");
 	issueBox.setAttribute("class", issueType + "_issue_box");

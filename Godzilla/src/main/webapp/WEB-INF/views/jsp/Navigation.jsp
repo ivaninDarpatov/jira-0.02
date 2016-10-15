@@ -47,18 +47,15 @@
 <body>
 	<!-- hidden input to hold session attr -->
 	
-	<input id='companyUsers' type="hidden"
-		value='${companyUsers}' />
-	<input id='user' type="hidden"
-		value='${userJSON}' />
-	<input id='projectSprintIssuesMap' type="hidden"
-		value='${projectSprintIssuesMap}' />
-	<input id='projectSprintsMap' type="hidden"
-		value='${projectSprintsMap}' />
+	<input id='companyUsers' type="hidden" value='${companyUsers}' />
+	<input id='user' type="hidden" value='${userJSON}' />
+	<input id='projectSprintIssuesMap' type="hidden" value='${projectSprintIssuesMap}' />
+	<input id='projectSprintsMap' type="hidden"	value='${projectSprintsMap}' />
 	<input id="userInformation" type="hidden" value='${userJSON}'>
 	<input id="assignedIssues" type="hidden" value='${assignedIssues}'>
 	<input id="reportedIssues" type="hidden" value='${reportedIssues}'>
 	<input id="companyProjects" type="hidden" value='${companyProjectsJSON}'>
+	<input id="companyUsersJSON" type="hidden" value='${companyUsersJSON}'>
 	
 	<!-- hidden delete issue form -->
 	<form style="display: none;" action="./deleteissue" method="GET">

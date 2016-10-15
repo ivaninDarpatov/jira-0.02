@@ -76,7 +76,9 @@ public class HomePageController {
 			String userJSON = jsonMaker.toJson(currentUser);
 			
 			String companyProjectsJSON = jsonMaker.toJson(companyProjects);
+			String companyUsersJSON = jsonMaker.toJson(company.getUsers());
 			
+			session.setAttribute("companyUsersJSON", companyUsersJSON);
 			session.setAttribute("userJSON", userJSON);
 			session.setAttribute("assignedIssues", assignedIssuesJSON);
 			session.setAttribute("reportedIssues", reportedIssuesJSON);
