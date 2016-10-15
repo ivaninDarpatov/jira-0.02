@@ -972,28 +972,28 @@ public class IssueDAO {
 			Set<Issue> byAssignee = companyIssues;
 
 			IssueState state = null;
-			if (issueState != null && issueState.length() > 0) {
+			if (issueState != null && issueState.length() > 0 && !issueState.equals("NONE")) {
 				issueState = issueState.replace(' ', '_');
 				state = IssueState.getIssueStateFromString(issueState);
 				byState = IssueDAO.getAllIssuesByState(state);
 			}
 			Project project = null;
-			if (projectName != null && projectName.length() > 0) {
+			if (projectName != null && projectName.length() > 0 && !projectName.equals("NONE")) {
 				project = ProjectDAO.getProjectById(ProjectDAO.getProjectIdByName(projectName));
 				byProject = IssueDAO.getAllIssuesByProject(project);
 			}
 			Sprint sprint = null;
-			if (sprintName != null && sprintName.length() > 0) {
+			if (sprintName != null && sprintName.length() > 0 && !sprintName.equals("NONE")) {
 				sprint = SprintDAO.getSprintById(SprintDAO.getSprintIdByName(sprintName));
 				bySprint = IssueDAO.getAllIssuesBySprint(sprint);
 			}
 			User reporter = null;
-			if (reporterEmail != null && reporterEmail.length() > 0) {
+			if (reporterEmail != null && reporterEmail.length() > 0 && !reporterEmail.equals("NONE")) {
 				reporter = UserDAO.getUserById(UserDAO.getUserIdByEmail(reporterEmail));
 				byReporter = IssueDAO.getAllReportedIssuesByUser(reporter);
 			}
 			User assignee = null;
-			if (assigneeEmail != null && assigneeEmail.length() > 0) {
+			if (assigneeEmail != null && assigneeEmail.length() > 0 && !assigneeEmail.equals("NONE")) {
 				assignee = UserDAO.getUserById(UserDAO.getUserIdByEmail(assigneeEmail));
 				byAssignee = IssueDAO.getAllIssuesAssignedTo(assignee);
 			}

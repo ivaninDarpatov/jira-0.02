@@ -62,95 +62,100 @@
 					</div>
 				</c:if>
 			</div>
-				
-				
-				<h2 id="project_name"></h2>
-				<!-- search results column -->
-				<!-- LEFT SIDE -->
-				<div class="col-md-8">
-					<div id="search_result">
-						<div class="issue_box">
-							<!-- TODO with javascript -->
-						</div>
+
+
+			<h2 id="project_name"></h2>
+			<!-- search results column -->
+			<!-- LEFT SIDE -->
+			<div class="col-md-8">
+				<div id="search_result">
+					<div class="issue_box">
+						<!-- TODO with javascript -->
 					</div>
 				</div>
-				<!-- /LEFT SIDE -->
-
-				<!-- RIGHT SIDE -->
-				<!-- Search Well Column -->
-				<div class="col-md-4">
-
-					<!-- Issue Information Well -->
-					<div id='filter_search' class="well">
-						<form action="./filters" method="POST">
-							<input type="hidden" value="${company.name}" name="company_name">
-							<table>
-								<tr>
-									<th><label>Issue state</label></th>
-									<th><select name="issue_state">
-											<option>TO DO</option>
-											<option>IN PROGRESS</option>
-											<option>DONE</option>
-									</select></th>
-								</tr>
-								<tr>
-									<th><label>In Project</label></th>
-									<th><select name="project_name" onChange='loadSprintsInSelect("#sprints_select", value)'>
-											<c:forEach items="${companyProjects}" var="project"
-												varStatus="loop">
-												<option value='${project.name}'
-													id="project_name_${loop.index}">${project.name}</option>
-											</c:forEach>
-									</select></th>
-								</tr>
-								<tr>
-									<th><label>In sprint</label></th>
-									<th><select id="sprints_select" name="sprint_name">
-									
-									</select></th>
-								</tr>
-								<tr>
-									<th><label>Reported by</label></th>
-									<th><select name="reporter">
-											<c:forEach items="${companyUsers}" var="user">
-												<option>${user.email}</option>
-											</c:forEach>
-									</select></th>
-								</tr>
-								<tr>
-									<th><label>Assigned to</label></th>
-									<th><select name="assignee">
-											<c:forEach items="${companyUsers}" var="user">
-												<option>${user.email}</option>
-											</c:forEach>
-									</select></th>
-								</tr>
-							</table>
-							<input type="submit" value="Search" />
-						</form>
-					</div>
-
-					<!-- Issue Information Well -->
-					<div id='issue_info_well' class="well"></div>
-				</div>
-				<!-- /RIGHT SIDE -->
-
 			</div>
-			<!-- /.row -->
+			<!-- /LEFT SIDE -->
 
-			<hr>
+			<!-- RIGHT SIDE -->
+			<!-- Search Well Column -->
+			<div class="col-md-4">
 
-			<!-- Footer -->
-			<footer>
-			<div class="row">
-				<div class="col-lg-12">
-					<p>Copyright &copy; Godzilla 2016</p>
+				<!-- Issue Information Well -->
+				<div id='filter_search' class="well">
+					<form action="./filters" method="POST">
+						<input type="hidden" value="${company.name}" name="company_name">
+						<table>
+							<tr>
+								<th><label>Issue state</label></th>
+								<th><select name="issue_state">
+										<option selected>NONE</option>
+										<option>TO DO</option>
+										<option>IN PROGRESS</option>
+										<option>DONE</option>
+								</select></th>
+							</tr>
+							<tr>
+								<th><label>In Project</label></th>
+								<th><select name="project_name"
+									onChange='loadSprintsInSelect("#sprints_select", value)'>
+										<option selected>NONE</option>
+										<c:forEach items="${companyProjects}" var="project"
+											varStatus="loop">
+											<option value='${project.name}'
+												id="project_name_${loop.index}">${project.name}</option>
+										</c:forEach>
+								</select></th>
+							</tr>
+							<tr>
+								<th><label>In sprint</label></th>
+								<th><select id="sprints_select" name="sprint_name">
+
+								</select></th>
+							</tr>
+							<tr>
+								<th><label>Reported by</label></th>
+								<th><select name="reporter">
+										<option selected>NONE</option>
+										<c:forEach items="${companyUsers}" var="user">
+											<option>${user.email}</option>
+										</c:forEach>
+								</select></th>
+							</tr>
+							<tr>
+								<th><label>Assigned to</label></th>
+								<th><select name="assignee">
+										<option selected>NONE</option>
+										<c:forEach items="${companyUsers}" var="user">
+											<option>${user.email}</option>
+										</c:forEach>
+								</select></th>
+							</tr>
+						</table>
+						<input type="submit" value="Search" />
+					</form>
 				</div>
-				<!-- /.col-lg-12 -->
+
+				<!-- Issue Information Well -->
+				<div id='issue_info_well' class="well"></div>
 			</div>
-			<!-- /.row --> </footer>
+			<!-- /RIGHT SIDE -->
 
 		</div>
-		<!-- /.container -->
+		<!-- /.row -->
+
+		<hr>
+
+		<!-- Footer -->
+		<footer>
+		<div class="row">
+			<div class="col-lg-12">
+				<p>Copyright &copy; Godzilla 2016</p>
+			</div>
+			<!-- /.col-lg-12 -->
+		</div>
+		<!-- /.row --> </footer>
+
+	</div>
+	<!-- /.container -->
 </body>
 </html>
