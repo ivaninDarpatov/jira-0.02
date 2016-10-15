@@ -82,6 +82,22 @@ function addIssueBacklog(caller, issue) {
 	container.append(issueBox);
 }
 
+//delete sprint
+function deleteSprint(sprint) {
+	var sprintObject = JSON.parse(sprint);
+	if (confirm("Are you sure you want to delete sprint " + sprintObject.name + "?")) {
+		var sprintId = sprintObject.id;
+		
+		document.getElementById("delete_sprint_id").value = sprintId;
+		$("#delete_issue_button").trigger("click");
+	}
+}
+
+//edit sprint
+function editSprint(sprint) {
+	var sprintObject = JSON.parse(sprint);
+}
+
 // add sprint in sprints container
 function addSprintBacklog(target, sprint) {
 	var userJSON = document.getElementById("currentUser").value;
@@ -94,15 +110,47 @@ function addSprintBacklog(target, sprint) {
 	newSprint.attr('id', 'sprint_' + sprintNumber);
 	newSprint.attr('class', 'sprints');
 	var sprintName = $('<h4></h4>');
+	
+	var sprintHeaderDiv = $('<div></div>');
+	sprintHeaderDiv.attr('style', 'width:100%; display:inline-block;');
+	
+	var sprintNameDiv = $('<div></div>');
+	sprintNameDiv.append(sprintName);
+	sprintHeaderDiv.append(sprintNameDiv);
+	
 	if (sprint.isActive) {
 		sprintName.append(sprint.name + "  [active]");
 		if (user.permissions == "MANAGER") {
+			sprintNameDiv.attr('style', 'width:70%; float:left;');
+			
+			var editSprint = $('<button></button>');
+			editSprint.attr('id','edit_sprint_button_' + sprint.id);
+			editSprint.attr('class','dialog_opener');
+			
+			var deleteSprint = $('<button></button>');
+			var sprintString = JSON.stringify(sprint);
+			
+			editSprint.attr('onclick', "editSprint('" + sprintString + "')");
+			editSprint.append('Edit');
+			deleteSprint.attr('onclick', "deleteSprint('" + sprintString + "')");
+			deleteSprint.append('Delete');
+			
+			var deleteSprintDiv = $('<div></div>');
+			deleteSprintDiv.attr('style', 'width:15%; height:100%; float:left; text-align:right;');
+			deleteSprintDiv.append(deleteSprint);
+
+			var editSprintDiv = $('<div></div>');
+			editSprintDiv.attr('style', 'width:15%; height:100%; float:left; text-align:right;');
+			editSprintDiv.append(editSprint);
+			
+			sprintHeaderDiv.append(deleteSprintDiv);
+			sprintHeaderDiv.append(editSprintDiv);
+			
 			var deactivateForm = $('<form></form>');
 			deactivateForm.attr('action', './makeSprintInactive');
 			deactivateForm.attr('method', 'POST');
 			var deactivateField = $('<input/>');
 			deactivateField.attr('type', 'hidden');
-			var sprintString = JSON.stringify(sprint);
 			deactivateField.attr('value', sprintString);
 			deactivateField.attr('name', 'deactivate');
 			deactivateForm.append(deactivateField);
@@ -115,17 +163,40 @@ function addSprintBacklog(target, sprint) {
 
 			sprintName.append("<br><br>");
 			sprintName.append(deactivateForm);
-			newSprint.append(sprintName);
 		}
 	} else {
 		sprintName.append(sprint.name + "  [inactive]");
 		if (user.permissions == "MANAGER") {
+			sprintNameDiv.attr('style', 'width:70%; float:left;');
+			
+			var editSprint = $('<button></button>');
+			editSprint.attr('id','edit_sprint_button_' + sprint.id);
+			editSprint.attr('class','dialog_opener');
+			
+			var deleteSprint = $('<button></button>');
+			var sprintString = JSON.stringify(sprint);
+			editSprint.attr('onclick', "editSprint('" + sprintString + "')");
+			editSprint.append('Edit');
+			deleteSprint.attr('onclick', "deleteSprint('" + sprintString + "')");
+			deleteSprint.append('Delete');
+			
+			var deleteSprintDiv = $('<div></div>');
+			deleteSprintDiv.attr('style', 'width:15%; height:100%; float:left; text-align:right;');
+			deleteSprintDiv.append(deleteSprint);
+
+			var editSprintDiv = $('<div></div>');
+			editSprintDiv.attr('style', 'width:15%; height:100%; float:left; text-align:right;');
+			editSprintDiv.append(editSprint);
+			
+			sprintHeaderDiv.append(deleteSprintDiv);
+			sprintHeaderDiv.append(editSprintDiv);
+			
+			
 			var activateForm = $('<form></form>');
 			activateForm.attr('action', './makeSprintActive');
 			activateForm.attr('method', 'POST');
 			var activateField = $('<input/>');
 			activateField.attr('type', 'hidden');
-			var sprintString = JSON.stringify(sprint);
 			activateField.attr('value', sprintString);
 			activateField.attr('name', 'activate');
 			activateForm.append(activateField);
@@ -138,14 +209,13 @@ function addSprintBacklog(target, sprint) {
 
 			sprintName.append("<br><br>");
 			sprintName.append(activateForm);
-			newSprint.append(sprintName);
 		}
 	}
 
 	var containerId = 'sprint_' + sprintNumber + '_issues';
 	var issuesContainer = $('<div></div>');
 	issuesContainer.attr('id', containerId)
-	newSprint.append(sprintName);
+	newSprint.append(sprintHeaderDiv);
 	newSprint.append(issuesContainer);
 
 	container.append(newSprint);

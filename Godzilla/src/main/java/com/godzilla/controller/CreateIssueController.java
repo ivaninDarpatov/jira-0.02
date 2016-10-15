@@ -21,6 +21,7 @@ import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.IssueException;
 import com.godzilla.model.exceptions.ProjectDAOException;
 import com.godzilla.model.exceptions.UserDAOException;
+import com.google.gson.Gson;
 
 @Controller
 @RequestMapping(value = "/createIssue")
@@ -99,8 +100,10 @@ public class CreateIssueController {
 
 			//update current user with the new issue
 			user = UserDAO.getUserById(currentUserId);
+			String userJSON = new Gson().toJson(user);
 			session.setAttribute("succeed", "Succeed: Issue created");
-			
+			session.setAttribute("user", user);
+			session.setAttribute("userJSON", userJSON);
 			
 		} catch (ProjectDAOException e) {
 			session.setAttribute("issueError", e.getMessage());

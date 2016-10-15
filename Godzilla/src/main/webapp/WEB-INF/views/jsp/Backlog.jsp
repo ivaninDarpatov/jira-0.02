@@ -88,6 +88,11 @@
 		value='${userJSON}' />
 	<!-- Page Content -->
 	<div class="container">
+	<!-- hidden delete sprint form -->
+	<form style="display: none;" action="./deletesprint" method="GET">
+		<input name="sprint_id" type="text" id="delete_sprint_id"/>
+		<input type="submit" id="delete_sprint_button">
+	</form>
 
 		<div class="row">
 			<h2 id="project_name"></h2>

@@ -74,8 +74,11 @@ public class IssueDAO {
 
 		String summary = toCreate.getSummary();
 		int issueNumber = project.getIssues().size() + 1;
-
-		String issueName = project.getName().substring(0, 3).toUpperCase() + "-" + issueNumber;
+		
+		
+		String companyInitial = reporter.getCompany().substring(0, 2) + reporter.getCompany().substring(reporter.getCompany().length() - 1);
+		String projectInitial = project.getName().substring(0, 2) + project.getName().substring(project.getName().length() - 1);
+		String issueName = companyInitial.toUpperCase() + "-" + projectInitial.toUpperCase() + "-" + issueNumber;
 
 		String description = toCreate.getDescription();
 		int priorityId = toCreate.getPriority().getValue();
