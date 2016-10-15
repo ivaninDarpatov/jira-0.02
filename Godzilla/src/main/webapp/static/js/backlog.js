@@ -96,6 +96,25 @@ function deleteSprint(sprint) {
 //edit sprint
 function editSprint(sprint) {
 	var sprintObject = JSON.parse(sprint);
+
+	var sprintId = sprintObject.id;
+	var sprintName = sprintObject.name;
+	var sprintGoal = sprintObject.sprintGoal;
+	
+	$("#sprintId").val(sprintId);
+	$("#edit_name").val(sprintName);
+	$('#edit_goal').val(sprintGoal);
+	
+	$(function() {
+		console.log("start")
+		$("#edit_sprint_dialog").dialog({
+			autoOpen : false,
+			width : 535.6
+		});
+		
+			$("#edit_sprint_dialog").dialog('open');
+			console.log("after open")
+	})
 }
 
 // add sprint in sprints container

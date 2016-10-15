@@ -19,6 +19,7 @@ import com.godzilla.model.exceptions.SprintDAOException;
 import com.godzilla.model.exceptions.SprintException;
 
 public class SprintDAO {
+	private static final String EDIT_SPRINT_SQL = "UPDATE sprints SET sprint_name= ?, sprint_goal=? WHERE sprint_id=?;";
 	private static final String MAKE_SPRINT_INACTIVE_SQL = "UPDATE sprints SET is_active = 0 WHERE sprint_id = ?;";
 	private static final String MAKE_SPRINT_ACTIVE_SQL = "UPDATE sprints SET is_active = 1 WHERE sprint_id = ?;";
 	private static final String MAKE_PROJECT_SPRINT_INACTIVE_SQL = "UPDATE sprints SET is_active = 0 WHERE project_id = ?;";
@@ -151,6 +152,30 @@ public class SprintDAO {
 			throw new SprintDAOException(e.getMessage());
 		} catch (SprintException e) {
 			throw new SprintDAOException("couldn't set sprint id", e);
+		}
+	}
+	
+	public static void editSprint(Sprint sprintToEdit) throws SprintDAOException{
+		if(sprintToEdit == null){
+			throw new SprintDAOException("The sprint that you are trying to edit is not valid");
+		}
+		
+		Connection connection = DBConnection.getInstance().getConnection();
+		int sprintId = sprintToEdit.getId();
+		String sprintName = sprintToEdit.getName();
+		String sprintGoal = sprintToEdit.getSpintGoal();
+		
+		try {
+			PreparedStatement editSprintPS = connection.prepareStatement(EDIT_SPRINT_SQL);
+			editSprintPS.setString(1, sprintName);
+			editSprintPS.setString(2, sprintGoal);
+			editSprintPS.setInt(3, sprintId);
+			
+			if(editSprintPS.executeUpdate() != 1){
+				throw new SprintDAOException("There was an error while editing sprint");
+			}
+		} catch (SQLException e) {
+			throw new SprintDAOException(e.getMessage());
 		}
 	}
 

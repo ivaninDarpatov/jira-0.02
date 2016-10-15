@@ -143,7 +143,8 @@
 	</div>
 	<!-- /.container --> </nav>
 	
-	<c:import url="EditIssue.jsp"></c:import>
+	<c:import url="EditSprint.jsp" />
+	<c:import url="EditIssue.jsp" />
 	<c:import url="CreateIssue.jsp" />
 	<c:import url="CreateProject.jsp" />
 	<c:import url="CreateSprint.jsp" />
