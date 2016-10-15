@@ -33,7 +33,6 @@
 			console.log("3");
 
 		}
-		updateForm();
 	}
 	//password
 	function validatePassword() {
@@ -57,7 +56,6 @@
 			}
 
 		}
-		updateForm();
 	}
 	
 	//email 
@@ -80,7 +78,6 @@
 			console.log("3");
 
 		}
-		updateForm();
 	}
 
 	//deactivate login button if not all fields are the correct format
@@ -121,13 +118,13 @@
 			</div>
 			<hr>
 			<label id="icon" for="name"><i class="icon-envelope "></i></label>
-			 <input onkeyup="validateCompanyName()"	type="text" name="company" id="company" placeholder="Company" required />
+			 <input onkeyup="validateCompanyName(), updateForm()"	type="text" name="company" id="company" placeholder="Company" required />
 		    <label id="icon" for="name"><i class="icon-user"></i></label>
-		     <input	onkeyup="validateEmail()" type="text" name="email" id="email" placeholder="Email" required />
+		     <input	onkeyup="validateEmail(), updateForm()" type="text" name="email" id="email" placeholder="Email" required />
 			<label id="icon" for="name"><i class="icon-shield"></i></label> 
-			 <input onkeyup="validatePassword()"	type="password" name="password" id="password" placeholder="Password" required />
+			 <input onkeyup="validatePassword(), updateForm()"	type="password" name="password" id="password" placeholder="Password" required />
 			<label id="icon" for="name"><i class="icon-shield"></i></label> 
-			 <input onkeyup="validatePassword()"	type="password" name="conf_password" id="conf_password" placeholder="Confirm password" required />
+			 <input onkeyup="validatePassword(), updateForm()"	type="password" name="conf_password" id="conf_password" placeholder="Confirm password" required />
 			
 			<div style="text-align:center; color:red; font-family:'Arial Black';" id="errors"><b>${error} </b></div>
 			

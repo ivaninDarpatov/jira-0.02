@@ -89,7 +89,7 @@ function deleteSprint(sprint) {
 		var sprintId = sprintObject.id;
 		
 		document.getElementById("delete_sprint_id").value = sprintId;
-		$("#delete_issue_button").trigger("click");
+		$("#delete_sprint_button").trigger("click");
 	}
 }
 
