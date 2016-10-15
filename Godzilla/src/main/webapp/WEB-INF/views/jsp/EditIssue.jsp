@@ -118,7 +118,19 @@ $(document).ready(function(){
 							</select>
 						</div>
 					</li>
-
+					
+						<!-- sprint -->
+						<li id="fo2li105" class="leftHalf      "><label
+						class="desc notranslate" id="title105" for="Field105">
+							Sprint </label>
+						<div>
+							<select id="edit_issue_sprints" name="sprint" class="field select medium"
+								tabindex="3">
+								<option value="NONE" selected>NONE</option>
+							</select>
+						</div></li>
+						
+						
 					<li id="fo2li112" class="notranslate      ">
 						<label class="desc" id="title112" for="Field112"> 
 							Description 

@@ -88,15 +88,29 @@
 							</select>
 						</div></li>
 
+						<!-- project -->
 					<li id="fo2li105" class="leftHalf      "><label
 						class="desc notranslate" id="title105" for="Field105">
 							Project </label>
 						<div>
-							<select id="project" name="project" class="field select medium"
+							<select onChange="loadSprintsInSelect('#project_sprint', value)" id="project" name="project" class="field select medium"
 								tabindex="3">
 								<c:forEach items="${companyProjects}" var="project">
 									<option value="${project.name}">${project.name}</option>
 								</c:forEach>
+							</select>
+						</div></li>
+						
+						
+						
+						<!-- sprint -->
+						<li id="fo2li105" class="leftHalf      "><label
+						class="desc notranslate" id="title105" for="Field105">
+							Sprint </label>
+						<div>
+							<select id="project_sprint" name="sprint" class="field select medium"
+								tabindex="3">
+								<option value="NONE" selected>NONE</option>
 							</select>
 						</div></li>
 
@@ -106,17 +120,15 @@
 						<div>
 							<select id="priority" name="priority" class="field select medium"
 								tabindex="4">
-								<option value="verry_low" selected="selected"><span
-										class="notranslate">Very Low</span>
+								<option value="VERY_LOW" selected="selected">VERY LOW
 								</option>
-								<option value="low"><span class="notranslate">Low</span>
+								<option value="LOW">LOW
 								</option>
-								<option value="medium"><span class="notranslate">Medium</span>
+								<option value="MEDIUM">MEDIUM
 								</option>
-								<option value="high"><span class="notranslate">High</span>
+								<option value="HIGH">HIGH
 								</option>
-								<option value="verry high"><span class="notranslate">Very
-										High</span>
+								<option value="VERY_HIGH">VERY HIGH
 								</option>
 							</select>
 						</div></li>
@@ -127,13 +139,11 @@
 						<div>
 							<select id="status" name="status" class="field select medium"
 								tabindex="5">
-								<option value="to do" selected="selected"><span
-										class="notranslate">TO DO</span>
+								<option value="TO_DO" selected="selected">TO DO
 								</option>
-								<option value="in progress"><span class="notranslate">IN
-										PROGRESS</span>
+								<option value="IN_PROGRESS">IN PROGRESS
 								</option>
-								<option value="done"><span class="notranslate">DONE</span>
+								<option value="DONE">DONE
 								</option>
 							</select>
 						</div></li>

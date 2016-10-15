@@ -42,8 +42,6 @@ public class FiltersController {
 		String assigneeEmail = request.getParameter("assignee");
 		String reporterEmail = request.getParameter("reporter");
 		String companyName = request.getParameter("company_name");
-		System.err.println(projectName + '\n' + issueState + '\n' + sprintName + '\n' + assigneeEmail + '\n' + 
-							reporterEmail + '\n' + companyName + '\n');
 		
 		try {
 			String result = IssueDAO.getAllIssuesFilteredByJSON(issueState, projectName, sprintName, 

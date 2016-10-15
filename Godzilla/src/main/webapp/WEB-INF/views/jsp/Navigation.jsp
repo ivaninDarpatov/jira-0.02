@@ -58,6 +58,7 @@
 	<input id="userInformation" type="hidden" value='${userJSON}'>
 	<input id="assignedIssues" type="hidden" value='${assignedIssues}'>
 	<input id="reportedIssues" type="hidden" value='${reportedIssues}'>
+	<input id="companyProjects" type="hidden" value='${companyProjectsJSON}'>
 	
 	<!-- hidden delete issue form -->
 	<form style="display: none;" action="./deleteissue" method="GET">

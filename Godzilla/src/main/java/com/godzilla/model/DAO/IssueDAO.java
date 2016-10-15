@@ -950,13 +950,7 @@ public class IssueDAO {
 
 	public static String getAllIssuesFilteredByJSON(String issueState, String projectName, String sprintName,
 			String reporterEmail, String assigneeEmail, String companyName) throws IssueDAOException {
-		/*
-		  	imperia online
-			TO DO
-			null
-			user_6@abv.bg
-			user_6@abv.bg
-			imperiaOnline*/
+
 		
 		
 		String JSON = "";
@@ -979,7 +973,8 @@ public class IssueDAO {
 
 			IssueState state = null;
 			if (issueState != null && issueState.length() > 0) {
-				state = IssueState.getIssueStateFromString(issueState.toLowerCase());
+				issueState = issueState.replace(' ', '_');
+				state = IssueState.getIssueStateFromString(issueState);
 				byState = IssueDAO.getAllIssuesByState(state);
 			}
 			Project project = null;

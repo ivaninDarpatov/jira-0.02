@@ -58,68 +58,18 @@ public class LoginController {
 			try {
 				User toLogin = new User(email, password, companyName);
 
+
 				if(!UserDAO.validateLogin(toLogin)){
 					throw new UserDAOException("Not valid user");
-				} 
+				}
+				
+				int userId = UserDAO.getUserIdByEmail(email);
+				
+				toLogin = UserDAO.getUserById(userId);
+				session.setAttribute("user", toLogin);
 			} catch (UserDAOException | UserException e) {
 				session.setAttribute("error", e.getMessage());
 				return "LogInForm";
-			}
-			
-			
-			String errorMessage = "";
-			User userToLogIn = null;
-			Company company = null;
-			Set<Project> companyProjects = null;
-			HashMap<String,Set<Issue>> assignedIssuesByProject = new HashMap<>();
-			HashMap<String,Set<Issue>> reportedIssuesByProject = new HashMap<>();
-			Set<Project> userProjects = new HashSet<Project>();
-			
-			StringBuilder builder = new StringBuilder();
-			try {
-				int userId = UserDAO.getUserIdByEmail(email);
-				userToLogIn = UserDAO.getUserById(userId);
-				int companyId = CompanyDAO.getIdOfCompanyWithName(companyName);
-				company = CompanyDAO.getCompanyById(companyId);
-				
-				companyProjects = company.getProjects();
-				for (Project proj : companyProjects) {
-					Set<Issue> assigned = IssueDAO.getAllIssuesAssignedTo(userToLogIn, proj);
-					Set<Issue> reported = IssueDAO.getAllReportedIssuesByUser(userToLogIn, proj);
-					
-					if (assigned.size() > 0 || reported.size() > 0) {
-						userProjects.add(proj);
-						
-						assignedIssuesByProject.put(proj.getName(), assigned);
-						reportedIssuesByProject.put(proj.getName(), reported);
-					}
-				}
-				
-				Gson jsonMaker = new Gson();
-				String assignedIssuesJSON = jsonMaker.toJson(assignedIssuesByProject);
-				String reportedIssuesJSON = jsonMaker.toJson(reportedIssuesByProject);
-				String userJSON = jsonMaker.toJson(userToLogIn);
-				
-				session.setAttribute("userJSON", userJSON);
-				session.setAttribute("assignedIssues", assignedIssuesJSON);
-				session.setAttribute("reportedIssues", reportedIssuesJSON);
-				session.setAttribute("user", userToLogIn);
-				session.setAttribute("company", company);
-				session.setAttribute("companyUsers", company.getUsers());
-				session.setAttribute("companyProjects", companyProjects);
-				session.setAttribute("userProjects", userProjects);
-				
-			} catch (CompanyDAOException e) {
-				builder.append(e.getMessage());
-				e.printStackTrace();
-			} catch (UserDAOException e) {
-				errorMessage = e.getMessage();
-				request.setAttribute("error", errorMessage);
-			} catch (CompanyException e) {
-				builder.append(e.getMessage());
-				e.printStackTrace();
-			} catch (IssueDAOException e) {
-				e.printStackTrace();
 			}
 			
 			return "redirect:homepage";

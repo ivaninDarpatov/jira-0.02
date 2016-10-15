@@ -1,14 +1,4 @@
-	function loadSprintsFilters(projectName) {
-		var map = document.getElementById("projectSprintsMap").value;
-		var mapObj = JSON.parse(map);
-		var sprints = mapObj[projectName];
-		$("#sprints_select").empty();
-		for (var i = 0; i < sprints.length; i++) {
-			var option = $("<option></option>");
-			option.append(sprints[i].name);
-			$("#sprints_select").append(option);
-		}
-	}
+
 
 	$(function filterIssues() {
 		$("#search_result").empty();

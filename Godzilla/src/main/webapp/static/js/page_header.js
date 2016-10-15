@@ -23,6 +23,26 @@ function selectProjectNameDispatcher(path, projectName) {
 	}
 }
 
+//place select options (sprints in project)
+function loadSprintsInSelect(target,projectName) {
+	//target must be select element
+	var map = document.getElementById("projectSprintsMap").value;
+	var mapObj = JSON.parse(map);
+	var sprints = mapObj[projectName];
+	$(target).empty();
+	
+	var defaultSprint = $('<option></option>');
+	defaultSprint.attr('value', 'NONE');
+	defaultSprint.append('NONE');
+	
+	$(target).append(defaultSprint);
+	for (var i = 0; i < sprints.length; i++) {
+		var option = $("<option></option>");
+		option.append(sprints[i].name);
+		$(target).append(option);
+	}
+}
+
 // toggle show/hide content by ID (caller)
 function toggleShowDiv(caller) {
 	// <!-- jquery -->
@@ -219,7 +239,22 @@ $(function() {
 
 //edit issue
 function editIssue(issue){
-	console.log(issue);
+	var companyProjects = document.getElementById('companyProjects').value;
+	var projects = JSON.parse(companyProjects);
+	var projectName;
+	
+	for (var i = 0; i < projects.length; i++) {
+		var projectIssues = projects[i].issues;
+		for (var j = 0; j < projectIssues.length; j++) {
+			if (projectIssues[j].id == issue.id) {
+				projectName = projects[i].name;
+				break;
+			}
+		}
+	}
+	
+	loadSprintsInSelect('#edit_issue_sprints', projectName);
+	
 	var issueId = issue.id;
 	var projectSummary = issue.summary;
 	var issuePriority = issue.priority;

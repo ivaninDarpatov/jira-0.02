@@ -95,10 +95,10 @@
 								</tr>
 								<tr>
 									<th><label>In Project</label></th>
-									<th><select name="project_name">
+									<th><select name="project_name" onChange='loadSprintsInSelect("#sprints_select", value)'>
 											<c:forEach items="${companyProjects}" var="project"
 												varStatus="loop">
-												<option onclick="loadSprintsFilters('${project.name}')"
+												<option value='${project.name}'
 													id="project_name_${loop.index}">${project.name}</option>
 											</c:forEach>
 									</select></th>
@@ -106,6 +106,7 @@
 								<tr>
 									<th><label>In sprint</label></th>
 									<th><select id="sprints_select" name="sprint_name">
+									
 									</select></th>
 								</tr>
 								<tr>
