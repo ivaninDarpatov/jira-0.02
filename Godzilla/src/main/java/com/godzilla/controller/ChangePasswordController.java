@@ -66,8 +66,6 @@ public class ChangePasswordController {
 		
 		try {
 			UserDAO.changePassword(currentUser, newPasswordInput);
-			currentUser = UserDAO.getUserById(currentUser.getId());
-			session.setAttribute("user", currentUser);
 			session.setAttribute("succeed", "Succeed: Password changed");
 		} catch (UserDAOException e) {
 			session.setAttribute("issueError", e.getMessage());

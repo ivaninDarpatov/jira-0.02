@@ -24,7 +24,6 @@ import com.godzilla.model.exceptions.IssueException;
 import com.godzilla.model.exceptions.ProjectDAOException;
 import com.godzilla.model.exceptions.SprintDAOException;
 import com.godzilla.model.exceptions.UserDAOException;
-import com.google.gson.Gson;
 
 @Controller
 @RequestMapping(value = "/createIssue")
@@ -32,8 +31,6 @@ public class CreateIssueController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	public String createIssue(HttpServletRequest request) {
-		// issue_type , project , priority , status , description ,
-		// linked_issues , link_type , assignee
 		System.err.println("REQUEST: " + request);
 		HttpSession session = request.getSession(false);
 		if (session == null) {
@@ -52,8 +49,6 @@ public class CreateIssueController {
 		String priority = request.getParameter("priority");
 		String status = request.getParameter("status");
 		String description = request.getParameter("description");
-//		String linkedIssueName = request.getParameter("linked_issues");
-//		String linkType = request.getParameter("link_type");
 		String assigneeEmail = request.getParameter("assignee");
 		User currentUser = (User) session.getAttribute("user");
 
@@ -67,9 +62,6 @@ public class CreateIssueController {
 
 		int assigneeId;
 		User assignee = null;
-
-//		int linkedIssueId;
-//		Issue linkedIssue = null;
 
 		IssuePriority issuePriority = IssuePriority.getPriorityFromString(priority);
 		IssueState issueState = IssueState.getIssueStateFromString(status);
@@ -85,9 +77,6 @@ public class CreateIssueController {
 
 			assigneeId = UserDAO.getUserIdByEmail(assigneeEmail);
 			assignee = UserDAO.getUserById(assigneeId);
-
-//			linkedIssueId = IssueDAO.getIssueIdByName(linkedIssueName);
-//			linkedIssue = IssueDAO.getIssueById(linkedIssueId);
 
 			if (issueType.equalsIgnoreCase("Epic")) {
 				issue = new Epic(summary, issueType);
@@ -106,12 +95,7 @@ public class CreateIssueController {
 				IssueDAO.addIssueToSprint(issue, sprint);
 			}
 
-			//update current user with the new issue
-			user = UserDAO.getUserById(currentUserId);
-			String userJSON = new Gson().toJson(user);
 			session.setAttribute("succeed", "Succeed: Issue created");
-			session.setAttribute("user", user);
-			session.setAttribute("userJSON", userJSON);
 			
 		} catch (ProjectDAOException e) {
 			session.setAttribute("issueError", e.getMessage());

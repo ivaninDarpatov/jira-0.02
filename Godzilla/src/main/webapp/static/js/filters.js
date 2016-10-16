@@ -11,7 +11,6 @@
 			var bold = $('<b></b>');
 			bold.attr('class', 'issue_name');
 			var anchor = $('<a></a>');
-			anchor.attr('href', '#');
 			anchor.attr('id', 'issue_' + i);
 			var issueString = JSON.stringify(issues[i]);
 			anchor.attr('onclick', "openIssueInformation(" + issueString + ")");

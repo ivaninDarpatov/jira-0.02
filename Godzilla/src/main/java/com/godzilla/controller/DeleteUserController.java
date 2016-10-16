@@ -48,7 +48,6 @@ public class DeleteUserController {
 			return "redirect:profilepage";
 		}
 		
-		
 			if (!currentUser.isManager()) {
 				UserDAO.removeUser(currentUser);
 			} else {

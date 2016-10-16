@@ -1,16 +1,11 @@
 package com.godzilla.controller;
 
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.godzilla.model.Company;
-import com.godzilla.model.Project;
 import com.godzilla.model.Sprint;
-import com.godzilla.model.DAO.ProjectDAO;
 import com.godzilla.model.DAO.SprintDAO;
-import com.godzilla.model.exceptions.ProjectDAOException;
 import com.godzilla.model.exceptions.SprintDAOException;
 
 import org.springframework.stereotype.Controller;
@@ -35,20 +30,13 @@ public class MakeSprintActiveController {
 			}
 		}
 
-		Project currentProject;
 		try {
 			String sprintJSON = request.getParameter("activate");
 			Sprint sprintToMakeActive = new Gson().fromJson(sprintJSON, Sprint.class);
 			SprintDAO.makeActive(sprintToMakeActive);
-			
-			Company company = (Company) session.getAttribute("company");
-			Set<Project> companyProjects = ProjectDAO.getAllProjectsByCompany(company);
-			session.setAttribute("companyProjects", companyProjects);
 		} catch (SprintDAOException e) {
 			session.setAttribute("issueError", e.getMessage());
-		} catch (ProjectDAOException e) {
-			session.setAttribute("issueError", e.getMessage());
-		}
+		} 
 		return "redirect:backlog";
 	}
 }

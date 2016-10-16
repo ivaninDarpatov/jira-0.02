@@ -1,10 +1,7 @@
 package com.godzilla.controller;
 
-import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import com.godzilla.model.Company;
 import com.godzilla.model.Project;
 import com.godzilla.model.DAO.ProjectDAO;
 import com.godzilla.model.exceptions.ProjectDAOException;
@@ -32,11 +29,6 @@ public class DeleteProjectController {
 		try {
 			Project toDelete = ProjectDAO.getProjectById(projectId);
 			ProjectDAO.removeProject(toDelete);
-			
-			Company company = (Company) session.getAttribute("company");
-			
-			Set<Project> companyProjects = ProjectDAO.getAllProjectsByCompany(company);
-			session.setAttribute("companyProjects", companyProjects);
 		} catch (ProjectDAOException e) {
 			session.setAttribute("error", e.getMessage());
 		}

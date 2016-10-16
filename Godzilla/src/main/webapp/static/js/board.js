@@ -49,7 +49,6 @@ function loadProjectSprintsBoard(projectName) {
 		issueBox.attr('id', issueId);
 		var bold = $('<b></b>');
 		var addIssue = $('<a></a>');
-		addIssue.attr('href', '#');
 		var issueString = JSON.stringify(issue);
 		addIssue.attr('onclick', 'openIssueInformation(' + issueString + ')');
 		addIssue.append(name);

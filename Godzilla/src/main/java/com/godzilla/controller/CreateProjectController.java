@@ -1,7 +1,5 @@
 package com.godzilla.controller;
 
-import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -39,9 +37,6 @@ public class CreateProjectController {
 			Project project = new Project(projectName);
 			if(!ProjectDAO.isThereProjectWithThatNameInCompany(projectName, companyName)){
 				ProjectDAO.addProject(project, currentCompany);
-				
-				Set<Project> companyProject = ProjectDAO.getAllProjectsByCompany(currentCompany);
-				session.setAttribute("companyProjects", companyProject);
 				
 				session.setAttribute("succeed", "Succeed: Project created");
 			}else{

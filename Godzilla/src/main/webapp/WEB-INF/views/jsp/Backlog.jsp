@@ -12,7 +12,6 @@
 <head>
 <title>Backlog</title>
 
-
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 
 <!-- jQuery UI CSS -->
@@ -24,7 +23,6 @@
 
 <!-- Custom CSS -->
 <link href="css/user_panel.css" rel="stylesheet">
-
 
 <!-- javascript files initialization -->
 
@@ -63,52 +61,56 @@
 				break;
 			}
 		}
-		
+
 		var issues = currentProject.issues;
-		  //get issue counts
+		//get issue counts
 
-			var toDo = 0;
-			var inProgress = 0;
-			var done = 0;
-			
-			for (var i = 0; i < issues.length; i++) {
-				switch (issues[i].state) {
-				case "TO_DO": toDo++; break;
-				case "IN_PROGRESS": inProgress++; break;
-				case "DONE": done++; break;
-				}
+		var toDo = 0;
+		var inProgress = 0;
+		var done = 0;
+
+		for (var i = 0; i < issues.length; i++) {
+			switch (issues[i].state) {
+			case "TO_DO":
+				toDo++;
+				break;
+			case "IN_PROGRESS":
+				inProgress++;
+				break;
+			case "DONE":
+				done++;
+				break;
 			}
-		  //
+		}
+		//
 
-	   
+		var data = google.visualization.arrayToDataTable([
+				[ 'Issue state', 'Amount' ], [ 'TO DO', toDo ],
+				[ 'IN PROGRESS', inProgress ], [ 'DONE', done ] ]);
 
-	    var data = google.visualization.arrayToDataTable([
-	      ['Issue state', 'Amount'],
-	      ['TO DO',     toDo],
-	      ['IN PROGRESS',      inProgress],
-	      ['DONE',  done]
-	    ]);
+		var options = {
+			title : projectName + ' issues',
+			'width' : 600,
+			'height' : 300,
+			'pieSliceText' : 'none'
+		};
 
-	    var options = {
-	      title: projectName + ' issues',
-	      'width': 600,
-	      'height': 300,
-	      'pieSliceText': 'none'
-	    };
+		var chart = new google.visualization.PieChart(document
+				.getElementById('project_chart'));
 
-	 
-	  var chart = new google.visualization.PieChart(document.getElementById('project_chart'));
-
-	  chart.draw(data, options);
+		chart.draw(data, options);
 	}
-	</script>
+</script>
 
 </head>
 <body>
-<div class="dropdown_content" id="project_chart"
-			style="width: 100%; position: relative;"></div>
+	<div class="dropdown_content" id="project_chart"
+		style="width: 100%; position: relative;"></div>
+		
 	<c:import url="Navigation.jsp" />
-
+	
+	
+	<!-- error/success message container -->
 	<c:set var="errorMessage" value="${sessionScope.issueError}" />
 	<c:set var="errorLengh" value="${fn:length(errorMessage)}" />
 	<c:remove var="issueError" scope="session" />
@@ -116,6 +118,7 @@
 	<c:set var="succeed" value="${sessionScope.succeed}"></c:set>
 	<c:set var="succeedLengh" value="${fn:length(succeed)}" />
 	<c:remove var="succeed" scope="session" />
+	
 	<div id="errors_container">
 		<c:if test="${(errorLengh) gt 0}">
 			<div id="tag1" class="tag1"
@@ -133,7 +136,7 @@
 			</div>
 		</c:if>
 	</div>
-
+	<!-- /container -->
 
 	<!-- hidden input to hold session attribute -->
 	<input id='projectSprintIssuesMap' type="hidden"
@@ -141,20 +144,23 @@
 	<input id='projectSprintsMap' type="hidden"
 		value='${projectSprintsMap}' />
 	<input id='currentUser' type="hidden" value='${userJSON}' />
+	<!-- /hidden -->
+	
 	<!-- Page Content -->
 	<div class="container">
+	
 		<!-- hidden delete sprint form -->
 		<form style="display: none;" action="./deletesprint" method="GET">
 			<input name="sprint_id" type="text" id="delete_sprint_id" /> <input
 				type="submit" id="delete_sprint_button">
 		</form>
+		<!-- /hidden -->
 
 		<div class="row">
 			<button id="project_progress_button"
-				style="position: inline; top: 0px; float: right;"
-				class="dropbtn"
-				onclick="toggleShowDiv('#project_chart')">
-				View project progress</button>
+				style="position: inline; top: 0px; float: right;" class="dropbtn"
+				onclick="toggleShowDiv('#project_chart')">View project
+				progress</button>
 			<h2 id="project_name"></h2>
 
 			<!-- project's issues column -->

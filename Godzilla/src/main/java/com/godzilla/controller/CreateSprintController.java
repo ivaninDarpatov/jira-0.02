@@ -1,7 +1,6 @@
 package com.godzilla.controller;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.godzilla.model.Company;
 import com.godzilla.model.Project;
 import com.godzilla.model.Sprint;
 import com.godzilla.model.DAO.ProjectDAO;
@@ -52,13 +50,6 @@ public class CreateSprintController {
 			
 			SprintDAO.addSprint(sprint, selectedProject);
 			
-			System.err.println(sprint.getStartingDate());
-			System.err.println(sprint.getEndDate());
-			
-			Company currentCompany = ((Company) session.getAttribute("company"));
-			Set<Project> companyProjects = ProjectDAO.getAllProjectsByCompany(currentCompany);
-			
-			session.setAttribute("companyProjects", companyProjects);;
 			session.setAttribute("succeed", "Succeed: Sprint created");
 			
 			return "redirect:backlog";

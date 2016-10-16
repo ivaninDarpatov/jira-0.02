@@ -42,7 +42,6 @@ public class LoginController {
 			try {
 				User toLogin = new User(email, password, companyName);
 
-
 				if(!UserDAO.validateLogin(toLogin)){
 					throw new UserDAOException("Not valid user");
 				}

@@ -12,11 +12,11 @@
 <head>
 <title>Godzilla Board</title>
 <script>
-		function closeDiv(target){
-			var div = $(target);
-			div.hide();
-		}
-	</script>
+	function closeDiv(target) {
+		var div = $(target);
+		div.hide();
+	}
+</script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 
@@ -82,7 +82,7 @@
 				<a class="closeButton" onclick="closeDiv('#tag1')"></a> <b>${(succeed)}</b>
 			</div>
 		</c:if>
-	</div>	
+	</div>
 	<!-- Page Content -->
 	<div class="container">
 		<div class="row">
@@ -91,10 +91,10 @@
 			<div class="col-md-8">
 				<h2 id="project_name"></h2>
 				<hr>
-					<h2>Active Sprint</h2>
+				<h2>Active Sprint</h2>
 				<hr>
 				<div id="opened_sprint_container">
-						<h4 id="active_sprint_name"></h4>
+					<h4 id="active_sprint_name"></h4>
 					<table id='opened_sprint'>
 						<tr class="sprint_table_element">
 							<th class="sprint_table_element">TO DO</th>

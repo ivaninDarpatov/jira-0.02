@@ -217,8 +217,7 @@
 								<div style="display: inline-block; width: 100%;">
 									<div style="width: 80%; float: left;">
 										<h4>
-											<a href='#'
-												onclick='loadIssues("${project.name}", <c:out value="${assignedIssues}"/>, <c:out value="${reportedIssues}"/>)'
+											<a onclick='loadIssues("${project.name}", <c:out value="${assignedIssues}"/>, <c:out value="${reportedIssues}"/>)'
 												id='project_name_${loop.index}'> ${project.name} </a>
 										</h4>
 									</div>

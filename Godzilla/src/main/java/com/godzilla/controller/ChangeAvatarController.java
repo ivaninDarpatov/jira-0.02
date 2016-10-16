@@ -30,15 +30,11 @@ public class ChangeAvatarController {
 		
 		User currentUser = (User) session.getAttribute("user");
 		String newNinjaColor = request.getParameter("avatar");
-		int userId = currentUser.getId();
 		
 		try {
 			UserDAO.changeAvatar(currentUser, newNinjaColor);
-			currentUser = UserDAO.getUserById(userId);
-			session.setAttribute("user", currentUser);
 		} catch (UserDAOException e) {
 			session.setAttribute("issueError", e.getMessage());
-			return "redirect:profilepage";
 		}
 		
 		return "redirect:profilepage";

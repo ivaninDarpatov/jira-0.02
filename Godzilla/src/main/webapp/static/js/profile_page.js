@@ -23,7 +23,6 @@ $(function () {
 		var issueBox = $("<div></div>");
 		issueBox.attr("class", "profile_issue_box");
 		var issueName = $("<a></a>");
-		issueName.attr("href", "#");
 		var issueString = JSON.stringify(assignedIssues[i]);
 		issueName.attr("onclick", "openIssueInformation(" + issueString + ")");
 		issueName.append(assignedIssues[i].name);
@@ -44,7 +43,6 @@ $(function () {
 		var issueBox = $("<div></div>");
 		issueBox.attr("class", "profile_issue_box");
 		var issueName = $("<a></a>");
-		issueName.attr("href", "#");
 		var issueString = JSON.stringify(reportedIssues[i]);
 		issueName.attr("onclick", "openIssueInformation(" + issueString + ")");
 		issueName.append(reportedIssues[i].name);

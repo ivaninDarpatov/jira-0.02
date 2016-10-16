@@ -26,6 +26,7 @@ public class BoardController {
 		
 		Gson jsonMaker = new Gson();
 		String userJSON = jsonMaker.toJson(session.getAttribute("user"));
+		
 		session.setAttribute("userJSON", userJSON);
 		
 		return "Board";

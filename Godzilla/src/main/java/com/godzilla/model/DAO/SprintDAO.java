@@ -2,10 +2,12 @@ package com.godzilla.model.DAO;
 
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,8 +41,8 @@ public class SprintDAO {
 		Sprint result = null;
 		Connection connection = DBConnection.getInstance().getConnection();
 		Set<Issue> issues = new HashSet<Issue>();
-		LocalDateTime startingDate;
-		LocalDateTime endDate;
+		LocalDate startingDate;
+		LocalDate endDate;
 		String name;
 		String goal;
 		boolean isActive;
@@ -54,11 +56,15 @@ public class SprintDAO {
 			if (getSprintByIdRS.next()) {
 				name = getSprintByIdRS.getString("sprint_name");
 				goal = getSprintByIdRS.getString("sprint_goal");
+				startingDate = getSprintByIdRS.getDate("starting_date").toLocalDate();
+				endDate = getSprintByIdRS.getDate("end_date").toLocalDate();
 				isActive = (getSprintByIdRS.getInt("is_active") == 1) ? true : false;
 				result = new Sprint(name, goal);
 
 				result.setId(sprintId);
 				result.setIsActive(isActive);
+				result.setEndDate(endDate);
+				result.setStartingDate(startingDate);
 				
 				issues = IssueDAO.getAllIssuesBySprint(result);
 				
@@ -120,8 +126,8 @@ public class SprintDAO {
 			
 			insertSprint.setString(1, sprintToAdd.getName());
 			insertSprint.setString(2, sprintToAdd.getSpintGoal());
-			insertSprint.setString(3, sprintToAdd.getStartingDate().toString());
-			insertSprint.setString(4, sprintToAdd.getEndDate().toString());
+			insertSprint.setDate(3, Date.valueOf(sprintToAdd.getStartingDate()));
+			insertSprint.setDate(4, Date.valueOf(sprintToAdd.getEndDate()));
 			insertSprint.setInt(5, (sprintToAdd.isActive()) ? 1 : 0);
 			insertSprint.setInt(6, project.getId());
 			

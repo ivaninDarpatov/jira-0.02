@@ -59,10 +59,11 @@ function loadProjectSprintsBacklog(projectName) {
 	}
 
 	var freeIssues = sprints["-"];
-	for (var i = 0; i < freeIssues.length; i++) {
-		addIssueBacklog("#issues_container", freeIssues[i]);
+	if (freeIssues) {
+		for (var i = 0; i < freeIssues.length; i++) {
+			addIssueBacklog("#issues_container", freeIssues[i]);
+		}
 	}
-	
 	var companyProjects = JSON.parse(document.getElementById("companyProjects").value);
 	var hasIssues = false;
 	for (var i = 0; i < companyProjects.length; i++) {
@@ -95,7 +96,6 @@ function addIssueBacklog(caller, issue) {
 	issueBox.attr('id', 'issue_' + issueNumber);
 	var bold = $('<b></b>');
 	var addIssue = $('<a></a>');
-	addIssue.attr('href', '#');
 	var issueString = JSON.stringify(issue);
 	addIssue.attr('onclick', 'openIssueInformation(' + issueString + ')');
 	addIssue.append(name);
@@ -153,6 +153,9 @@ function addSprintBacklog(target, sprint) {
 	newSprint.attr('id', 'sprint_' + sprintNumber);
 	newSprint.attr('class', 'sprints');
 	var sprintName = $('<h4></h4>');
+	var sprintNameLink = $('<a></a>');
+	sprintNameLink.attr('onclick', 'showSprintInfo("#sprint_info_' + sprintNumber + '")');
+	sprintName.append(sprintNameLink);
 
 	var sprintHeaderDiv = $('<div></div>');
 	sprintHeaderDiv.attr('style', 'width:100%; display:inline-block;');
@@ -162,7 +165,7 @@ function addSprintBacklog(target, sprint) {
 	sprintHeaderDiv.append(sprintNameDiv);
 
 	if (sprint.isActive) {
-		sprintName.append(sprint.name + "  [active]");
+		sprintNameLink.append(sprint.name + "  [active]");
 		if (user.permissions == "MANAGER") {
 			sprintNameDiv.attr('style', 'width:70%; float:left;');
 
@@ -211,7 +214,7 @@ function addSprintBacklog(target, sprint) {
 			sprintName.append(deactivateForm);
 		}
 	} else {
-		sprintName.append(sprint.name + "  [inactive]");
+		sprintNameLink.append(sprint.name + "  [inactive]");
 		if (user.permissions == "MANAGER") {
 			sprintNameDiv.attr('style', 'width:70%; float:left;');
 
@@ -259,17 +262,42 @@ function addSprintBacklog(target, sprint) {
 			sprintName.append(activateForm);
 		}
 	}
-
+	
+	//sprint information paragraph
+	var sprintInfoP = $('<p></p>');
+	sprintInfoP.attr('id', 'sprint_info_' + sprintNumber);
+	sprintInfoP.attr('style', 'display:none;');
+	
+	var startDate = sprint.startingDate.day + '/' +
+					sprint.startingDate.month + '/' +
+					sprint.startingDate.year;
+	var endDate = sprint.endDate.day + '/' +
+					sprint.endDate.month + '/' +
+					sprint.endDate.year;
+	var goal = sprint.sprintGoal;
+	
+	
+	sprintInfoP.append('Start date: ' + startDate);
+	sprintInfoP.append('<br>End date: ' + endDate);
+	sprintInfoP.append('<br>Goal: ' + goal);
+	//
+	
 	var containerId = 'sprint_' + sprintNumber + '_issues';
 	var issuesContainer = $('<div></div>');
 	issuesContainer.attr('id', containerId)
 	newSprint.append(sprintHeaderDiv);
+	newSprint.append(sprintInfoP);
 	newSprint.append(issuesContainer);
 
 	container.append(newSprint);
 	container.append('<hr>');
 
 	return containerId;
+}
+
+//toggle sprint info paragraph
+function showSprintInfo(target) {
+	$(target).toggle(400);
 }
 
 // view JSON map as object map (test)

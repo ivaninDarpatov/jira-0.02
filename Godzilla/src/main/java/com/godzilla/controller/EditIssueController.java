@@ -19,7 +19,6 @@ import com.godzilla.model.exceptions.IssueDAOException;
 import com.godzilla.model.exceptions.IssueException;
 import com.godzilla.model.exceptions.SprintDAOException;
 import com.godzilla.model.exceptions.UserDAOException;
-import com.google.gson.Gson;
 
 @Controller
 @RequestMapping(value = "/editIssue")
@@ -54,6 +53,7 @@ public class EditIssueController {
 			issueToEdit.setState(IssueState.getIssueStateFromString(state));
 			
 			issueToEdit.setSummary(summary);
+			
 			issueToEdit.setDescription(description);
 			
 			IssueDAO.editIssue(issueToEdit);
@@ -69,23 +69,12 @@ public class EditIssueController {
 			
 			issueToEdit = IssueDAO.getIssueById(Integer.parseInt(issueId));
 			
-			User currentUser = (User) session.getAttribute("user");
-			int userId = currentUser.getId();
-			
 			int assigneeId = UserDAO.getUserIdByEmail(assigneeEmail);
 			User assignee = (User) UserDAO.getUserById(assigneeId);
 			
 			IssueDAO.assignIssue(issueToEdit, assignee);
 			
-			currentUser = UserDAO.getUserById(userId);
-			Gson jsonMaker = new Gson();
-			String userJSON = jsonMaker.toJson(currentUser);
-			
 			session.setAttribute("succeed", "Succeed: Issue edited");
-			session.setAttribute("user", currentUser);
-			session.setAttribute("userJSON", userJSON);
-			
-			
 		} catch (NumberFormatException | IssueDAOException e) {
 			session.setAttribute("issueError", e.getMessage());
 		} catch (IssueException e) {

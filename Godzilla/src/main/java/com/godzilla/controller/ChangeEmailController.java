@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.godzilla.model.User;
 import com.godzilla.model.DAO.UserDAO;
-import com.godzilla.model.exceptions.EmailException;
 import com.godzilla.model.exceptions.UserDAOException;
 
 @Controller
@@ -35,11 +34,7 @@ public class ChangeEmailController {
 		
 		User currentUser = ((User)session.getAttribute("user"));
 		String currentUserEmail = currentUser.getEmail();
-		System.err.println("Current User Email: " + currentUserEmail);
-		
-		
 		String emailInput = request.getParameter("current_email");
-		System.err.println("Input user email: " + emailInput);
 		String newEmailInput = request.getParameter("new_email");
 		String confirmNewEmailInput = request.getParameter("repeat_email");
 		String passwordInput = request.getParameter("password");
@@ -59,7 +54,7 @@ public class ChangeEmailController {
 			int userId = UserDAO.getUserIdByEmail(emailInput);
 			currentUser = UserDAO.getUserById(userId);
 			
-			Set<User> companyUsers = ((Set)session.getAttribute("companyUsers"));
+			Set<User> companyUsers = (Set<User>) session.getAttribute("companyUsers");
 			
 			for(User companyUser : companyUsers){
 				if(companyUser.getEmail().equals(newEmailInput)){
@@ -67,8 +62,6 @@ public class ChangeEmailController {
 					return "redirect:profilepage";
 				}
 			}
-			
-			
 			
 			if(!passwordInput.equals(confirmPasswordInput)){
 				session.setAttribute("issueError", "Passwords does not match");
@@ -81,14 +74,10 @@ public class ChangeEmailController {
 			}
 			
 			UserDAO.changeEmail(currentUser,newEmailInput);
-			currentUser.setEmail(newEmailInput);
 			
 			session.setAttribute("succeed", "Succeed: email changed");
-			session.setAttribute("user", currentUser);
 		} catch (UserDAOException e) {
 			session.setAttribute("issueError", e.getMessage());
-		} catch (EmailException e) {
-			session.setAttribute("issueError", "The email that you have entered is not valid");
 		} catch (NoSuchAlgorithmException e) {
 			session.setAttribute("issueError", "There was an error while editing email");
 		} catch (UnsupportedEncodingException e) {

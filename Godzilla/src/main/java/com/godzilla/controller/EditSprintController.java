@@ -49,9 +49,6 @@ public class EditSprintController {
 		}
 		
 		
-		System.err.println("Id: " + sprintId);
-		System.err.println("Name: " + sprintNameInput);
-		System.err.println("Goal: " + sprintGoalInput);
 		
 		return "redirect:backlog";
 	}

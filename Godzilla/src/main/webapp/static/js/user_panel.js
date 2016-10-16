@@ -158,7 +158,7 @@ function addIssue(caller, issue) {
 	var issueBox = document.createElement("div");
 	issueBox.setAttribute("class", issueType + "_issue_box");
 	issueBox.innerHTML = "<h4 class='issue_name'>"
-			+ "<a href='#' class='dropbtn' id='"
+			+ "<a class='dropbtn' id='"
 			+ issueType
 			+ "_issue_name_"
 			+ issueNumber
@@ -203,27 +203,3 @@ function addIssue(caller, issue) {
 	container.append(issueBox);
 }
 
-// add project into 'projects you participate in'
-function addProject(target) {
-	var container = $(target);
-	var projectNumber = document.querySelectorAll('div.project_box').length + 1;
-	var projectId = "project_" + projectNumber;
-	var projectBox = document.createElement("div");
-	projectBox.setAttribute('id', projectId);
-	projectBox.setAttribute('class', 'project_box');
-	projectBox.innerHTML = "<h4>" + "<a href='#'>" + projectName + "</a>"
-			+ "</h4>" + "<h5 id='project_" + projectNumber
-			+ "_assigned' class='assigned_issues_count'>Assigned Issues 0</h5>"
-			+ "<h5 id='project_" + projectNumber
-			+ "_reported' class='reported_issues_count'>Reported	Issues 0</h5>";
-	container.append(projectBox);
-
-	var menu = $('#projects_menu_ul');
-	var projectIdLI = projectId + "_li";
-	var menuProject = document.createElement("li");
-	menuProject.setAttribute('id', projectIdLI);
-	menuProject.innerHTML = "<a href='#'>" + projectName + "</a>";
-
-	menu.append(document.createElement("br"));
-	menu.append(menuProject);
-}
