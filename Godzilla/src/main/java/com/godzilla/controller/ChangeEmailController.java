@@ -1,11 +1,15 @@
 package com.godzilla.controller;
 
 import java.util.Set;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -73,7 +77,8 @@ public class ChangeEmailController {
 				session.setAttribute("issueError", "Passwords does not match");
 				return "redirect:profilepage";
 			}
-			if(!currentUser.getPassword().equals(passwordInput)){
+			
+			if(!currentUser.getPassword().equals(User.convertToMd5(passwordInput))){
 				session.setAttribute("issueError", "Wrong Password");
 				return "redirect:profilepage";
 			}
@@ -85,11 +90,13 @@ public class ChangeEmailController {
 			session.setAttribute("user", currentUser);
 		} catch (UserDAOException e) {
 			session.setAttribute("issueError", e.getMessage());
-			e.printStackTrace();
 		} catch (EmailException e) {
 			session.setAttribute("issueError", "The email that you have entered is not valid");
-			e.printStackTrace();
-		}
+		} catch (NoSuchAlgorithmException e) {
+			session.setAttribute("issueError", "There was an error while editing email");
+		} catch (UnsupportedEncodingException e) {
+			session.setAttribute("issueError", "There was an error while editing email");
+		} 
 
 		return "redirect:profilepage";
 	}

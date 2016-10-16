@@ -13,7 +13,7 @@
 
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Create Project dialog</title>
+<title>Create Project </title>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 

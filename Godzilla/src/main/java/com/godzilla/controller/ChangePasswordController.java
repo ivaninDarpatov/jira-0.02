@@ -1,5 +1,8 @@
 package com.godzilla.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -40,9 +43,15 @@ public class ChangePasswordController {
 			return "redirect:profilepage";
 		}
 		
-		if(!currentPasswordInput.equals(currentPassword)){
-			session.setAttribute("issueError", "Wrong password");
-			return "redirect:profilepage";
+		try {
+			if(!User.convertToMd5(currentPasswordInput).equals(currentPassword)){
+				session.setAttribute("issueError", "Wrong password");
+				return "redirect:profilepage";
+			}
+		} catch (NoSuchAlgorithmException e1) {
+			session.setAttribute("issueError", "There was a problem while editing you password");
+		} catch (UnsupportedEncodingException e1) {
+			session.setAttribute("issueError", "There was a problem while editing you password");
 		}
 		
 		if(!newPasswordInput.equals(confirmNewPasswordInput)){

@@ -20,11 +20,11 @@ import com.godzilla.model.exceptions.SprintException;
 @SuppressWarnings("all")
 public class SprintDAOTest {
 
-	//@Test
+	@Test
 	public void addSprintTest() {
 		try {
-			Project project = new Project("test");
-			project.setId(18);
+			int projectId = ProjectDAO.getProjectIdByName("Project 2");
+			Project project = ProjectDAO.getProjectById(projectId);
 			
 			Sprint sprint = new Sprint("Sprint 2", "Goal 2");
 			
@@ -32,14 +32,19 @@ public class SprintDAOTest {
 			
 		} catch (SprintException e) {
 					Assert.assertTrue(e.getMessage().equals("cannot add issue with a null value"));
+		} catch (ProjectDAOException e) {
+			Assert.assertTrue(e.getMessage().equals("couldn't find a project with that name")
+					|| e.getMessage().equals("failed to create project")
+					|| e.getMessage().equals("can't find user with that id")
+					|| e.getMessage().equals("there is no such user")
+					|| e.getMessage().equals("user not created")
+					|| e.getMessage().equals("permissions not set")
+					|| e.getMessage().equals("failed to get issues"));
 		} catch (SprintDAOException e) {
 			Assert.assertTrue(
 					e.getMessage().equals("can't add sprint, to do so you need a valid project and sprint model") ||
 					e.getMessage().equals("failed to create sprint") ||
 					e.getMessage().equals("couldn't set sprint id"));
-		} catch (ProjectException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		
 	}

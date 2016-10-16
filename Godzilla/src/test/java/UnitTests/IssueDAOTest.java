@@ -37,9 +37,38 @@ public class IssueDAOTest {
 	public void addIssueTest(){
 		
 		try {
+			int projectId = ProjectDAO.getProjectIdByName("Project 1");
+			Project project = ProjectDAO.getProjectById(projectId);
 			
-			Issue result = IssueDAO.getIssueById(119);
-			System.out.println(result);
+			int reporterId = UserDAO.getUserIdByEmail("user_1@abv.bg");
+			User reporter = UserDAO.getUserById(reporterId);
+		
+			Issue issue = new Issue("story summary","story");
+			
+			IssueDAO.createIssue(issue, project, reporter, reporter);
+			
+			Assert.assertTrue(issue.getId() > 0);
+		} catch (IssueException e) {
+			e.printStackTrace();
+//			Assert.assertTrue(e.getMessage().equals("issue's summary cannot be null") 
+//					|| e.getMessage().equals("issue priority cannot be null")
+//					|| e.getMessage().equals("issue state cannot be null"));
+		} catch (ProjectDAOException e) {
+			e.printStackTrace();
+//			Assert.assertTrue(e.getMessage().equals("couldn't find a project with that name")
+//					|| e.getMessage().equals("can't find user with that id")
+//					|| e.getMessage().equals("there is no such user")
+//					|| e.getMessage().equals("user not created")
+//					|| e.getMessage().equals("permissions not set")
+//					|| e.getMessage().equals("failed to get issues"));
+		} catch (UserDAOException e) {
+			e.printStackTrace();
+//			Assert.assertTrue(
+//					   e.getMessage().equals("couldn't find a user with that email")
+//					|| e.getMessage().equals("invalid project id")
+//					|| e.getMessage().equals("failed to create project")
+//					|| e.getMessage().equals("failed to get sprints")
+//					|| e.getMessage().equals("failed to get issues"));
 		} catch (IssueDAOException e) {
 			e.printStackTrace();
 //			Assert.assertTrue(
@@ -426,7 +455,7 @@ public class IssueDAOTest {
 		}
 	}
 	
-	//@Test
+	@Test
 	public void addIssueToSprint() {
 		int issueId = 64;
 		int sprintId = 1;

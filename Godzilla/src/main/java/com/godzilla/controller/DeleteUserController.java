@@ -1,5 +1,8 @@
 package com.godzilla.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -39,13 +42,13 @@ public class DeleteUserController {
 			session.setAttribute("issueError", "Password and Confirm password does not match");
 			return "redirect:profilepage";
 		}
-		
-		if(!passwordInput.equals(currentUserPassword)){
+		try {
+		if(!User.convertToMd5(passwordInput).equals(currentUserPassword)){
 			session.setAttribute("issueError", "Wrong password");
 			return "redirect:profilepage";
 		}
 		
-		try {
+		
 			if (!currentUser.isManager()) {
 				UserDAO.removeUser(currentUser);
 			} else {
@@ -62,6 +65,10 @@ public class DeleteUserController {
 		} catch (CompanyDAOException e) {
 			e.printStackTrace();
 			return "redirect:login";
+		} catch (NoSuchAlgorithmException e) {
+			session.setAttribute("issueError", "There was a problem while deleting user");
+		} catch (UnsupportedEncodingException e) {
+			session.setAttribute("issueError", "There was a problem while deleting user");
 		}
 		
 		session.invalidate();

@@ -58,7 +58,7 @@ $(document).ready(function(){
 			<form action="./editIssue" method="POST">
 				<input id="hiddenId" name="hidden" type="hidden" value="" >
 				<header id="header" class="info">
-					<h2>Issue Tracking</h2>
+					<h2>Edit Issue</h2>
 					<div></div>
 				</header>
 				<ul>

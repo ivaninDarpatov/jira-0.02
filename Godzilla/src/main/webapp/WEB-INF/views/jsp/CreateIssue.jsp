@@ -57,7 +57,7 @@
 			<form action="./createIssue" method="POST">
 
 				<header id="header" class="info">
-				<h2>Issue Tracking</h2>
+				<h2>Create Issue</h2>
 				<div></div>
 				</header>
 				<ul>

@@ -21,6 +21,7 @@ import com.godzilla.model.exceptions.UserDAOException;
 import com.godzilla.model.exceptions.UserException;
 
 public class UserDAO {
+	private static final String CHANGE_PASSWORD_SQL = "UPDATE users SET password= md5(?) WHERE user_id= ?;";
 	private static final String CHANGE_AVATAR_SQL = "UPDATE users SET avatar = ? WHERE user_id = ?;";
 	private static final String CHANGE_USER_EMAIL_SQL = "UPDATE users SET email = ? WHERE user_id= ?;";
 	private static final String FIND_USERS_BY_COMPANY_ID_SQL = "SELECT * FROM users WHERE company_id = ?;";
@@ -28,9 +29,9 @@ public class UserDAO {
 	private static final int PROGRAMMER_PERMISSIONS = Permissions.PROGRAMMER.ordinal() + 1;
 	private static final int TESTER_PERMISSIONS = Permissions.TESTER.ordinal() + 1;
 	private static final String FIND_USER_ID_BY_EMAIL_SQL = "SELECT user_id FROM users WHERE email = ?;";
-	private static final String FIND_USER_BY_EMAIL_PASSWORD_COMPANY_SQL = "SELECT u.user_id FROM users u JOIN companies c ON (c.company_id = u.company_id) WHERE u.email = ? AND u.password = ? AND c.company_name = ?;";
+	private static final String FIND_USER_BY_EMAIL_PASSWORD_COMPANY_SQL = "SELECT u.user_id FROM users u JOIN companies c ON (c.company_id = u.company_id) WHERE u.email = ? AND u.password = md5(?) AND c.company_name = ?;";
 	private static final String FIND_COMPANY_ID_BY_NAME_SQL = "SELECT company_id FROM companies WHERE company_name = ?;";
-	private static final String REGISTER_USER_SQL = "INSERT INTO users VALUES (null, ?, ?, ? , ?, ?);";
+	private static final String REGISTER_USER_SQL = "INSERT INTO users VALUES (null, ?, md5(?), ? , ?, ?);";
 	private static final String REMOVE_USER_SQL = "DELETE FROM users WHERE user_id = ?;";
 	private static final String GET_USER_BY_ID_SQL = "SELECT * FROM users WHERE user_id = ?;";
 
@@ -173,7 +174,7 @@ public class UserDAO {
 		int id = user.getId();
 		
 		try {
-			PreparedStatement changeEmailPS = connection.prepareStatement("UPDATE users SET password= ? WHERE user_id= ?;");
+			PreparedStatement changeEmailPS = connection.prepareStatement(CHANGE_PASSWORD_SQL);
 			changeEmailPS.setString(1, newPassword);
 			changeEmailPS.setInt(2, id);
 			
