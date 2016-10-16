@@ -1,11 +1,6 @@
 package com.godzilla.model;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import com.godzilla.model.enums.IssueLinkType;
 import com.godzilla.model.enums.IssuePriority;
 import com.godzilla.model.enums.IssueState;
 import com.godzilla.model.exceptions.IssueException;
@@ -42,43 +37,17 @@ public class Issue {
 	private IssueState state;
 	private LocalDateTime dateCreated;
 	private LocalDateTime dateLastModified;
-	private Map<IssueLinkType, Set<Issue>> linkedIssues;
-
 	public Issue(String summary,String issueType) throws IssueException {
 		this.setSummary(summary);
 		this.setPriority(IssuePriority.MEDIUM);
 		this.setState(IssueState.TO_DO);
 		this.setType(issueType);
 		this.initializeDates();
-		this.initializeLinkedIssues();
 	}
 
 	private void initializeDates() {
 		this.dateCreated = LocalDateTime.now();
 		this.dateLastModified = this.dateCreated;
-	}
-	
-	private void initializeLinkedIssues() {
-		this.linkedIssues = new HashMap<IssueLinkType, Set<Issue>>();
-		
-		for (IssueLinkType linkType : IssueLinkType.values()) {
-			Set<Issue> issuesSet = new HashSet<Issue>();
-			
-			this.linkedIssues.put(linkType, issuesSet);
-		}
-	}
-	
-	public void linkToIssue(IssueLinkType linkType, Issue linkedIssue) {
-		Set<Issue> linkedIssues = this.linkedIssues.get(linkType);
-		
-		if (linkedIssues.contains(linkedIssue)) {
-			return;
-		}
-		
-		linkedIssues.add(linkedIssue);
-		
-		IssueLinkType oppositeLinkType = IssueLinkType.getOppositeLinkType(linkType);
-		linkedIssue.linkToIssue(oppositeLinkType, this);
 	}
 
 	public void setSummary(String summary) throws IssueException {
