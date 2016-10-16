@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,7 +76,9 @@ public class HomePageController {
 			String reportedIssuesJSON = jsonMaker.toJson(reportedIssuesByProject);
 			String userJSON = jsonMaker.toJson(currentUser);
 			
-			String companyProjectsJSON = jsonMaker.toJson(companyProjects);
+			Set<Project> orderedProjects= new TreeSet<>((p1, p2) -> p1.getId() - p2.getId());
+			orderedProjects.addAll(companyProjects);
+			String companyProjectsJSON = jsonMaker.toJson(orderedProjects);
 			String companyUsersJSON = jsonMaker.toJson(company.getUsers());
 			
 			session.setAttribute("companyUsersJSON", companyUsersJSON);
@@ -84,7 +87,7 @@ public class HomePageController {
 			session.setAttribute("reportedIssues", reportedIssuesJSON);
 			session.setAttribute("company", company);
 			session.setAttribute("companyUsers", company.getUsers());
-			session.setAttribute("companyProjects", companyProjects);
+			session.setAttribute("companyProjects", orderedProjects);
 			session.setAttribute("userProjects", userProjects);
 			session.setAttribute("companyProjectsJSON", companyProjectsJSON);
 			

@@ -169,6 +169,7 @@ public class CompanyDAO {
 			for (Project projectToRemove : projectsToRemove) {
 				ProjectDAO.removeProject(projectToRemove);
 			}
+			connection.setAutoCommit(false);
 			
 			for (User userToRemove : usersToRemove) {
 				if (userToRemove.isManager()) {
@@ -176,6 +177,7 @@ public class CompanyDAO {
 				}
 				UserDAO.removeUser(userToRemove);
 			}
+			connection.setAutoCommit(false);
 			
 			usersToRemove = UserDAO.getAllUsersByCompany(toRemove);
 			for (User userToRemove : usersToRemove) {
@@ -183,6 +185,8 @@ public class CompanyDAO {
 					UserDAO.removeUser(userToRemove);
 				}
 			}
+			
+			connection.setAutoCommit(false);
 
 			
 			PreparedStatement removeCompanyPS = connection.prepareStatement(REMOVE_COMPANY_SQL);
@@ -194,6 +198,7 @@ public class CompanyDAO {
 			connection.commit();
 
 		} catch (SQLException e) {
+			e.printStackTrace();
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {

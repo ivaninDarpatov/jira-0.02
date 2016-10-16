@@ -662,7 +662,11 @@ public class IssueDAO {
 		if (toAssign == null || assignee == null) {
 			throw new IssueDAOException("issue to assign and assignee must not be null");
 		}
-
+		
+		if (assignee.getIssuesAssignedTo().contains(toAssign)) {
+			return;
+		}
+		
 		if (assignee.getPermissions().equals(Permissions.TESTER)) {
 			throw new IssueDAOException("testers cannot be assigned issues");
 		}

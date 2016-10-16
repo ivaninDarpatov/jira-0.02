@@ -7,8 +7,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.godzilla.model.Company;
 import com.godzilla.model.User;
+import com.godzilla.model.DAO.CompanyDAO;
 import com.godzilla.model.DAO.UserDAO;
+import com.godzilla.model.exceptions.CompanyDAOException;
 import com.godzilla.model.exceptions.UserDAOException;
 
 @Controller
@@ -43,10 +46,22 @@ public class DeleteUserController {
 		}
 		
 		try {
-			UserDAO.removeUser(currentUser);
+			if (!currentUser.isManager()) {
+				UserDAO.removeUser(currentUser);
+			} else {
+				//if the user is the manager -> delete the whole company
+				String companyName = currentUser.getCompany();
+				int companyId = CompanyDAO.getIdOfCompanyWithName(companyName);
+				Company companyToRemove = CompanyDAO.getCompanyById(companyId);
+				
+				CompanyDAO.removeCompany(companyToRemove);
+			}
 		} catch (UserDAOException e) {
 			session.setAttribute("issueError", "Could not remove user");
 			return "redirect:profilepage";
+		} catch (CompanyDAOException e) {
+			e.printStackTrace();
+			return "redirect:login";
 		}
 		
 		session.invalidate();
