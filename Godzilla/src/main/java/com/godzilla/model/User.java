@@ -1,7 +1,6 @@
 package com.godzilla.model;
 
 import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.HashSet;
@@ -256,22 +255,4 @@ public class User {
 		String password = org.apache.commons.codec.digest.DigestUtils.md5Hex(toConvert);
 		return password;
 	}
-	
-	public static String getString( byte[] bytes ) 
-	{
-	  StringBuffer sb = new StringBuffer();
-	  for( int i=0; i<bytes.length; i++ )     
-	  {
-	     byte b = bytes[ i ];
-	     String hex = Integer.toHexString((int) 0x00FF & b);
-	     if (hex.length() == 1) 
-	     {
-	        sb.append("0");
-	     }
-	     sb.append( hex );
-	  }
-	  return sb.toString();
-	}
-	
-	
 }
