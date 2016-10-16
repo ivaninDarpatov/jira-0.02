@@ -4,17 +4,10 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import com.godzilla.model.Company;
 import com.godzilla.model.Project;
-import com.godzilla.model.Sprint;
-import com.godzilla.model.DAO.CompanyDAO;
 import com.godzilla.model.DAO.ProjectDAO;
-import com.godzilla.model.DAO.SprintDAO;
-import com.godzilla.model.exceptions.CompanyDAOException;
 import com.godzilla.model.exceptions.ProjectDAOException;
-import com.godzilla.model.exceptions.SprintDAOException;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

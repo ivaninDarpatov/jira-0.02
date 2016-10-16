@@ -90,14 +90,6 @@ public class IssueDAO {
 		int assigneeId = assignee.getId();
 		LocalDateTime dateCreated = LocalDateTime.now();
 		LocalDateTime dateLastModified = LocalDateTime.now();
-		// String dateTimeCreated =
-		// toCreate.getDateCreated().toLocalDate().toString() +
-		// " " +
-		// toCreate.getDateCreated().toLocalTime().toString();
-		// String dateTimeLastModified =
-		// toCreate.getDateLastModified().toLocalDate().toString() +
-		// " " +
-		// toCreate.getDateLastModified().toLocalTime().toString();
 
 		try {
 			connection.setAutoCommit(false);
@@ -114,8 +106,6 @@ public class IssueDAO {
 			insertIntoIssues.setInt(9, assigneeId);
 			insertIntoIssues.setTimestamp(10, Timestamp.valueOf(dateCreated));
 			insertIntoIssues.setTimestamp(11, Timestamp.valueOf(dateLastModified));
-			// insertIntoIssues.setString(8, dateTimeCreated);
-			// insertIntoIssues.setString(9, dateTimeLastModified);
 
 			if (insertIntoIssues.executeUpdate() > 0) {
 				ResultSet rs = insertIntoIssues.getGeneratedKeys();
@@ -153,16 +143,16 @@ public class IssueDAO {
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
-				throw new IssueDAOException(e1.getMessage());
+				throw new IssueDAOException("Failed to create Issue");
 			}
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to create Issue");
 		} catch (IssueException e) {
 			throw new IssueDAOException("couldn't set issue's id", e);
 		} finally {
 			try {
 				connection.setAutoCommit(true);
 			} catch (SQLException e) {
-				throw new IssueDAOException(e.getMessage());
+				throw new IssueDAOException("Failed to create Issue");
 			}
 		}
 	}
@@ -190,7 +180,7 @@ public class IssueDAO {
 			}
 
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to get issues");
 		}
 
 		return result;
@@ -218,9 +208,7 @@ public class IssueDAO {
 				int stateId = rs.getInt("state_id");
 				LocalDateTime dateCreated = rs.getTimestamp("date_created").toLocalDateTime();
 				LocalDateTime dateLastModified = rs.getTimestamp("date_last_modified").toLocalDateTime();
-				// getLocalDateTimeFromString(rs.getString("date_created"));
-				// LocalDateTime dateLastModified =
-				// getLocalDateTimeFromString(rs.getString("date_last_modified"));
+
 				IssuePriority priority = IssuePriority.getTypeById(priorityId);
 				IssueState state = IssueState.getTypeById(stateId);
 
@@ -249,16 +237,12 @@ public class IssueDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to find issue");
 		} catch (IssueException e) {
-			e.printStackTrace();
 			throw new IssueDAOException("could not create issue", e);
 		} catch (EpicException e) {
-			e.printStackTrace();
 			throw new IssueDAOException("failed to create epic", e);
 		}
-
 		return issue;
 	}
 	
@@ -277,7 +261,6 @@ public class IssueDAO {
 		int stateId = state.getValue();
 		String description = issue.getDescription();
 		
-		
 		try {
 			PreparedStatement editIssuePS = connection.prepareStatement(EDIT_ISSUE_SQL);
 			editIssuePS.setString(1, summary);
@@ -290,7 +273,7 @@ public class IssueDAO {
 				throw new IssueDAOException("Could not edit issue");
 			}
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to edit issue");
 		}
 	}
 
@@ -317,7 +300,7 @@ public class IssueDAO {
 
 			return issueId;
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to find issue with that name");
 		}
 	}
 
@@ -338,7 +321,7 @@ public class IssueDAO {
 				epicName = getEpicNameByIdRS.getString("epic_name");
 			}
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to find epic");
 		}
 
 		return epicName;
@@ -371,9 +354,8 @@ public class IssueDAO {
 			}
 
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to get all issues by epic");
 		}
-
 		return result;
 	}
 
@@ -412,18 +394,17 @@ public class IssueDAO {
 			connection.commit();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
-				throw new IssueDAOException(e1.getMessage());
+				throw new IssueDAOException("Failed to remove issue");
 			}
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to remove issue");
 		} finally {
 			try {
 				connection.setAutoCommit(true);
 			} catch (SQLException e) {
-				throw new IssueDAOException(e.getMessage());
+				throw new IssueDAOException("Failed to remove issue");
 			}
 		}
 	}
@@ -447,7 +428,7 @@ public class IssueDAO {
 				throw new IssueDAOException("failed to remove issue from epic");
 			}
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to remove issue from epic");
 		}
 	}
 
@@ -469,7 +450,7 @@ public class IssueDAO {
 				return rs.getInt(1) > 0;
 			}
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to find issue by epic");
 		}
 
 		return false;
@@ -498,7 +479,7 @@ public class IssueDAO {
 			}
 
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to get reported issues");
 		}
 
 		return reportedByThatUser;
@@ -529,7 +510,7 @@ public class IssueDAO {
 			}
 
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to get all reported issue");
 		}
 
 		return reportedByThatUser;
@@ -552,11 +533,10 @@ public class IssueDAO {
 				type = getTypeRS.getString("issue_type");
 			}
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to get issue type");
 		}
 
 		return type;
-
 	}
 
 	private static boolean isEpic(int issueId) throws IssueDAOException {
@@ -576,7 +556,7 @@ public class IssueDAO {
 			}
 
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to check if issue is in epic");
 		}
 
 		return false;
@@ -601,7 +581,7 @@ public class IssueDAO {
 				throw new IssueDAOException("failed to remove issue from sprint");
 			}
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to remove issue from sprint");
 		}
 	}
 
@@ -623,7 +603,7 @@ public class IssueDAO {
 				return !(rs.getInt(1) == 0);
 			}
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to check if issue in sprint");
 		}
 
 		return false;
@@ -652,7 +632,7 @@ public class IssueDAO {
 			}
 
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to get all issues by sprint");
 		}
 
 		return result;
@@ -668,11 +648,11 @@ public class IssueDAO {
 		}
 		
 		if (assignee.getPermissions().equals(Permissions.TESTER)) {
-			throw new IssueDAOException("testers cannot be assigned issues");
+			throw new IssueDAOException("Testers cannot be assigned issues");
 		}
 
 		if (toAssign.getType().equals("epic")) {
-			throw new IssueDAOException("epics cannot be reassigned");
+			throw new IssueDAOException("Epics cannot be reassigned");
 		}
 
 		Connection connection = DBConnection.getInstance().getConnection();
@@ -685,16 +665,16 @@ public class IssueDAO {
 			assignIssuePS.setInt(2, issueId);
 
 			if (assignIssuePS.executeUpdate() < 1) {
-				throw new IssueDAOException("failed to assign issue");
+				throw new IssueDAOException("Failed to assign issue");
 			}
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to assign issue");
 		}
 	}
 
 	public static void unassignIssue(Issue assignedIssue) throws IssueDAOException {
 		if (assignedIssue == null) {
-			throw new IssueDAOException("couldn't find assigned issue");
+			throw new IssueDAOException("Couldn't find assigned issue");
 		}
 
 		Connection connection = DBConnection.getInstance().getConnection();
@@ -705,17 +685,17 @@ public class IssueDAO {
 			unassignIssuePS.setInt(1, issueId);
 
 			if (unassignIssuePS.executeUpdate() < 1) {
-				throw new IssueDAOException("failed to unassign issue");
+				throw new IssueDAOException("Failed to unassign issue");
 			}
 
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to unassignIssue");
 		}
 	}
 
 	public static void handToAdmin(Issue reportedIssue) throws IssueDAOException {
 		if (reportedIssue == null) {
-			throw new IssueDAOException("couldn't find reported issue");
+			throw new IssueDAOException("Couldn't find reported issue");
 		}
 
 		Connection connection = DBConnection.getInstance().getConnection();
@@ -730,7 +710,7 @@ public class IssueDAO {
 			if (issueProjectRS.next()) {
 				projectId = issueProjectRS.getInt(1);
 			} else {
-				throw new IssueDAOException("couldn't find issue's project");
+				throw new IssueDAOException("Couldn't find issue's project");
 			}
 
 			PreparedStatement findProjectCompanyPS = connection.prepareStatement(FIND_COMPANY_FOR_PROJECT_SQL);
@@ -741,7 +721,7 @@ public class IssueDAO {
 			if (projectCompanyRS.next()) {
 				companyId = projectCompanyRS.getInt(1);
 			} else {
-				throw new IssueDAOException("couldn't find project's company");
+				throw new IssueDAOException("Couldn't find project's company");
 			}
 
 			PreparedStatement findCompanyAdminPS = connection.prepareStatement(FIND_ADMIN_FOR_COMPANY_SQL);
@@ -756,20 +736,20 @@ public class IssueDAO {
 				handIssueToAdminPS.setInt(2, issueId);
 
 				if (handIssueToAdminPS.executeUpdate() < 1) {
-					throw new IssueDAOException("failed to hand issue to admin");
+					throw new IssueDAOException("Failed to hand issue to admin");
 				}
 			} else {
-				throw new IssueDAOException("couldn't find company admin");
+				throw new IssueDAOException("Couldn't find company admin");
 			}
 
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to hand issue to Admin");
 		}
 	}
 
 	public static Set<Issue> getAllIssuesAssignedTo(User assignee) throws IssueDAOException {
 		if (assignee == null) {
-			throw new IssueDAOException("couldn't find user");
+			throw new IssueDAOException("Couldn't find user");
 		}
 
 		Set<Issue> assignedToUser = new HashSet<Issue>();
@@ -789,7 +769,7 @@ public class IssueDAO {
 			}
 
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to get all issue assigned to " + assignee.getEmail());
 		}
 
 		return assignedToUser;
@@ -819,7 +799,7 @@ public class IssueDAO {
 			}
 
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to get all issues assigned to " + assignee.getEmail());
 		}
 
 		return assignedToUser;
@@ -857,14 +837,13 @@ public class IssueDAO {
 			}
 
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to add issue in epic");
 		}
-
 	}
 
 	public static void addIssueToSprint(Issue issue, Sprint sprint) throws IssueDAOException {
 		if (sprint == null || issue == null) {
-			throw new IssueDAOException("sprint and issue cannot be null");
+			throw new IssueDAOException("Sprint and issue cannot be null");
 		}
 
 		int sprintId = sprint.getId();
@@ -881,14 +860,13 @@ public class IssueDAO {
 			}
 
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to add issue to sprint");
 		}
-
 	}
 
 	public static Set<Issue> getAllFreeIssuesByProject(Project project) throws IssueDAOException {
 		if (project == null) {
-			throw new IssueDAOException("project cannot be null");
+			throw new IssueDAOException("Project cannot be null");
 		}
 
 		int projectId = project.getId();
@@ -907,7 +885,7 @@ public class IssueDAO {
 				freeIssues.add(issue);
 			}
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to get issues in sprint");
 		}
 
 		return freeIssues;
@@ -957,14 +935,13 @@ public class IssueDAO {
 			result.addAll(byAssignee);
 
 		} catch (Exception e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to filter issues");
 		}
 		return result;
 	}
 
 	public static String getAllIssuesFilteredByJSON(String issueState, String projectName, String sprintName,
-			String reporterEmail, String assigneeEmail, String companyName) throws IssueDAOException {
-
+		String reporterEmail, String assigneeEmail, String companyName) throws IssueDAOException {
 		
 		
 		String JSON = "";
@@ -1029,7 +1006,7 @@ public class IssueDAO {
 
 			JSON = jsonMaker.toJson(result);
 		} catch (Exception e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to filter issues");
 		}
 		return JSON;
 	}
@@ -1039,7 +1016,6 @@ public class IssueDAO {
 			throw new IssueDAOException("issue state cannot be null");
 		}
 		
-
 		Set<Issue> result = new HashSet<Issue>();
 
 		Connection connection = DBConnection.getInstance().getConnection();
@@ -1055,9 +1031,8 @@ public class IssueDAO {
 				result.add(IssueDAO.getIssueById(issueId));
 			}
 		} catch (SQLException e) {
-			throw new IssueDAOException(e.getMessage());
+			throw new IssueDAOException("Failed to find issues by state");
 		}
-
 		return result;
 	}
 }

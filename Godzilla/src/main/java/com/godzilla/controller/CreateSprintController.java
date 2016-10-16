@@ -1,7 +1,6 @@
 package com.godzilla.controller;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +35,6 @@ public class CreateSprintController {
 			}
 		}
 		
-		//sprint_name,project,description,start_date,end_date
 		String sprintName = request.getParameter("sprint_name");
 		String projectName = request.getParameter("project");
 		String sprintGoal = request.getParameter("description");
@@ -74,8 +72,6 @@ public class CreateSprintController {
 			session.setAttribute("issueError", "Could not create Sprint");
 			e.printStackTrace();
 		}
-		
-		
 		
 		return "redirect:backlog";
 	}

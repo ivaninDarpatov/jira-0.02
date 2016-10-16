@@ -56,11 +56,7 @@ public class SprintDAO {
 				goal = getSprintByIdRS.getString("sprint_goal");
 				isActive = (getSprintByIdRS.getInt("is_active") == 1) ? true : false;
 				result = new Sprint(name, goal);
-//				startingDate = IssueDAO.getLocalDateTimeFromString(getSprintByIdRS.getString("starting_date"));
-//				endDate = IssueDAO.getLocalDateTimeFromString(getSprintByIdRS.getString("end_date"));
-//				
-//				result.setStartingDate(startingDate);
-//				result.setEndDate(endDate);
+
 				result.setId(sprintId);
 				result.setIsActive(isActive);
 				
@@ -71,11 +67,11 @@ public class SprintDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw new SprintDAOException(e.getMessage());
+			throw new SprintDAOException("Failed to find sprint");
 		} catch (SprintException e) {
-			throw new SprintDAOException("failed to create sprint", e);
+			throw new SprintDAOException("Failed to create sprint", e);
 		} catch (IssueDAOException e) {
-			throw new SprintDAOException("failed to convert to LocalDateTime", e);
+			throw new SprintDAOException("Failed to convert to LocalDateTime", e);
 		}
 		return result;
 	}
@@ -106,7 +102,7 @@ public class SprintDAO {
 			}
 
 		} catch (SQLException e) {
-			throw new SprintDAOException(e.getMessage());
+			throw new SprintDAOException("Failed to get sprints by project");
 		}
 
 		return result;
@@ -118,12 +114,6 @@ public class SprintDAO {
 		}
 		
 		Connection connection = DBConnection.getInstance().getConnection();
-//		String startingDate = sprintToAdd.getStartingDate().toLocalDate().toString() +
-//								" " + 
-//								sprintToAdd.getStartingDate().toLocalTime().toString();
-//		String endDate = sprintToAdd.getEndDate().toLocalDate().toString() +
-//							" " +
-//							sprintToAdd.getEndDate().toLocalTime().toString();
 		
 		try {
 			PreparedStatement insertSprint = connection.prepareStatement((ADD_SPRINT_SQL), Statement.RETURN_GENERATED_KEYS);
@@ -135,7 +125,6 @@ public class SprintDAO {
 			insertSprint.setInt(5, (sprintToAdd.isActive()) ? 1 : 0);
 			insertSprint.setInt(6, project.getId());
 			
-
 			insertSprint.executeUpdate();
 
 			int sprintId;
@@ -145,13 +134,13 @@ public class SprintDAO {
 				sprintId = generatedKeys.getInt(1);
 				sprintToAdd.setId(sprintId);
 			} else {
-				throw new SprintDAOException("failed to create sprint");
+				throw new SprintDAOException("Failed to create sprint");
 			}
 
 		} catch (SQLException e) {
-			throw new SprintDAOException(e.getMessage());
+			throw new SprintDAOException("Failed to add sprint");
 		} catch (SprintException e) {
-			throw new SprintDAOException("couldn't set sprint id", e);
+			throw new SprintDAOException("Couldn't set sprint id", e);
 		}
 	}
 	
@@ -175,13 +164,13 @@ public class SprintDAO {
 				throw new SprintDAOException("There was an error while editing sprint");
 			}
 		} catch (SQLException e) {
-			throw new SprintDAOException(e.getMessage());
+			throw new SprintDAOException("Failed to edit epic");
 		}
 	}
 
 	public static void removeSprint(Sprint sprintToRemove) throws SprintDAOException {
 		if (sprintToRemove == null) {
-			throw new SprintDAOException("can't find sprint to remove");
+			throw new SprintDAOException("Can't find sprint to remove");
 		}
 
 		Connection connection = DBConnection.getInstance().getConnection();
@@ -198,14 +187,13 @@ public class SprintDAO {
 			removeSprintPS.setInt(1, sprintId);
 
 			if (removeSprintPS.executeUpdate() < 1) {
-				throw new SprintDAOException("failed to remove sprint");
+				throw new SprintDAOException("Failed to remove sprint");
 			}
 		} catch (SQLException e) {
-			throw new SprintDAOException(e.getMessage());
+			throw new SprintDAOException("Failed to remove sprint");
 		} catch (IssueDAOException e) {
-			throw new SprintDAOException("issues failure", e);
+			throw new SprintDAOException("Failed to get issues when removing sprint", e);
 		}
-
 	}
 	
 	public static int getSprintIdByName(String sprintName) throws SprintDAOException {
@@ -225,15 +213,14 @@ public class SprintDAO {
 				return rs.getInt(1);
 			}
 		} catch (SQLException e) {
-			throw new SprintDAOException(e.getMessage());
+			throw new SprintDAOException("Failed to find sprint");
 		}
-		
 		return 0;
 	}
 
 	public static void makeActive(Sprint sprint) throws SprintDAOException {
 		if (sprint == null) {
-			throw new SprintDAOException("can't find sprint to make active");
+			throw new SprintDAOException("Can't find sprint to make active");
 		}
 		
 		Connection connection = DBConnection.getInstance().getConnection();
@@ -252,26 +239,25 @@ public class SprintDAO {
 				ps.setInt(1, projectId);
 				
 				if (ps.executeUpdate() < 1) {
-					throw new SprintDAOException("couldnt find active sprint");
+					throw new SprintDAOException("Couldnt find active sprint");
 				}
 				
 				ps = connection.prepareStatement(MAKE_SPRINT_ACTIVE_SQL);
 				ps.setInt(1, sprintId);
 				if (ps.executeUpdate() < 1) {
-					throw new SprintDAOException("failed to make sprint active");
+					throw new SprintDAOException("Failed to make sprint active");
 				}
 			} else {
-				throw new SprintDAOException("couldnt find sprint's project");
+				throw new SprintDAOException("Couldnt find sprint's project");
 			}
 		} catch (SQLException e) {
-			throw new SprintDAOException(e.getMessage());
+			throw new SprintDAOException("Failed to make sprint active");
 		}
-		
 	}
 
 	public static void makeInactive(Sprint sprint) throws SprintDAOException {
 		if (sprint == null) {
-			throw new SprintDAOException("can't find sprint to make inactive");
+			throw new SprintDAOException("Can't find sprint to make inactive");
 		}
 		
 		Connection connection = DBConnection.getInstance().getConnection();
@@ -282,10 +268,10 @@ public class SprintDAO {
 			ps.setInt(1, sprintId);
 
 			if (ps.executeUpdate() < 1) {
-				throw new SprintDAOException("failed to make sprint inactive");
+				throw new SprintDAOException("Failed to make sprint inactive");
 			}
 		} catch (SQLException e) {
-			throw new SprintDAOException(e.getMessage());
+			throw new SprintDAOException("Failed to make sprint inactive");
 		}
 	}
 }

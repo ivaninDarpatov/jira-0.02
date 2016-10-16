@@ -50,7 +50,7 @@ public class CompanyDAO {
 				throw new CompanyDAOException("failed to create company");
 			}
 		} catch (SQLException e) {
-			throw new CompanyDAOException(e.getMessage());
+			throw new CompanyDAOException("Failed to create company");
 		} catch (CompanyException e) {
 			throw new CompanyDAOException("failed to set company's id", e);
 		}
@@ -75,7 +75,7 @@ public class CompanyDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw new CompanyDAOException(e.getMessage());
+			throw new CompanyDAOException("Failed to get company names");
 		}
 		return false;
 	}
@@ -99,9 +99,9 @@ public class CompanyDAO {
 				throw new CompanyException("couldn't find a company with that name");
 			}
 		} catch (SQLException e) {
-			throw new CompanyDAOException(e.getMessage());
+			throw new CompanyDAOException("Failed to find company by name");
 		} catch (CompanyException e) {
-			throw new CompanyDAOException(e);
+			throw new CompanyDAOException(e.getMessage());
 		}
 		return id;
 	}
@@ -139,16 +139,14 @@ public class CompanyDAO {
 				throw new CompanyDAOException("there is no company with that id");
 			}
 		} catch (SQLException e) {
-			throw new CompanyDAOException(e.getMessage());
+			throw new CompanyDAOException("Failed to find company");
 		} catch (CompanyException e) {
 			throw new CompanyDAOException(e.getMessage());
 		} catch (ProjectDAOException e) {
 			throw new CompanyDAOException("failed to get company's projects", e);
 		} catch (UserDAOException e) {
-			e.printStackTrace();
 			throw new CompanyDAOException("failed to get company's users", e);
 		}
-
 		return company;
 	}
 
@@ -198,32 +196,31 @@ public class CompanyDAO {
 			connection.commit();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
-				throw new CompanyDAOException(e1.getMessage());
+				throw new CompanyDAOException("Failed to remove company");
 			}
-			throw new CompanyDAOException(e.getMessage());
+			throw new CompanyDAOException("Failed to remove company");
 		} catch (UserDAOException e) {
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
-				throw new CompanyDAOException(e1.getMessage());
+				throw new CompanyDAOException("Failed to remove company");
 			}
 			throw new CompanyDAOException("failed to get company's users", e);
 		} catch (ProjectDAOException e) {
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
-				throw new CompanyDAOException(e1.getMessage());
+				throw new CompanyDAOException("Failed to remove company");
 			}
 			throw new CompanyDAOException("failed to get company's projects", e);
 		}finally {
 			try {
 				connection.setAutoCommit(true);
 			} catch (SQLException e) {
-				throw new CompanyDAOException(e.getMessage());
+				throw new CompanyDAOException("Failed to remove company");
 			}
 		}
 
@@ -248,7 +245,7 @@ public class CompanyDAO {
 				throw new CompanyDAOException("failed to get company name");
 			}
 		} catch (SQLException e) {
-			throw new CompanyDAOException(e.getMessage());
+			throw new CompanyDAOException("Could not find company");
 		}
 		
 		return companyName;

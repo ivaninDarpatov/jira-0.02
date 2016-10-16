@@ -1,6 +1,5 @@
 package com.godzilla.controller;
 
-import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +11,6 @@ import com.godzilla.model.Sprint;
 import com.godzilla.model.DAO.ProjectDAO;
 import com.godzilla.model.DAO.SprintDAO;
 import com.godzilla.model.exceptions.ProjectDAOException;
-import com.godzilla.model.exceptions.ProjectException;
 import com.godzilla.model.exceptions.SprintDAOException;
 
 import org.springframework.stereotype.Controller;

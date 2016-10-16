@@ -1,14 +1,11 @@
 package com.godzilla.controller;
 
-import static org.mockito.Matchers.intThat;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
 import com.godzilla.model.Company;
 import com.godzilla.model.User;
 import com.godzilla.model.DAO.CompanyDAO;
@@ -39,7 +36,6 @@ public class RegisterController {
 		String password = request.getParameter("password");
 		String confirmPassword = request.getParameter("conf_password");
 		
-		StringBuilder exceptionMessage = new StringBuilder();
 		User userToReg = null;
 		Company company = null;
 		if(password.equals(confirmPassword)){
@@ -71,18 +67,5 @@ public class RegisterController {
 			return "redirect:registration";
 		}
 		return "redirect:homepage";
-	}
-	
-	private void appendExceptions(StringBuilder builder,Throwable ex){
-		
-		builder.append(ex.getMessage() + "\n");
-		
-		if(ex.getCause() == null){
-			return;
-		}
-
-		Throwable cause = ex.getCause();
-		
-		appendExceptions(builder, cause);
 	}
 }

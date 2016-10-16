@@ -65,9 +65,9 @@ public class UserDAO {
 						newCompany = new Company(companyName);
 						CompanyDAO.createNewCompany(newCompany);
 					} catch (CompanyException e1) {
-						throw new UserDAOException("couldn't create company", e1);
+						throw new UserDAOException("Couldn't create company", e1);
 					} catch (CompanyDAOException e) {
-						throw new UserDAOException("failed to create company", e);
+						throw new UserDAOException("Failed to create company", e);
 					}
 
 					companyId = newCompany.getId();
@@ -75,7 +75,7 @@ public class UserDAO {
 					try {
 						toRegister.setPermissions(Permissions.MANAGER);
 					} catch (PermissionException e) {
-						throw new UserException("invalid permissions", e);
+						throw new UserException("Invalid permissions", e);
 					}
 				}
 
@@ -94,7 +94,7 @@ public class UserDAO {
 					userId = generatedKeys.getInt(1);
 					toRegister.setId(userId);
 				} else {
-					throw new UserDAOException("failed to register");
+					throw new UserDAOException("Failed to register user");
 				}
 
 				connection.commit();
@@ -103,14 +103,14 @@ public class UserDAO {
 				try {
 					connection.rollback();
 				} catch (SQLException e1) {
-					throw new UserDAOException(e1.getMessage());
+					throw new UserDAOException("Failed to register user");
 				}
-				throw new UserDAOException(e.getMessage());
+				throw new UserDAOException("Failed to register user");
 			} finally {
 				try {
 					connection.setAutoCommit(true);
 				} catch (SQLException e) {
-					throw new UserDAOException(e.getMessage());
+					throw new UserDAOException("Failed to register user");
 				}
 			}
 		} else {
@@ -138,9 +138,8 @@ public class UserDAO {
 				return true;
 			}
 		} catch (SQLException e) {
-			throw new UserDAOException(e.getMessage());
+			throw new UserDAOException("Failed to validate login");
 		}
-
 		return false;
 	}
 	
@@ -158,10 +157,10 @@ public class UserDAO {
 			changeEmailPS.setInt(2, id);
 			
 			if(changeEmailPS.executeUpdate() != 1){
-				throw new UserDAOException("email was not changed");
+				throw new UserDAOException("Email was not changed");
 			}
 		} catch (SQLException e) {
-			throw new UserDAOException(e.getMessage());
+			throw new UserDAOException("Failed to change email");
 		}
 	}
 	
@@ -179,10 +178,10 @@ public class UserDAO {
 			changeEmailPS.setInt(2, id);
 			
 			if(changeEmailPS.executeUpdate() != 1){
-				throw new UserDAOException("email was not changed");
+				throw new UserDAOException("Email was not changed");
 			}
 		} catch (SQLException e) {
-			throw new UserDAOException(e.getMessage());
+			throw new UserDAOException("Failed to change password");
 		}
 	}
 	
@@ -200,7 +199,7 @@ public class UserDAO {
 			ps.setInt(2, id);
 			
 			if (ps.executeUpdate() < 1) {
-				throw new UserDAOException("failed to change avatar");
+				throw new UserDAOException("Failed to change avatar");
 			}
 		} catch (SQLException e) {
 			throw new UserDAOException(e.getMessage());
@@ -209,7 +208,7 @@ public class UserDAO {
 
 	public static void removeUser(User userToRemove) throws UserDAOException {
 		if (userToRemove == null) {
-			throw new UserDAOException("can't find user to remove");
+			throw new UserDAOException("Can't find user to remove");
 		}
 		Connection connection = DBConnection.getInstance().getConnection();
 		int userId = userToRemove.getId();
@@ -240,10 +239,10 @@ public class UserDAO {
 			ps.setInt(1, userId);
 
 			if (ps.executeUpdate() < 1) {
-				throw new UserDAOException("failed to remove user");
+				throw new UserDAOException("Failed to remove user");
 			}
 		} catch (SQLException e) {
-			throw new UserDAOException(e.getMessage());
+			throw new UserDAOException("Failed to remove user");
 		} catch (IssueDAOException e) {
 			throw new UserDAOException("failed to get issues", e);
 		}
@@ -251,7 +250,7 @@ public class UserDAO {
 
 	public static User getUserById(int userId) throws UserDAOException {
 		if (userId < 1) {
-			throw new UserDAOException("can't find user with that id");
+			throw new UserDAOException("Can't find user with that id");
 		}
 		User user = null;
 		Connection connection = DBConnection.getInstance().getConnection();
@@ -288,17 +287,15 @@ public class UserDAO {
 				}
 
 			} else {
-				throw new UserDAOException("there is no such user");
+				throw new UserDAOException("There is no such user");
 			}
 		} catch (SQLException e) {
-			throw new UserDAOException(e.getMessage());
+			throw new UserDAOException("Failed to find user");
 		} catch (UserException e) {
-			e.printStackTrace();
 			throw new UserDAOException("user not created", e);
 		} catch (PermissionException e) {
 			throw new UserDAOException("permissions not set", e);
 		} catch (IssueDAOException e) {
-			e.printStackTrace();
 			throw new UserDAOException("failed to get issues", e);
 		} catch (CompanyDAOException e) {
 			throw new UserDAOException("failed to get company name", e);
@@ -306,7 +303,7 @@ public class UserDAO {
 			try {
 				connection.setAutoCommit(true);
 			} catch (SQLException e) {
-				throw new UserDAOException(e.getMessage());
+				throw new UserDAOException("Failed to find user");
 			}
 		}
 		return user;
@@ -335,7 +332,7 @@ public class UserDAO {
 			}
 
 		} catch (SQLException e) {
-			throw new UserDAOException(e.getMessage());
+			throw new UserDAOException("Failed to get users by company");
 		}
 
 		return result;
@@ -357,14 +354,13 @@ public class UserDAO {
 			if (rs.next()) {
 				id = rs.getInt(1);
 			} else {
-				throw new UserException("couldn't find a user with that email");
+				throw new UserException("Couldn't find a user with that email");
 			}
 		} catch (SQLException e) {
-			throw new UserDAOException(e.getMessage());
+			throw new UserDAOException("Failed to find user");
 		} catch (UserException e) {
 			throw new UserDAOException(e);
 		}
 		return id;
 	}
-
 }

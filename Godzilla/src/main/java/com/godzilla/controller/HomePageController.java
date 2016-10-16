@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -90,8 +89,6 @@ public class HomePageController {
 			session.setAttribute("companyProjects", orderedProjects);
 			session.setAttribute("userProjects", userProjects);
 			session.setAttribute("companyProjectsJSON", companyProjectsJSON);
-			
-
 			
 			//projectName -> (sprintName -> sprintIssues) ((NO SPRINT -> sprintName = "-"))
 			Map<String, Map<String, Set<Issue>>> projectSprintsIssues = new HashMap<>();

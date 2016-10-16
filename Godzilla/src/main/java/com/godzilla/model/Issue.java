@@ -5,11 +5,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import com.godzilla.model.enums.IssueLinkType;
 import com.godzilla.model.enums.IssuePriority;
 import com.godzilla.model.enums.IssueState;
-import com.godzilla.model.exceptions.EpicException;
 import com.godzilla.model.exceptions.IssueException;
 
 public class Issue {

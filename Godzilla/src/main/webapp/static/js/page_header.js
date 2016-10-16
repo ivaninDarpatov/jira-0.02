@@ -46,15 +46,27 @@ function loadSprintsInSelect(target,projectName) {
 // toggle show/hide content by ID (caller)
 function toggleShowDiv(caller) {
 	// <!-- jquery -->
-	$(caller).toggle(200);
+	if (caller.charAt(0) == '#') {
+		$(caller).toggle(800);
+	}
+	
+	if (caller.charAt(0) == '.') {
+		var charts = document.getElementsByClassName(caller.substring(1));
+		for (var i = 0; i < charts.length; i++) {
+			var chartId = '#' + charts[i].id;
+			$(chartId).toggle(800);
+		}
+	}
 }
 
 // close dropdowns and dialogs on click-out
 function hasParentClass(child, parent) {
 	var node = child;
 	while (node != document) {
-		if (node.className.includes(parent)) {
-			return true;
+		if (JSON.stringify(node.className) != "{}"){
+	 		if (node.className.includes(parent)) {
+				return true;
+			}
 		}
 		node = node.parentNode;
 	}
@@ -70,7 +82,7 @@ window.onclick = function(event) {
 			var openDropdownId = dropdowns[i].id;
 
 			if ($('#' + openDropdownId).is(':visible')) {
-				$('#' + openDropdownId).hide(200);
+				$('#' + openDropdownId).hide(800);
 			}
 		}
 	}
@@ -103,6 +115,10 @@ function openIssueInformation(issue) {
 	var name = issue.name;
 	var type = issue.type;
 	var summary = issue.summary;
+	var state = issue.state;
+	state = state.replace("_"," ")
+	var priority = issue.priority;
+	priority = priority.replace("_"," ");
 	var companyProjects = document.getElementById('companyProjects').value;
 	var projects = JSON.parse(companyProjects);
 	var project;
@@ -207,6 +223,10 @@ function openIssueInformation(issue) {
 	issueReporter.append('Reporter: ' + reporter);
 	var issueAssignee = $('<p></p>');
 	issueAssignee.append('Assignee: ' + assignee);
+	var issueState = $('<p></p>');
+	issueState.append('State: ' + state);
+	var issuePriority = $('<p></p>');
+	issuePriority.append('Priority: ' + priority);
 	var issueDescription = $('<p></p>');
 	issueDescription.append('Description: ' + description);
 	var issueCreated = $('<p></p>');
@@ -224,6 +244,8 @@ function openIssueInformation(issue) {
 	paragraphsDiv.append(issueProject);
 	paragraphsDiv.append(issueReporter);
 	paragraphsDiv.append(issueAssignee);
+	paragraphsDiv.append(issueState);
+	paragraphsDiv.append(issuePriority);
 	paragraphsDiv.append(issueDescription);
 	paragraphsDiv.append(issueCreated);
 	paragraphsDiv.append(issueLastModified);
@@ -294,6 +316,8 @@ function editIssue(issue){
 	var companyProjects = document.getElementById('companyProjects').value;
 	var projects = JSON.parse(companyProjects);
 	var projectName;
+	
+	
 	
 	for (var i = 0; i < projects.length; i++) {
 		var projectIssues = projects[i].issues;

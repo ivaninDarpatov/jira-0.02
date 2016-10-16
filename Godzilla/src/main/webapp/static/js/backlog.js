@@ -27,6 +27,8 @@ function loadProjectSprintsBacklog(projectName) {
 		$("#create_sprint_backlog_div").empty();
 		$("#create_sprint_backlog_div").append(createSprintButton);
 	}
+	
+	$("#project_progress_button").val(projectName);
 
 	for (var i = 0; i < sprints2.length; i++) {
 		var issuesContainerId;
@@ -60,6 +62,7 @@ function loadProjectSprintsBacklog(projectName) {
 	for (var i = 0; i < freeIssues.length; i++) {
 		addIssueBacklog("#issues_container", freeIssues[i]);
 	}
+	drawChart(projectName);
 }
 
 // add issue in selected sprint's issues container (caller)

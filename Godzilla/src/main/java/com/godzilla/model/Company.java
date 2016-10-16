@@ -3,8 +3,6 @@ package com.godzilla.model;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.godzilla.model.DAO.CompanyDAO;
 import com.godzilla.model.DAO.ProjectDAO;
 import com.godzilla.model.DAO.UserDAO;
 import com.godzilla.model.exceptions.CompanyException;

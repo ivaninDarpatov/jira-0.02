@@ -30,7 +30,7 @@ public class ProjectDAO {
 
 	public static void addProject(Project newProject, Company company) throws ProjectDAOException {
 		if (company == null || newProject == null) {
-			throw new ProjectDAOException("company and project must not be null");
+			throw new ProjectDAOException("Company and project must not be null");
 		}
 		
 		int companyId = company.getId();
@@ -55,11 +55,10 @@ public class ProjectDAO {
 				throw new ProjectDAOException("failed to create project");
 			}
 		} catch (SQLException e) {
-			throw new ProjectDAOException(e.getMessage());
+			throw new ProjectDAOException("Failed to add project");
 		} catch (ProjectException e) {
 			throw new ProjectDAOException("couldn't set project id");
 		}
-
 	}
 
 	public static boolean isThereProjectWithTheSameName(String projectName) throws ProjectDAOException {
@@ -80,7 +79,7 @@ public class ProjectDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw new ProjectDAOException(e.getMessage());
+			throw new ProjectDAOException("Failed to find project");
 		}
 		return false;
 	}
@@ -109,8 +108,7 @@ public class ProjectDAO {
 				result.add(project);
 			}
 		} catch (SQLException e) {
-			throw new ProjectDAOException(e.getMessage());
-
+			throw new ProjectDAOException("Failed to get all projects by company");
 		}
 		return result;
 	}
@@ -128,12 +126,9 @@ public class ProjectDAO {
 				}
 			}
 			
-		} catch (ProjectDAOException e) {
-			throw new ProjectDAOException(e.getMessage());
 		} catch (CompanyDAOException e) {
 			throw new ProjectDAOException(e.getMessage());
 		}
-		
 		return false;
 	}
 
@@ -169,14 +164,13 @@ public class ProjectDAO {
 			}
 
 		} catch (SQLException e) {
-			throw new ProjectDAOException(e.getMessage());
+			throw new ProjectDAOException("Failed to find project");
 		} catch (ProjectException e) {
-			throw new ProjectDAOException("failed to create project", e);
+			throw new ProjectDAOException("Failed to create project", e);
 		} catch (SprintDAOException e) {
-			throw new ProjectDAOException("failed to get sprints", e);
+			throw new ProjectDAOException("Failed to get sprints", e);
 		} catch (IssueDAOException e) {
-			e.printStackTrace();
-			throw new ProjectDAOException("failed to get issues", e);
+			throw new ProjectDAOException("Failed to get issues", e);
 		}
 
 		return toReturn;
@@ -209,13 +203,12 @@ public class ProjectDAO {
 				throw new ProjectDAOException("failed to remove project");
 			}
 		} catch (SQLException e) {
-			throw new ProjectDAOException(e.getMessage());
+			throw new ProjectDAOException("Failed to remove project");
 		} catch (IssueDAOException e) {
-			throw new ProjectDAOException("failed to get projects issues", e);
+			throw new ProjectDAOException("Failed to get projects issues", e);
 		} catch (SprintDAOException e) {
-			throw new ProjectDAOException("failed to get projects sprints", e);
+			throw new ProjectDAOException("Failed to get projects sprints", e);
 		}
-
 	}
 
 	public static int getProjectIdByName(String projectName) throws ProjectDAOException {
@@ -237,7 +230,7 @@ public class ProjectDAO {
 				throw new ProjectException("couldn't find a project with that name");
 			}
 		} catch (SQLException e) {
-			throw new ProjectDAOException(e.getMessage());
+			throw new ProjectDAOException("Failed to find project");
 		} catch (ProjectException e) {
 			throw new ProjectDAOException(e);
 		}

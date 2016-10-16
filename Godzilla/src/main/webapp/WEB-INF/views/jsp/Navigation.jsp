@@ -28,6 +28,16 @@
 
 <!-- javascript files initialization -->
 
+<!-- google pie chart -->
+<script type="text/javascript"
+	src="https://www.gstatic.com/charts/loader.js"></script>
+	
+
+<script type="text/javascript"
+	src="https://www.google.com/jsapi?autoload= 
+{'modules':[{'name':'visualization','version':'1.1','packages':
+['corechart']}]}"></script>
+
 <!-- jQuery JavaScript -->
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
