@@ -21,6 +21,7 @@ import com.godzilla.model.exceptions.UserDAOException;
 import com.godzilla.model.exceptions.UserException;
 
 public class UserDAO {
+	private static final String UPDATE_PERMISSIONS_SQL = "UPDATE users SET permissions_id = ? WHERE user_id = ?;";
 	private static final String CHANGE_PASSWORD_SQL = "UPDATE users SET password= md5(?) WHERE user_id= ?;";
 	private static final String CHANGE_AVATAR_SQL = "UPDATE users SET avatar = ? WHERE user_id = ?;";
 	private static final String CHANGE_USER_EMAIL_SQL = "UPDATE users SET email = ? WHERE user_id= ?;";
@@ -105,6 +106,7 @@ public class UserDAO {
 				} catch (SQLException e1) {
 					throw new UserDAOException("Failed to register user");
 				}
+				e.printStackTrace();
 				throw new UserDAOException("Failed to register user");
 			} finally {
 				try {
@@ -362,5 +364,28 @@ public class UserDAO {
 			throw new UserDAOException(e);
 		}
 		return id;
+	}
+
+	public static void updatePermissions(User toUpdate, Permissions newPermissions) throws UserDAOException {
+		if (toUpdate == null) {
+			throw new UserDAOException("user cannot be null");
+		}
+		
+		int userId = toUpdate.getId();
+		int permissionsId = newPermissions.ordinal() + 1;
+		Connection connection = DBConnection.getInstance().getConnection();
+		
+		try {
+			PreparedStatement ps = connection.prepareStatement(UPDATE_PERMISSIONS_SQL);
+			ps.setInt(1, permissionsId);
+			ps.setInt(2, userId);
+			
+			if (ps.executeUpdate() < 1) {
+				throw new UserDAOException("failed to update user permissions");
+			}
+		} catch (SQLException e) {
+			throw new UserDAOException(e.getMessage());
+		}
+		
 	}
 }

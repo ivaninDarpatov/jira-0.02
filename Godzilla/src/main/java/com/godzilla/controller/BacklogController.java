@@ -26,7 +26,6 @@ public class BacklogController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String backlog(HttpServletRequest request){
-		
 		HttpSession session = request.getSession(false);
 		if(session == null){
 			return "redirect:login";
@@ -37,7 +36,6 @@ public class BacklogController {
 			}
 		}
 		
-
 		Gson jsonMaker = new Gson();
 
 		//projectName -> (sprintName -> sprintIssues) ((NO SPRINT -> sprintName = "-"))
@@ -65,15 +63,12 @@ public class BacklogController {
 		
 		String projectSprintsJSON = jsonMaker.toJson(projectSprints);
 		session.setAttribute("projectSprintsMap", projectSprintsJSON);
-
 		
 		} catch (SprintDAOException | IssueDAOException e) {
 			session.setAttribute("error", e.getMessage());
 		}
 		String userJSON = jsonMaker.toJson(session.getAttribute("user"));
 		session.setAttribute("userJSON", userJSON);
-		
-		
 		
 		return "Backlog";
 	}

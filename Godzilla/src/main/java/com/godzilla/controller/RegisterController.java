@@ -56,6 +56,7 @@ public class RegisterController {
 				session.setAttribute("companyProjects", company.getProjects());
 				
 			} catch (UserException | UserDAOException | CompanyDAOException | CompanyException   e) {
+				e.printStackTrace();
 				session.setAttribute("error", e.getMessage());
 				return "redirect:registration";
 			}

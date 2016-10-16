@@ -33,7 +33,7 @@
 
 
 
-	
+
 
 <!-- javascript files initialization -->
 
@@ -57,11 +57,11 @@
 <body>
 
 	<!-- ------------------------------------------------------------------------- -->
-	
+
 	<!-- -------------------------------------------------------------------------- -->
 
 	<c:import url="Navigation.jsp" />
-	
+
 
 	<c:set var="errorMessage" value="${sessionScope.issueError}" />
 	<c:set var="errorLengh" value="${fn:length(errorMessage)}" />
@@ -88,9 +88,9 @@
 		</c:if>
 
 	</div>
-	
+
 	<!-- --------------------------------------------------------------------------- -->
-	
+
 	<!-- ---------------------------------------------------------------------------- -->
 
 	<!-- hidden input to hold session attribute -->
@@ -133,7 +133,7 @@
 								<td class="fields"><input type="text" name="current_email"
 									placeholder="Enter your current e-mail" /></td>
 							</tr>
-							
+
 							<tr>
 								<td class="labels"><label>New e-mail:</label></td>
 								<td class="fields"><input type="text" name="new_email"
@@ -162,58 +162,88 @@
 				<hr>
 
 				<form action="./changePassword" method="POST">
-				<div id="change_password" class="profile_edit_box">
-					<h2>Change password</h2>
-					<!-- old password twice, new password twice and execute -->
-					<table style="width: 80%">
-						<tr>
-							<td class="labels"><label>Current password:</label></td>
-							<td class="fields"><input type="password" name="current_pass"
-								placeholder="Enter your current password" /></td>
-						</tr>
-						<tr>
-							<td class="labels"><label>Confirm current password:</label>
-							</td>
-							<td class="fields"><input type="password" name="conf_current_pass"
-								placeholder="Repeat your current password" /></td>
-						</tr>
-						<tr>
-							<td class="labels"><label>New password:</label></td>
-							<td class="fields"><input type="password" name="new_password"
-								placeholder="Enter your new password" /></td>
-						</tr>
-						<tr>
-							<td class="labels"><label>Confirm new password:</label></td>
-							<td class="fields"><input type="password" name="conf_new_password"
-								placeholder="Repeat your new password" /></td>
-						</tr>
-					</table>
-					<br>
-					<input type="submit" value="Change password" />
-				</div>
+					<div id="change_password" class="profile_edit_box">
+						<h2>Change password</h2>
+						<!-- old password twice, new password twice and execute -->
+						<table style="width: 80%">
+							<tr>
+								<td class="labels"><label>Current password:</label></td>
+								<td class="fields"><input type="password"
+									name="current_pass" placeholder="Enter your current password" /></td>
+							</tr>
+							<tr>
+								<td class="labels"><label>Confirm current password:</label>
+								</td>
+								<td class="fields"><input type="password"
+									name="conf_current_pass"
+									placeholder="Repeat your current password" /></td>
+							</tr>
+							<tr>
+								<td class="labels"><label>New password:</label></td>
+								<td class="fields"><input type="password"
+									name="new_password" placeholder="Enter your new password" /></td>
+							</tr>
+							<tr>
+								<td class="labels"><label>Confirm new password:</label></td>
+								<td class="fields"><input type="password"
+									name="conf_new_password" placeholder="Repeat your new password" /></td>
+							</tr>
+						</table>
+						<br> <input type="submit" value="Change password" />
+					</div>
 				</form>
 				<hr>
 
 				<form action="./deleteUser" method="POST">
-				<div id="remove_user" class="profile_edit_box">
-					<h2>Delete profile</h2>
-					<!-- password twice and execute -->
-					<table style="width: 80%">
-						<tr>
-							<td class="labels"><label>Password:</label></td>
-							<td class="fields"><input type="password" name="delete_password"
-								placeholder="Enter your current password" /></td>
-						</tr>
-						<tr>
-							<td class="labels"><label>Confirm password:</label></td>
-							<td class="fields"><input type="password" name="delete_conf_password"
-								placeholder="Repeat your current password" /></td>
-						</tr>
-					</table>
-					<br>
-					<input type="submit" value="Delete User" />
-				</div>
+					<div id="remove_user" class="profile_edit_box">
+						<h2>Delete profile</h2>
+						<!-- password twice and execute -->
+						<table style="width: 80%">
+							<tr>
+								<td class="labels"><label>Password:</label></td>
+								<td class="fields"><input type="password"
+									name="delete_password"
+									placeholder="Enter your current password" /></td>
+							</tr>
+							<tr>
+								<td class="labels"><label>Confirm password:</label></td>
+								<td class="fields"><input type="password"
+									name="delete_conf_password"
+									placeholder="Repeat your current password" /></td>
+							</tr>
+						</table>
+						<br> <input type="submit" value="Delete User" />
+					</div>
 				</form>
+				<hr>
+				<c:if test="${user.permissions == 'MANAGER'}">
+					<form action="./updateuser" method="POST">
+						<div id="update_user" class="profile_edit_box">
+							<h2>Manage users</h2>
+							<table style="width: 50%">
+								<tr>
+									<td><input type="radio" name="update_method" value="update"
+										checked> Update permissions</td>
+									<td><input type="radio" name="update_method" value="remove">
+										Remove from company</td>
+								</tr>
+								<td><select name="user_to_update">
+										<c:forEach var="company_user" items="${companyUsers}">
+											<c:if test="${user.id != company_user.id}">
+												<option value="${company_user.email}">${company_user.email}</option>
+											</c:if>
+										</c:forEach>
+								</select></td>
+								<td><select name="position">
+										<option value="2">PROGRAMMER</option>
+										<option value="3">TESTER</option>
+								</select></td>
+							</table>
+							<br> <input type="submit" value="Update user">
+						</div>
+					</form>
+					<hr>
+				</c:if>
 
 				<!-- (manager functions) //selects a user from the company and manages status (deletes, updates permissions)
 				<div id="update_user" class="profile_edit_box">
@@ -230,8 +260,9 @@
 				<div class="well">
 					<table id="user_email_photo">
 						<tr>
-							<th id="user_photo"><img src="images/ninja_avatar/${user.ninjaColor}.jpg"
-								width="50px" height="50px"></th>
+							<th id="user_photo"><img
+								src="images/ninja_avatar/${user.ninjaColor}.jpg" width="50px"
+								height="50px"></th>
 
 							<th id="user_email">${user.email}</th>
 

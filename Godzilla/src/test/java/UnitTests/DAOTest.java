@@ -61,7 +61,7 @@ public class DAOTest {
 	
 	@Test
 	public void test() throws SQLException {
-		
+		StaticValuesInitializerDAO.initializeStaticValues();
 	}
 
 }
