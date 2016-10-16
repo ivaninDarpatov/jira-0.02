@@ -567,7 +567,7 @@ public class IssueDAO {
 			throw new IssueDAOException("can't find issue to set free");
 		}
 		if (!isIssueInSprint(issueToSetFree)) {
-			throw new IssueDAOException("Issue is not in sprint");
+			return;
 		}
 
 		Connection connection = DBConnection.getInstance().getConnection();

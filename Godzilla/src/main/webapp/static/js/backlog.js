@@ -62,7 +62,24 @@ function loadProjectSprintsBacklog(projectName) {
 	for (var i = 0; i < freeIssues.length; i++) {
 		addIssueBacklog("#issues_container", freeIssues[i]);
 	}
-	drawChart(projectName);
+	
+	var companyProjects = JSON.parse(document.getElementById("companyProjects").value);
+	var hasIssues = false;
+	for (var i = 0; i < companyProjects.length; i++) {
+		if (companyProjects[i].name == projectName) {
+			if (companyProjects[i].issues.length > 0) {
+				hasIssues = true;
+			} else {
+				hasIssues = false;
+			}
+			break;
+		}
+	}
+	if (hasIssues) {
+		drawChart(projectName);
+	} else {
+		$("#project_chart").empty();
+	}
 }
 
 // add issue in selected sprint's issues container (caller)

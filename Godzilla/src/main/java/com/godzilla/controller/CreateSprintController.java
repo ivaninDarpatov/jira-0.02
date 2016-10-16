@@ -64,13 +64,10 @@ public class CreateSprintController {
 			return "redirect:backlog";
 		} catch (ProjectDAOException e) {
 			session.setAttribute("issueError", "Could not find project with tha name try again");
-			e.printStackTrace();
 		} catch (SprintException e) {
 			session.setAttribute("issue error", "Could not create Sprint");
-			e.printStackTrace();
 		} catch (SprintDAOException e) {
 			session.setAttribute("issueError", "Could not create Sprint");
-			e.printStackTrace();
 		}
 		
 		return "redirect:backlog";

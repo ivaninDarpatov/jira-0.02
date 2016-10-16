@@ -48,12 +48,9 @@ public class CreateProjectController {
 				session.setAttribute("issueError", "THere is allready a project with that name in the same company");
 			}
 		} catch (ProjectDAOException e) {
-			e.printStackTrace();
 			session.setAttribute("issueError", "Cannot create project");
-			e.printStackTrace();
 		} catch (ProjectException e) {
 			session.setAttribute("issueError", "Cant create project");
-			e.printStackTrace();
 		}
 		
 		return "redirect:homepage";

@@ -58,8 +58,6 @@ public class RegisterController {
 			} catch (UserException | UserDAOException | CompanyDAOException | CompanyException   e) {
 				session.setAttribute("error", e.getMessage());
 				return "redirect:registration";
-			} catch (Exception e) {
-				
 			}
 			
 		} else {

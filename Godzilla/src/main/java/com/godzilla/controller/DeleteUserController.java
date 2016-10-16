@@ -63,7 +63,6 @@ public class DeleteUserController {
 			session.setAttribute("issueError", "Could not remove user");
 			return "redirect:profilepage";
 		} catch (CompanyDAOException e) {
-			e.printStackTrace();
 			return "redirect:login";
 		} catch (NoSuchAlgorithmException e) {
 			session.setAttribute("issueError", "There was a problem while deleting user");

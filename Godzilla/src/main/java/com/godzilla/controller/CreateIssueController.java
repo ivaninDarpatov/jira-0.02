@@ -115,22 +115,16 @@ public class CreateIssueController {
 			
 		} catch (ProjectDAOException e) {
 			session.setAttribute("issueError", e.getMessage());
-			e.printStackTrace();
 		} catch (UserDAOException e) {
 			session.setAttribute("issueError", e.getMessage());
-			e.printStackTrace();
 		} catch (IssueDAOException e) {
 			session.setAttribute("issueError", e.getMessage());
-			e.printStackTrace();
 		} catch (IssueException e) {
 			session.setAttribute("issueError", e.getMessage());
-			e.printStackTrace();
 		} catch (EpicException e) {
 			session.setAttribute("issueError", e.getMessage());
-			e.printStackTrace();
 		} catch (SprintDAOException e) {
 			session.setAttribute("issueError", e.getMessage());
-			e.printStackTrace();
 		}
 
 		return "redirect:homepage";

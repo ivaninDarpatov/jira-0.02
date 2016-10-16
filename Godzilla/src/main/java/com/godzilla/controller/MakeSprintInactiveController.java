@@ -44,11 +44,9 @@ public class MakeSprintInactiveController {
 			Set<Project> companyProjects = ProjectDAO.getAllProjectsByCompany(company);
 			session.setAttribute("companyProjects", companyProjects);
 		} catch (SprintDAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			session.setAttribute("issueError", e.getMessage());
 		} catch (ProjectDAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			session.setAttribute("issueError", e.getMessage());
 		}
 		return "redirect:backlog";
 	}
